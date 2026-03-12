@@ -1,0 +1,16 @@
+/* Custom overrides for Adopte un Artiste */
+
+/* Disable page loader screen */
+.page-loader {
+  display: none !important;
+}
+
+/* Landing page fix - background fallback */
+.landing {
+  background: linear-gradient(135deg, #1e1e3f 0%, #2d1b4e 35%, #461e5f 65%, #23183a 100%);
+  background-size: cover;
+}
+
+.landing .landing-decoration {
+  background: url("../img/landing/dot-texture.png") repeat left top rgba(255, 255, 255, 0.06);
+}
