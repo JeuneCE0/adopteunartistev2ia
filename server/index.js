@@ -57,6 +57,8 @@ app.use('/api/events', require('./routes/events'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/badges', require('./routes/badges'));
 app.use('/api/quests', require('./routes/quests'));
+app.use('/api/recommendations', require('./routes/recommendations'));
+app.use('/api/streams', require('./routes/streams'));
 
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {

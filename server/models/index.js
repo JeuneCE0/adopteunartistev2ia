@@ -27,6 +27,9 @@ const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
 const Quest = require('./Quest');
 const UserQuest = require('./UserQuest');
+const UserInterest = require('./UserInterest');
+const ContentTag = require('./ContentTag');
+const Stream = require('./Stream');
 
 // User <-> Post
 User.hasMany(Post, { foreignKey: 'user_id', as: 'posts' });
@@ -137,6 +140,14 @@ Quest.belongsToMany(User, { through: UserQuest, foreignKey: 'quest_id', otherKey
 UserQuest.belongsTo(Quest, { foreignKey: 'quest_id', as: 'quest' });
 UserQuest.belongsTo(User, { foreignKey: 'user_id' });
 
+// Streams
+User.hasMany(Stream, { foreignKey: 'user_id', as: 'streams' });
+Stream.belongsTo(User, { foreignKey: 'user_id', as: 'streamer' });
+
+// User Interests
+UserInterest.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(UserInterest, { foreignKey: 'user_id', as: 'interests' });
+
 const db = {
   sequelize,
   User,
@@ -166,7 +177,10 @@ const db = {
   Badge,
   UserBadge,
   Quest,
-  UserQuest
+  UserQuest,
+  UserInterest,
+  ContentTag,
+  Stream
 };
 
 module.exports = db;
