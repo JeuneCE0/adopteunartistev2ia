@@ -18,6 +18,15 @@ const CartItem = require('./CartItem');
 const Order = require('./Order');
 const OrderItem = require('./OrderItem');
 const Review = require('./Review');
+const Event = require('./Event');
+const EventAttendee = require('./EventAttendee');
+const SubscriptionTier = require('./SubscriptionTier');
+const Subscription = require('./Subscription');
+const ArtistEarning = require('./ArtistEarning');
+const Badge = require('./Badge');
+const UserBadge = require('./UserBadge');
+const Quest = require('./Quest');
+const UserQuest = require('./UserQuest');
 
 // User <-> Post
 User.hasMany(Post, { foreignKey: 'user_id', as: 'posts' });
@@ -96,6 +105,38 @@ Review.belongsTo(User, { foreignKey: 'user_id', as: 'reviewer' });
 Product.hasMany(Review, { foreignKey: 'product_id', as: 'reviews' });
 Review.belongsTo(Product, { foreignKey: 'product_id' });
 
+// Events
+User.hasMany(Event, { foreignKey: 'creator_id', as: 'createdEvents' });
+Event.belongsTo(User, { foreignKey: 'creator_id', as: 'creator' });
+Group.hasMany(Event, { foreignKey: 'group_id', as: 'events', constraints: false });
+Event.belongsTo(Group, { foreignKey: 'group_id', as: 'group', constraints: false });
+Event.belongsToMany(User, { through: EventAttendee, foreignKey: 'event_id', otherKey: 'user_id', as: 'attendees' });
+User.belongsToMany(Event, { through: EventAttendee, foreignKey: 'user_id', otherKey: 'event_id', as: 'attendedEvents' });
+EventAttendee.belongsTo(User, { foreignKey: 'user_id' });
+EventAttendee.belongsTo(Event, { foreignKey: 'event_id' });
+
+// Subscriptions / Patronage
+User.hasMany(SubscriptionTier, { foreignKey: 'artist_id', as: 'tiers' });
+SubscriptionTier.belongsTo(User, { foreignKey: 'artist_id', as: 'artist' });
+User.hasMany(Subscription, { foreignKey: 'subscriber_id', as: 'subscriptions' });
+Subscription.belongsTo(User, { foreignKey: 'subscriber_id', as: 'subscriber' });
+Subscription.belongsTo(User, { foreignKey: 'artist_id', as: 'artist' });
+Subscription.belongsTo(SubscriptionTier, { foreignKey: 'tier_id', as: 'tier' });
+SubscriptionTier.hasMany(Subscription, { foreignKey: 'tier_id' });
+User.hasMany(ArtistEarning, { foreignKey: 'artist_id', as: 'earnings' });
+ArtistEarning.belongsTo(User, { foreignKey: 'artist_id' });
+
+// Gamification
+User.belongsToMany(Badge, { through: UserBadge, foreignKey: 'user_id', otherKey: 'badge_id', as: 'badges' });
+Badge.belongsToMany(User, { through: UserBadge, foreignKey: 'badge_id', otherKey: 'user_id', as: 'users' });
+UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
+UserBadge.belongsTo(User, { foreignKey: 'user_id' });
+Quest.belongsTo(Badge, { foreignKey: 'badge_reward_id', as: 'badgeReward', constraints: false });
+User.belongsToMany(Quest, { through: UserQuest, foreignKey: 'user_id', otherKey: 'quest_id', as: 'quests' });
+Quest.belongsToMany(User, { through: UserQuest, foreignKey: 'quest_id', otherKey: 'user_id', as: 'users' });
+UserQuest.belongsTo(Quest, { foreignKey: 'quest_id', as: 'quest' });
+UserQuest.belongsTo(User, { foreignKey: 'user_id' });
+
 const db = {
   sequelize,
   User,
@@ -116,7 +157,16 @@ const db = {
   CartItem,
   Order,
   OrderItem,
-  Review
+  Review,
+  Event,
+  EventAttendee,
+  SubscriptionTier,
+  Subscription,
+  ArtistEarning,
+  Badge,
+  UserBadge,
+  Quest,
+  UserQuest
 };
 
 module.exports = db;

@@ -53,6 +53,10 @@ app.use('/api/groups', require('./routes/groups'));
 app.use('/api/forums', require('./routes/forums'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
+app.use('/api/events', require('./routes/events'));
+app.use('/api/subscriptions', require('./routes/subscriptions'));
+app.use('/api/badges', require('./routes/badges'));
+app.use('/api/quests', require('./routes/quests'));
 
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {
