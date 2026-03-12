@@ -47,6 +47,8 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/friends', require('./routes/friends'));
 app.use('/api/posts', require('./routes/reactions'));
+app.use('/api/messages', require('./routes/messages'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {
@@ -62,14 +64,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Erreur serveur interne' });
 });
 
-// Socket.io - basic setup
-io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-});
+// Socket.io - chat & notifications
+const setupChat = require('./socket/chat');
+setupChat(io);
 
 // Make io accessible to routes
 app.set('io', io);

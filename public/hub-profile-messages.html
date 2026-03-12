@@ -4545,22 +4545,74 @@
         <!-- /SECTION HEADER -->
 
         <!-- CHAT WIDGET WRAP -->
-        <div class="chat-widget-wrap">
-          <!-- CHAT WIDGET -->
-          <div class="chat-widget static">
+        <div class="chat-widget-wrap" id="dynamic-chat-wrap">
+          <!-- CHAT WIDGET - Conversations List -->
+          <div class="chat-widget static" id="conversations-panel">
             <!-- CHAT WIDGET MESSAGES -->
-            <div class="chat-widget-messages" data-simplebar>
-              <!-- CHAT WIDGET MESSAGE -->
+            <div class="chat-widget-messages" data-simplebar id="conversations-list">
+              <p class="chat-widget-message" style="text-align:center;padding:20px;color:#adafca;">Chargement des conversations...</p>
+            </div>
+
+            <form class="chat-widget-form" id="search-conversations-form">
+              <div class="form-row split">
+                <div class="form-item">
+                  <div class="interactive-input dark">
+                    <input type="text" id="search-conversations" name="search_conversations" placeholder="Rechercher des conversations...">
+                    <div class="interactive-input-icon-wrap"><svg class="interactive-input-icon icon-magnifying-glass"><use xlink:href="#svg-magnifying-glass"></use></svg></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- CHAT WIDGET - Active Conversation -->
+          <div class="chat-widget" id="conversation-panel" style="display:none;">
+            <div class="chat-widget-header">
+              <div class="chat-widget-close-button" id="back-to-conversations" style="cursor:pointer;">
+                <svg class="chat-widget-close-button-icon icon-back-arrow"><use xlink:href="#svg-back-arrow"></use></svg>
+              </div>
+              <div class="user-status" id="conversation-header-user">
+                <div class="user-status-avatar">
+                  <div class="user-avatar small no-outline online">
+                    <div class="user-avatar-content">
+                      <div class="hexagon-image-30-32" data-src="img/avatar/default.jpg" id="conv-user-avatar"></div>
+                    </div>
+                  </div>
+                </div>
+                <p class="user-status-title"><span class="bold" id="conv-user-name">...</span></p>
+                <p class="user-status-tag online" id="conv-user-status">En ligne</p>
+              </div>
+            </div>
+
+            <div class="chat-widget-conversation" data-simplebar id="messages-container">
+              <p style="text-align:center;padding:20px;color:#adafca;">Selectionnez une conversation</p>
+            </div>
+
+            <form class="chat-widget-form" id="send-message-form">
+              <div class="form-row split">
+                <div class="form-item">
+                  <div class="interactive-input dark">
+                    <input type="text" id="message-input" name="message_text" placeholder="Ecrire un message...">
+                    <div class="interactive-input-action-list">
+                      <div class="interactive-input-action" id="send-message-btn" style="cursor:pointer;">
+                        <svg class="interactive-input-action-icon icon-send-message"><use xlink:href="#svg-send-message"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /CHAT WIDGET WRAP -->
+
+        <!-- STATIC CONTENT HIDDEN -->
+        <div style="display:none;">
               <div class="chat-widget-message">
-                <!-- USER STATUS -->
                 <div class="user-status">
-                  <!-- USER STATUS AVATAR -->
                   <div class="user-status-avatar">
-                    <!-- USER AVATAR -->
                     <div class="user-avatar small no-outline">
-                      <!-- USER AVATAR CONTENT -->
                       <div class="user-avatar-content">
-                        <!-- HEXAGON -->
                         <div class="hexagon-image-30-32" data-src="img/avatar/04.jpg"></div>
                         <!-- /HEXAGON -->
                       </div>
@@ -5664,7 +5716,8 @@
           </div>
           <!-- /CHAT WIDGET -->
         </div>
-        <!-- /CHAT WIDGET WRAP -->
+        </div>
+        <!-- end hidden static content -->
       </div>
       <!-- /GRID COLUMN -->
     </div>
@@ -5698,5 +5751,195 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/messages.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await PageInit.init();
+  if (!user) return;
+
+  let currentConversationId = null;
+  let socket = null;
+
+  // Initialize Socket.io
+  function initSocket() {
+    if (typeof io !== 'undefined') {
+      socket = io({ auth: { token: AuthAPI.getToken() } });
+      socket.on('new_message', (message) => {
+        if (message.conversation_id === currentConversationId) {
+          appendMessage(message, user.id);
+          scrollToBottom();
+        }
+        loadConversations();
+      });
+      socket.on('user_typing', (data) => {
+        if (data.conversationId === currentConversationId) {
+          document.getElementById('conv-user-status').textContent = 'En train d\'ecrire...';
+        }
+      });
+      socket.on('user_stop_typing', (data) => {
+        if (data.conversationId === currentConversationId) {
+          document.getElementById('conv-user-status').textContent = 'En ligne';
+        }
+      });
+    }
+  }
+
+  // Load conversations list
+  async function loadConversations() {
+    try {
+      const data = await MessagesAPI.getConversations();
+      const container = document.getElementById('conversations-list');
+      if (!data.conversations || data.conversations.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:20px;color:#adafca;">Aucune conversation</p>';
+        return;
+      }
+      container.innerHTML = data.conversations.map(conv => {
+        const other = conv.participants.find(p => p.id !== user.id) || conv.participants[0];
+        const lastMsg = conv.lastMessage;
+        const unread = conv.unreadCount > 0 ? ' active' : '';
+        return `
+          <div class="chat-widget-message${unread}" data-conv-id="${conv.id}" data-user-id="${other.id}" style="cursor:pointer;">
+            <div class="user-status">
+              <div class="user-status-avatar">
+                <div class="user-avatar small no-outline${other.is_online ? ' online' : ''}">
+                  <div class="user-avatar-content">
+                    <img src="${other.avatar_url || 'img/avatar/default.jpg'}" style="width:30px;height:30px;border-radius:50%;">
+                  </div>
+                </div>
+              </div>
+              <p class="user-status-title"><span class="bold">${other.display_name || other.username}</span></p>
+              <p class="user-status-text">${lastMsg ? lastMsg.content.substring(0, 50) : 'Nouvelle conversation'}</p>
+              <p class="user-status-timestamp floaty">${lastMsg ? PageInit.timeAgo(lastMsg.created_at) : ''}</p>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Click handlers
+      container.querySelectorAll('[data-conv-id]').forEach(el => {
+        el.addEventListener('click', () => openConversation(parseInt(el.dataset.convId), parseInt(el.dataset.userId)));
+      });
+    } catch (error) {
+      console.error('Load conversations error:', error);
+    }
+  }
+
+  // Open a conversation
+  async function openConversation(convId, otherUserId) {
+    currentConversationId = convId;
+    document.getElementById('conversations-panel').style.display = 'none';
+    document.getElementById('conversation-panel').style.display = '';
+
+    if (socket) socket.emit('join_conversation', convId);
+
+    try {
+      const data = await MessagesAPI.getMessages(convId);
+      const container = document.getElementById('messages-container');
+      if (!data.messages || data.messages.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:20px;color:#adafca;">Aucun message. Commencez la conversation!</p>';
+      } else {
+        container.innerHTML = data.messages.map(msg => createMessageHTML(msg, user.id)).join('');
+      }
+      scrollToBottom();
+
+      // Update header
+      const convData = await MessagesAPI.getConversations();
+      const conv = convData.conversations.find(c => c.id === convId);
+      if (conv) {
+        const other = conv.participants.find(p => p.id !== user.id);
+        if (other) {
+          document.getElementById('conv-user-name').textContent = other.display_name || other.username;
+          document.getElementById('conv-user-status').textContent = other.is_online ? 'En ligne' : 'Hors ligne';
+        }
+      }
+    } catch (error) {
+      console.error('Open conversation error:', error);
+    }
+  }
+
+  function createMessageHTML(msg, currentUserId) {
+    const side = msg.sender_id === currentUserId ? 'right' : 'left';
+    const avatarHTML = side === 'left' ? `
+      <div class="chat-widget-speaker-avatar">
+        <div class="user-avatar tiny no-outline">
+          <div class="user-avatar-content">
+            <img src="${msg.sender.avatar_url || 'img/avatar/default.jpg'}" style="width:24px;height:24px;border-radius:50%;">
+          </div>
+        </div>
+      </div>` : '';
+    return `
+      <div class="chat-widget-speaker ${side}">
+        ${avatarHTML}
+        <p class="chat-widget-speaker-message">${escapeHTML(msg.content)}</p>
+        <p class="chat-widget-speaker-timestamp">${PageInit.timeAgo(msg.created_at)}</p>
+      </div>`;
+  }
+
+  function appendMessage(msg, currentUserId) {
+    const container = document.getElementById('messages-container');
+    const firstP = container.querySelector('p[style]');
+    if (firstP && firstP.textContent.includes('Aucun message')) firstP.remove();
+    container.insertAdjacentHTML('beforeend', createMessageHTML(msg, currentUserId));
+  }
+
+  function scrollToBottom() {
+    const container = document.getElementById('messages-container');
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Send message
+  document.getElementById('send-message-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('message-input');
+    const content = input.value.trim();
+    if (!content || !currentConversationId) return;
+
+    try {
+      const data = await MessagesAPI.sendMessage(currentConversationId, content);
+      appendMessage(data.message, user.id);
+      scrollToBottom();
+      input.value = '';
+    } catch (error) {
+      console.error('Send message error:', error);
+    }
+  });
+
+  document.getElementById('send-message-btn').addEventListener('click', () => {
+    document.getElementById('send-message-form').dispatchEvent(new Event('submit'));
+  });
+
+  // Back button
+  document.getElementById('back-to-conversations').addEventListener('click', () => {
+    currentConversationId = null;
+    document.getElementById('conversations-panel').style.display = '';
+    document.getElementById('conversation-panel').style.display = 'none';
+    loadConversations();
+  });
+
+  // Typing indicator
+  let typingTimeout;
+  document.getElementById('message-input').addEventListener('input', () => {
+    if (socket && currentConversationId) {
+      socket.emit('typing', { conversationId: currentConversationId });
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        socket.emit('stop_typing', { conversationId: currentConversationId });
+      }, 2000);
+    }
+  });
+
+  // Init
+  initSocket();
+  loadConversations();
+});
+</script>
 </body>
 </html>

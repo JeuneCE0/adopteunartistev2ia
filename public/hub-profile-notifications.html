@@ -4544,19 +4544,22 @@
         </div>
         <!-- /SECTION HEADER -->
 
-        <!-- NOTIFICATION BOX LIST -->
+        <!-- DYNAMIC NOTIFICATION BOX LIST -->
+        <div class="notification-box-list" id="dynamic-notifications">
+          <p style="text-align:center;padding:20px;color:#adafca;">Chargement des notifications...</p>
+        </div>
+        <div id="notifications-load-more" style="text-align:center;padding:20px;display:none;">
+          <button class="button secondary" id="load-more-notifs">Charger plus</button>
+        </div>
+
+        <!-- STATIC CONTENT HIDDEN -->
+        <div style="display:none;">
         <div class="notification-box-list">
-          <!-- NOTIFICATION BOX -->
           <div class="notification-box">
-            <!-- USER STATUS -->
             <div class="user-status notification">
-              <!-- USER STATUS AVATAR -->
               <a class="user-status-avatar" href="profile-timeline.html">
-                <!-- USER AVATAR -->
                 <div class="user-avatar small no-outline">
-                  <!-- USER AVATAR CONTENT -->
                   <div class="user-avatar-content">
-                    <!-- HEXAGON -->
                     <div class="hexagon-image-30-32" data-src="img/avatar/03.jpg"></div>
                     <!-- /HEXAGON -->
                   </div>
@@ -5361,5 +5364,97 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/notifications.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await PageInit.init();
+  if (!user) return;
+
+  let currentPage = 1;
+  let totalPages = 1;
+
+  // Mark all as read handler
+  const markAllBtn = document.querySelector('.section-header-action');
+  if (markAllBtn && markAllBtn.textContent.trim() === 'Mark all as Read') {
+    markAllBtn.textContent = 'Tout marquer comme lu';
+    markAllBtn.style.cursor = 'pointer';
+    markAllBtn.addEventListener('click', async () => {
+      try {
+        await NotificationsAPI.markAllAsRead();
+        loadNotifications();
+      } catch (error) {
+        console.error('Mark all read error:', error);
+      }
+    });
+  }
+
+  async function loadNotifications(page = 1) {
+    try {
+      const data = await NotificationsAPI.getAll(page);
+      const container = document.getElementById('dynamic-notifications');
+      totalPages = data.totalPages;
+      currentPage = page;
+
+      if (!data.notifications || data.notifications.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:40px;color:#adafca;">Aucune notification</p>';
+        document.getElementById('notifications-load-more').style.display = 'none';
+        return;
+      }
+
+      const html = data.notifications.map(notif => `
+        <div class="notification-box${notif.is_read ? '' : ' unread'}" data-notif-id="${notif.id}">
+          <div class="user-status notification">
+            <div class="user-status-avatar">
+              <div class="user-avatar small no-outline">
+                <div class="user-avatar-content">
+                  <img src="img/avatar/default.jpg" style="width:30px;height:30px;border-radius:50%;">
+                </div>
+              </div>
+            </div>
+            <p class="user-status-title">${escapeHTML(notif.title)}</p>
+            <p class="user-status-text">${notif.content ? escapeHTML(notif.content) : ''}</p>
+            <p class="user-status-timestamp floaty">${PageInit.timeAgo(notif.created_at)}</p>
+          </div>
+          ${notif.link ? '<a href="' + notif.link + '" class="notification-box-action button white">Voir</a>' : ''}
+        </div>
+      `).join('');
+
+      if (page === 1) {
+        container.innerHTML = html;
+      } else {
+        container.insertAdjacentHTML('beforeend', html);
+      }
+
+      document.getElementById('notifications-load-more').style.display = currentPage < totalPages ? '' : 'none';
+
+      // Click to mark as read
+      container.querySelectorAll('.notification-box.unread').forEach(el => {
+        el.addEventListener('click', async () => {
+          const id = el.dataset.notifId;
+          await NotificationsAPI.markAsRead(id);
+          el.classList.remove('unread');
+        });
+      });
+    } catch (error) {
+      console.error('Load notifications error:', error);
+    }
+  }
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.getElementById('load-more-notifs').addEventListener('click', () => {
+    loadNotifications(currentPage + 1);
+  });
+
+  loadNotifications();
+});
+</script>
 </body>
 </html>
