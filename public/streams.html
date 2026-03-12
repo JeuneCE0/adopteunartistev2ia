@@ -5936,5 +5936,13 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+  await PageInit.init();
+});
+</script>
 </body>
 </html>

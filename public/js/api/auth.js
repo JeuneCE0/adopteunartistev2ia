@@ -97,7 +97,7 @@ const AuthAPI = {
   // Redirect to overview if already logged in
   checkAuth() {
     if (this.isLoggedIn()) {
-      window.location.href = '/overview.html';
+      window.location.href = '/newsfeed.html';
       return true;
     }
     return false;
