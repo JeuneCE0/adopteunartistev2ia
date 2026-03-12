@@ -27,22 +27,58 @@ const PageInit = {
     // Update all user avatar images in navigation
     const avatarImages = document.querySelectorAll('[data-src]');
     avatarImages.forEach(el => {
-      // Only update the first nav avatar (user's own)
-      if (el.closest('.user-avatar') && el.closest('#navigation-widget-small, #navigation-widget')) {
-        el.setAttribute('data-src', this.user.avatar_url);
+      if (el.closest('.user-avatar') && el.closest('#navigation-widget-small, #navigation-widget, #navigation-widget-mobile')) {
+        el.setAttribute('data-src', this.user.avatar_url || 'img/avatar/01.jpg');
       }
     });
 
-    // Update user name in sidebar if present
-    const sidebarName = document.querySelector('.navigation-widget .user-short-description-title a');
+    // Update cover image in sidebar
+    const coverImgs = document.querySelectorAll('.navigation-widget-cover img');
+    coverImgs.forEach(img => {
+      img.src = this.user.cover_url || 'img/cover/01.jpg';
+    });
+
+    // Update user name in large sidebar
+    const sidebarName = document.querySelector('#navigation-widget .user-short-description-title a');
     if (sidebarName) {
       sidebarName.textContent = this.user.display_name || this.user.username;
     }
 
-    // Update user title/tag if present
-    const sidebarTag = document.querySelector('.navigation-widget .user-short-description-text a');
+    // Update user tag in large sidebar
+    const sidebarTag = document.querySelector('#navigation-widget .user-short-description-text a');
     if (sidebarTag) {
       sidebarTag.textContent = '@' + this.user.username;
+    }
+
+    // Update mobile nav name
+    const mobileTitle = document.querySelector('#navigation-widget-mobile .navigation-widget-info-title a');
+    if (mobileTitle) {
+      mobileTitle.textContent = this.user.display_name || this.user.username;
+    }
+
+    // Update mobile nav welcome text
+    const mobileText = document.querySelector('#navigation-widget-mobile .navigation-widget-info-text');
+    if (mobileText) {
+      mobileText.textContent = 'Niveau ' + (this.user.level || 1);
+    }
+
+    // Update user level badge text
+    const badgeTexts = document.querySelectorAll('.user-avatar-badge-text');
+    badgeTexts.forEach(el => {
+      el.textContent = this.user.level || 1;
+    });
+
+    // Update user stats in sidebar
+    const statTitles = document.querySelectorAll('#navigation-widget .user-stat-title');
+    if (statTitles.length >= 3) {
+      statTitles[0].textContent = this.user.postCount || '0';
+      statTitles[1].textContent = this.user.friendCount || '0';
+      statTitles[2].textContent = (this.user.xp || 0) + ' XP';
+    }
+    // Update stat labels
+    const statTexts = document.querySelectorAll('#navigation-widget .user-stat-text');
+    if (statTexts.length >= 3) {
+      statTexts[2].textContent = 'exp.';
     }
 
     // Update profile links
@@ -50,6 +86,57 @@ const PageInit = {
     profileLinks.forEach(link => {
       link.href = `profile-timeline.html?id=${this.user.id}`;
     });
+
+    // Setup logout on mobile nav button
+    const mobileLogout = document.querySelector('#navigation-widget-mobile .navigation-widget-info-button');
+    if (mobileLogout) {
+      mobileLogout.addEventListener('click', (e) => {
+        e.preventDefault();
+        AuthAPI.logout();
+      });
+    }
+
+    // Load notification count
+    this.loadNotificationCount();
+    // Load user stats (posts, friends)
+    this.loadUserStats();
+  },
+
+  async loadNotificationCount() {
+    try {
+      const data = await apiRequest('/api/notifications?limit=1');
+      const count = data.unreadCount || 0;
+      const badges = document.querySelectorAll('.action-list-item-icon .action-list-item-icon-count, .header-settings-text');
+      badges.forEach(el => {
+        if (count > 0) {
+          el.textContent = count > 99 ? '99+' : count;
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    } catch (e) {
+      // Silently ignore notification count errors
+    }
+  },
+
+  async loadUserStats() {
+    try {
+      const [postsData, friendsData] = await Promise.all([
+        apiRequest(`/api/posts/user/${this.user.id}?page=1&limit=1`).catch(() => ({ count: 0 })),
+        apiRequest('/api/friends?page=1&limit=1').catch(() => ({ count: 0 }))
+      ]);
+      const postCount = postsData.count || 0;
+      const friendCount = friendsData.count || 0;
+
+      const statTitles = document.querySelectorAll('#navigation-widget .user-stat-title');
+      if (statTitles.length >= 2) {
+        statTitles[0].textContent = postCount;
+        statTitles[1].textContent = friendCount;
+      }
+    } catch (e) {
+      // Silently ignore stats errors
+    }
   },
 
   setupLogout() {

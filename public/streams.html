@@ -4741,7 +4741,7 @@
     <!-- /SECTION FILTERS BAR -->
 
     <!-- GRID -->
-    <div class="grid grid-3-3-3-3 centered">
+    <div class="grid grid-3-3-3-3 centered" id="streams-grid">
       <!-- STREAM BOX -->
       <div class="stream-box">
         <!-- STREAM BOX VIDEO -->
@@ -5941,7 +5941,56 @@
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var grid = document.getElementById('streams-grid');
+  var banner = document.querySelector('.section-banner-title');
+  try {
+    var data = await apiRequest('/api/streams?limit=12');
+    var streams = data.streams || [];
+    var total = data.total || 0;
+
+    if (banner) banner.textContent = 'Streams (' + total + ')';
+
+    if (streams.length === 0) {
+      grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Aucun stream disponible pour le moment</p></div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    streams.forEach(function(stream) {
+      var streamer = stream.streamer || {};
+      var statusLabel = stream.status === 'live' ? '<span style="background:#e74c3c;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">LIVE</span>' :
+                        stream.status === 'scheduled' ? '<span style="background:#f39c12;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">Prevu</span>' :
+                        '<span style="background:#9aa4bf;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">Termine</span>';
+      var thumbnail = stream.thumbnail_url || 'img/cover/01.jpg';
+
+      grid.insertAdjacentHTML('beforeend',
+        '<div class="stream-box">' +
+          '<div class="stream-box-image" style="position:relative;">' +
+            '<figure class="liquid"><img src="' + thumbnail + '" alt="' + stream.title + '"></figure>' +
+            '<div style="position:absolute;top:8px;left:8px;">' + statusLabel + '</div>' +
+          '</div>' +
+          '<div class="stream-box-info">' +
+            '<p class="stream-box-title"><a href="profile-stream.html?id=' + stream.id + '">' + stream.title + '</a></p>' +
+            '<p class="stream-box-text"><a href="profile-timeline.html?id=' + streamer.id + '">@' + (streamer.username || 'inconnu') + '</a></p>' +
+            (stream.category ? '<p class="stream-box-category">Categorie: ' + stream.category + '</p>' : '') +
+          '</div>' +
+          '<div class="stream-box-meta" style="padding:12px;display:flex;align-items:center;gap:8px;">' +
+            '<div style="width:32px;height:32px;border-radius:50%;overflow:hidden;">' +
+              '<img src="' + (streamer.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+            '</div>' +
+            '<p style="font-size:13px;font-weight:700;">' + (streamer.display_name || streamer.username || '') + '</p>' +
+          '</div>' +
+        '</div>'
+      );
+    });
+
+    if (typeof liquidify === 'function') liquidify();
+  } catch (e) {
+    grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Impossible de charger les streams</p></div>';
+  }
 });
 </script>
 </body>

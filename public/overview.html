@@ -8963,34 +8963,39 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (!ok) return;
 
   var user = PageInit.user;
+  var postsEl = document.querySelector('.stat-posts-created .stats-box-value');
+  var viewsEl = document.querySelector('.stat-profile-views .stats-box-value');
+  var reactionsEl = document.querySelector('.stat-reactions-received .stats-box-value');
+  var commentsEl = document.querySelector('.stat-comments-received .stats-box-value');
 
-  // Update stats boxes with user data
-  var profileViews = document.querySelector('.stat-profile-views .stats-box-value');
-  if (profileViews) profileViews.textContent = '0';
+  // Set XP/level info
+  if (viewsEl) viewsEl.textContent = user.level || 1;
+  var viewsTitle = document.querySelector('.stat-profile-views .stats-box-title');
+  if (viewsTitle) viewsTitle.textContent = 'Niveau';
+  var viewsText = document.querySelector('.stat-profile-views .stats-box-text');
+  if (viewsText) viewsText.textContent = (user.xp || 0) + ' XP total';
 
-  var postsCreated = document.querySelector('.stat-posts-created .stats-box-value');
-  if (postsCreated) postsCreated.textContent = '0';
+  // Load real data in parallel
+  var [postsData, friendsData] = await Promise.all([
+    apiRequest('/api/posts/user/' + user.id + '?page=1&limit=1').catch(function() { return {}; }),
+    apiRequest('/api/friends?page=1&limit=1').catch(function() { return {}; })
+  ]);
 
-  var reactionsReceived = document.querySelector('.stat-reactions .stats-box-value');
-  if (reactionsReceived) reactionsReceived.textContent = '0';
-
-  var friendsCount = document.querySelector('.stat-friends .stats-box-value');
-  if (friendsCount) friendsCount.textContent = '0';
-
-  // Load real data
-  try {
-    var friendsData = await FriendsAPI.getMyFriends(1, 1);
-    if (friendsCount && friendsData.total !== undefined) {
-      friendsCount.textContent = friendsData.total;
-    }
-  } catch(e) { console.log('Friends stats:', e.message); }
-
-  try {
-    var postsData = await PostsAPI.getUserPosts(user.id, 1, 1);
-    if (postsCreated && postsData.total !== undefined) {
-      postsCreated.textContent = postsData.total;
-    }
-  } catch(e) { console.log('Posts stats:', e.message); }
+  if (postsEl) postsEl.textContent = postsData.total || 0;
+  if (reactionsEl) {
+    reactionsEl.textContent = friendsData.total || 0;
+    var rTitle = document.querySelector('.stat-reactions-received .stats-box-title');
+    if (rTitle) rTitle.textContent = 'Amis';
+    var rText = document.querySelector('.stat-reactions-received .stats-box-text');
+    if (rText) rText.textContent = 'Connexions actives';
+  }
+  if (commentsEl) {
+    commentsEl.textContent = user.role || 'member';
+    var cTitle = document.querySelector('.stat-comments-received .stats-box-title');
+    if (cTitle) cTitle.textContent = 'Role';
+    var cText = document.querySelector('.stat-comments-received .stats-box-text');
+    if (cText) cText.textContent = 'Sur la plateforme';
+  }
 });
 </script>
 </body>

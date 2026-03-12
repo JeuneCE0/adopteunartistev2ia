@@ -4277,7 +4277,7 @@
     <!-- /SECTION BANNER -->
 
     <!-- GRID -->
-    <div class="grid grid-3-3-3-3 top-space centered">
+    <div class="grid grid-3-3-3-3 top-space centered" id="badges-grid">
       <!-- BADGE ITEM STAT -->
       <div class="badge-item-stat">
         <!-- TEXT STICKER -->
@@ -6003,7 +6003,44 @@
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var grid = document.getElementById('badges-grid');
+  try {
+    var [allData, userDataRes] = await Promise.all([
+      apiRequest('/api/badges'),
+      apiRequest('/api/badges/user/' + PageInit.user.id).catch(function() { return { badges: [] }; })
+    ]);
+    var badges = allData.badges || [];
+    var userBadges = userDataRes.badges || [];
+    var earnedIds = {};
+    userBadges.forEach(function(ub) { earnedIds[ub.badge_id || (ub.badge && ub.badge.id)] = true; });
+
+    if (badges.length === 0) {
+      grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Aucun badge disponible pour le moment</p></div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    badges.forEach(function(badge) {
+      var earned = earnedIds[badge.id];
+      var icon = badge.icon_url || 'img/badge/blank-b.png';
+      var iconSmall = icon.replace('-b.', '-s.');
+      grid.insertAdjacentHTML('beforeend',
+        '<div class="badge-item-stat' + (earned ? '' : ' locked') + '">' +
+          '<p class="text-sticker"><svg class="text-sticker-icon icon-plus-small"><use xlink:href="#svg-plus-small"></use></svg>' + (badge.xp_reward || 0) + ' Exp</p>' +
+          '<img class="badge-item-stat-image-preview" src="' + iconSmall + '" alt="' + badge.name + '">' +
+          '<img class="badge-item-stat-image" src="' + icon + '" alt="' + badge.name + '" style="' + (earned ? '' : 'filter:grayscale(1);opacity:0.4;') + '">' +
+          '<p class="badge-item-stat-title">' + badge.name + '</p>' +
+          '<p class="badge-item-stat-text">' + (badge.description || '') + '</p>' +
+          (earned ? '<p style="color:#4caf50;font-size:12px;font-weight:700;margin-top:8px;">Obtenu !</p>' : '<p style="color:#9aa4bf;font-size:12px;margin-top:8px;">Non obtenu</p>') +
+        '</div>'
+      );
+    });
+  } catch (e) {
+    grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Impossible de charger les badges</p></div>';
+  }
 });
 </script>
 </body>

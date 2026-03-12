@@ -53,7 +53,7 @@ app.use(async (req, res, next) => {
       dbReady = true;
     } catch (error) {
       console.error('Database connection failed:', error.message);
-      return res.status(503).json({ error: 'Database unavailable', detail: error.message });
+      return res.status(503).json({ error: 'Database unavailable' });
     }
   }
   next();
@@ -63,19 +63,24 @@ app.use(async (req, res, next) => {
 app.get('/api/health', async (req, res) => {
   try {
     await sequelize.authenticate();
-    res.json({ status: 'ok', db: 'connected', env: process.env.NODE_ENV, hasDbUrl: !!process.env.DATABASE_URL });
+    res.json({ status: 'ok', db: 'connected' });
   } catch (error) {
-    res.status(500).json({ status: 'error', db: error.message, hasDbUrl: !!process.env.DATABASE_URL });
+    res.status(500).json({ status: 'error', db: 'disconnected' });
   }
 });
 
-// Setup endpoint - sync all tables (run once)
+// Setup endpoint - sync all tables (protected)
 app.get('/api/setup', async (req, res) => {
+  const adminKey = process.env.ADMIN_SECRET || 'setup_secret_change_me';
+  if (req.query.key !== adminKey) {
+    return res.status(403).json({ error: 'Acces refuse' });
+  }
   try {
     await sequelize.sync();
     res.json({ message: 'All tables synced successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Setup error:', error.message);
+    res.status(500).json({ error: 'Erreur lors de la synchronisation' });
   }
 });
 
@@ -98,9 +103,12 @@ app.use('/api/quests', require('./routes/quests'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api/streams', require('./routes/streams'));
 
-// Temporary seed endpoint - creates demo account and syncs DB
-const bcrypt = require('bcryptjs');
+// Seed endpoint - creates demo account (protected)
 app.get('/api/seed-demo', async (req, res) => {
+  const adminKey = process.env.ADMIN_SECRET || 'setup_secret_change_me';
+  if (req.query.key !== adminKey) {
+    return res.status(403).json({ error: 'Acces refuse' });
+  }
   try {
     const User = require('./models/User');
     const existing = await User.findOne({ where: { email: 'demo@adopteunartiste.com' } });
@@ -120,7 +128,8 @@ app.get('/api/seed-demo', async (req, res) => {
     });
     res.json({ message: 'Demo account created', username: user.username, email: user.email });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Seed error:', error.message);
+    res.status(500).json({ error: 'Erreur lors de la creation du compte demo' });
   }
 });
 
@@ -135,7 +144,7 @@ app.get('*', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Erreur serveur interne', detail: err.message });
+  res.status(500).json({ error: 'Erreur serveur interne' });
 });
 
 module.exports = app;

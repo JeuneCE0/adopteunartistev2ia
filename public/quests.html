@@ -4293,7 +4293,7 @@
     <!-- /SECTION HEADER -->
 
     <!-- GRID -->
-    <div class="grid grid-3-3-3-3 centered">
+    <div class="grid grid-3-3-3-3 centered" id="quests-grid">
       <!-- QUEST ITEM -->
       <div class="quest-item">
         <!-- QUEST ITEM COVER -->
@@ -6005,8 +6005,77 @@
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var grid = document.getElementById('quests-grid');
+  try {
+    var [allData, myData] = await Promise.all([
+      apiRequest('/api/quests'),
+      apiRequest('/api/quests/my-quests').catch(function() { return { quests: [] }; })
+    ]);
+    var quests = allData.quests || [];
+    var myQuests = myData.quests || [];
+    var progressMap = {};
+    myQuests.forEach(function(uq) {
+      progressMap[uq.quest_id || (uq.quest && uq.quest.id)] = uq;
+    });
+
+    if (quests.length === 0) {
+      grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Aucune quete disponible pour le moment</p></div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    quests.forEach(function(quest) {
+      var uq = progressMap[quest.id];
+      var progress = uq ? uq.progress || 0 : 0;
+      var target = quest.requirement_value || 1;
+      var pct = Math.min(100, Math.round((progress / target) * 100));
+      var status = uq ? uq.status : 'not_started';
+      var coverImg = quest.cover_url || 'img/quest/cover/01.png';
+      var xp = quest.xp_reward || 0;
+
+      grid.insertAdjacentHTML('beforeend',
+        '<div class="quest-item">' +
+          '<figure class="quest-item-cover liquid"><img src="' + coverImg + '" alt="' + quest.title + '"></figure>' +
+          '<p class="text-sticker small-text"><svg class="text-sticker-icon icon-plus-small"><use xlink:href="#svg-plus-small"></use></svg>' + xp + ' EXP</p>' +
+          '<div class="quest-item-info">' +
+            '<p class="quest-item-title">' + quest.title + '</p>' +
+            '<p class="quest-item-text">' + (quest.description || '') + '</p>' +
+            '<div class="progress-stat" style="margin-top:12px;">' +
+              '<div style="width:100%;height:4px;background:#dedeea;border-radius:4px;overflow:hidden;">' +
+                '<div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#41efff,#615dfa);border-radius:4px;"></div>' +
+              '</div>' +
+              '<p style="font-size:12px;color:#9aa4bf;margin-top:6px;">' + progress + '/' + target + ' (' + pct + '%)</p>' +
+            '</div>' +
+            (status === 'completed' ? '<p style="color:#4caf50;font-size:12px;font-weight:700;margin-top:8px;">Completee !</p>' :
+             status === 'not_started' ? '<button onclick="startQuest(' + quest.id + ', this)" class="button small secondary" style="margin-top:10px;">Commencer</button>' :
+             '<p style="color:#615dfa;font-size:12px;font-weight:700;margin-top:8px;">En cours...</p>') +
+          '</div>' +
+        '</div>'
+      );
+    });
+
+    // Re-init liquidify for quest covers
+    if (typeof liquidify === 'function') liquidify();
+  } catch (e) {
+    grid.innerHTML = '<div class="widget-box" style="padding:40px;text-align:center;width:100%;"><p style="color:#9aa4bf;font-size:16px;">Impossible de charger les quetes</p></div>';
+  }
 });
+
+async function startQuest(questId, btn) {
+  btn.disabled = true;
+  btn.textContent = 'Chargement...';
+  try {
+    await apiRequest('/api/quests/' + questId + '/start', { method: 'POST' });
+    btn.outerHTML = '<p style="color:#615dfa;font-size:12px;font-weight:700;margin-top:8px;">En cours...</p>';
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Commencer';
+    alert(e.message || 'Erreur');
+  }
+}
 </script>
 </body>
 </html>
