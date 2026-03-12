@@ -79,6 +79,33 @@ app.use('/api/quests', require('./routes/quests'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api/streams', require('./routes/streams'));
 
+// Temporary seed endpoint - creates demo account and syncs DB
+const bcrypt = require('bcryptjs');
+app.get('/api/seed-demo', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    const existing = await User.findOne({ where: { email: 'demo@adopteunartiste.com' } });
+    if (existing) {
+      return res.json({ message: 'Demo user already exists', username: existing.username });
+    }
+    const password_hash = await bcrypt.hash('Demo1234!', 10);
+    const user = await User.create({
+      username: 'demo_artiste',
+      email: 'demo@adopteunartiste.com',
+      password_hash,
+      role: 'artist',
+      display_name: 'Artiste Demo',
+      bio: 'Compte de demonstration - Bienvenue sur Adopte un Artiste !',
+      level: 5,
+      xp: 450,
+      is_online: false
+    });
+    res.json({ message: 'Demo account created', username: user.username, email: user.email });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) {
