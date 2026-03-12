@@ -135,7 +135,7 @@ app.get('*', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Erreur serveur interne' });
+  res.status(500).json({ error: 'Erreur serveur interne', detail: err.message });
 });
 
 module.exports = app;
