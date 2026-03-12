@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/styles.min.css">
   <!-- favicon -->
   <link rel="icon" href="img/favicon.ico">
-  <title>Vikinger | Home</title>
+  <title>Adopte un Artiste | Accueil</title>
 </head>
 <body>
 
@@ -32,15 +32,15 @@
       <!-- /LOGO -->
 
       <!-- LANDING INFO PRETITLE -->
-      <h2 class="landing-info-pretitle">Welcome to</h2>
+      <h2 class="landing-info-pretitle">Bienvenue sur</h2>
       <!-- /LANDING INFO PRETITLE -->
 
       <!-- LANDING INFO TITLE -->
-      <h1 class="landing-info-title">Vikinger</h1>
+      <h1 class="landing-info-title">Adopte un Artiste</h1>
       <!-- /LANDING INFO TITLE -->
 
       <!-- LANDING INFO TEXT -->
-      <p class="landing-info-text">The next generation social network &amp; community! Connect with your friends and play with our quests and badges gamification system!</p>
+      <p class="landing-info-text">La plateforme communautaire pour artistes ! Connectez-vous, partagez vos oeuvres, trouvez des mecenes et rejoignez une communaute creative et passionnee.</p>
       <!-- /LANDING INFO TEXT -->
 
       <!-- TAB SWITCH -->
@@ -66,41 +66,49 @@
         <!-- /FORM BOX DECORATION -->
 
         <!-- FORM BOX TITLE -->
-        <h2 class="form-box-title">Account Login</h2>
+        <h2 class="form-box-title">Connexion</h2>
         <!-- /FORM BOX TITLE -->
     
         <!-- FORM -->
-        <form class="form">
+        <form class="form" id="login-form">
+          <!-- LOGIN ERROR MESSAGE -->
+          <div id="login-error" class="form-row" style="display:none;">
+            <div class="form-item">
+              <p style="color:#e74c3c;font-size:12px;text-align:center;" id="login-error-text"></p>
+            </div>
+          </div>
+          <!-- /LOGIN ERROR MESSAGE -->
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="login-username">Username or Email</label>
-                <input type="text" id="login-username" name="login_username">
+                <label for="login-username">Nom d'utilisateur ou Email</label>
+                <input type="text" id="login-username" name="login_username" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" name="login_password">
+                <label for="login-password">Mot de passe</label>
+                <input type="password" id="login-password" name="login_password" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row space-between">
             <!-- FORM ITEM -->
@@ -117,28 +125,28 @@
                   <!-- /ICON CROSS -->
                 </div>
                 <!-- /CHECKBOX BOX -->
-                <label for="login-remember">Remember Me</label>
+                <label for="login-remember">Se souvenir de moi</label>
               </div>
               <!-- /CHECKBOX WRAP -->
             </div>
             <!-- /FORM ITEM -->
-    
+
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM LINK -->
-              <a class="form-link" href="#">Forgot Password?</a>
+              <a class="form-link" href="#">Mot de passe oublie ?</a>
               <!-- /FORM LINK -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- BUTTON -->
-              <button class="button medium secondary">Login to your Account!</button>
+              <button type="submit" class="button medium secondary">Se connecter</button>
               <!-- /BUTTON -->
             </div>
             <!-- /FORM ITEM -->
@@ -204,71 +212,79 @@
         <!-- /FORM BOX DECORATION -->
 
         <!-- FORM BOX TITLE -->
-        <h2 class="form-box-title">Create your Account!</h2>
+        <h2 class="form-box-title">Creer votre compte !</h2>
         <!-- /FORM BOX TITLE -->
-    
+
         <!-- FORM -->
-        <form class="form">
+        <form class="form" id="register-form">
+          <!-- REGISTER ERROR MESSAGE -->
+          <div id="register-error" class="form-row" style="display:none;">
+            <div class="form-item">
+              <p style="color:#e74c3c;font-size:12px;text-align:center;" id="register-error-text"></p>
+            </div>
+          </div>
+          <!-- /REGISTER ERROR MESSAGE -->
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="register-email">Your Email</label>
-                <input type="text" id="register-email" name="register_email">
+                <label for="register-email">Votre Email</label>
+                <input type="email" id="register-email" name="register_email" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="register-username">Username</label>
-                <input type="text" id="register-username" name="register_username">
+                <label for="register-username">Nom d'utilisateur</label>
+                <input type="text" id="register-username" name="register_username" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="register-password">Password</label>
-                <input type="password" id="register-password" name="register_password">
+                <label for="register-password">Mot de passe</label>
+                <input type="password" id="register-password" name="register_password" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- FORM INPUT -->
               <div class="form-input">
-                <label for="register-password-repeat">Repeat Password</label>
-                <input type="password" id="register-password-repeat" name="register_password_repeat">
+                <label for="register-password-repeat">Confirmer le mot de passe</label>
+                <input type="password" id="register-password-repeat" name="register_password_repeat" required>
               </div>
               <!-- /FORM INPUT -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
@@ -285,20 +301,20 @@
                   <!-- /ICON CROSS -->
                 </div>
                 <!-- /CHECKBOX BOX -->
-                <label for="register-newsletter">Send me news and updates via email</label>
+                <label for="register-newsletter">Recevoir les actualites par email</label>
               </div>
               <!-- /CHECKBOX WRAP -->
             </div>
             <!-- /FORM ITEM -->
           </div>
           <!-- /FORM ROW -->
-    
+
           <!-- FORM ROW -->
           <div class="form-row">
             <!-- FORM ITEM -->
             <div class="form-item">
               <!-- BUTTON -->
-              <button class="button medium primary">Register Now!</button>
+              <button type="submit" class="button medium primary">S'inscrire maintenant !</button>
               <!-- /BUTTON -->
             </div>
             <!-- /FORM ITEM -->
@@ -306,9 +322,9 @@
           <!-- /FORM ROW -->
         </form>
         <!-- /FORM -->
-    
+
         <!-- FORM TEXT -->
-        <p class="form-text">You'll receive a confirmation email in your inbox with a link to activate your account. If you have any problems, <a href="#">contact us</a>!</p>
+        <p class="form-text">Votre compte sera active immediatement. Si vous avez des problemes, <a href="#">contactez-nous</a> !</p>
         <!-- /FORM TEXT -->
       </div>
       <!-- /FORM BOX -->
@@ -327,5 +343,96 @@
 <script src="js/landing/landing.tabs.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- Auth API -->
+<script src="js/api/auth.js"></script>
+<!-- Login/Register handlers -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Redirect if already logged in
+  AuthAPI.checkAuth();
+
+  // Login form
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const loginErrorText = document.getElementById('login-error-text');
+
+  loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    loginError.style.display = 'none';
+
+    const login = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!login || !password) {
+      loginErrorText.textContent = 'Veuillez remplir tous les champs';
+      loginError.style.display = 'block';
+      return;
+    }
+
+    try {
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Connexion...';
+
+      await AuthAPI.login(login, password);
+      window.location.href = '/overview.html';
+    } catch (error) {
+      loginErrorText.textContent = error.message;
+      loginError.style.display = 'block';
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Se connecter';
+    }
+  });
+
+  // Register form
+  const registerForm = document.getElementById('register-form');
+  const registerError = document.getElementById('register-error');
+  const registerErrorText = document.getElementById('register-error-text');
+
+  registerForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    registerError.style.display = 'none';
+
+    const email = document.getElementById('register-email').value.trim();
+    const username = document.getElementById('register-username').value.trim();
+    const password = document.getElementById('register-password').value;
+    const passwordRepeat = document.getElementById('register-password-repeat').value;
+
+    if (!email || !username || !password || !passwordRepeat) {
+      registerErrorText.textContent = 'Veuillez remplir tous les champs';
+      registerError.style.display = 'block';
+      return;
+    }
+
+    if (password !== passwordRepeat) {
+      registerErrorText.textContent = 'Les mots de passe ne correspondent pas';
+      registerError.style.display = 'block';
+      return;
+    }
+
+    if (password.length < 6) {
+      registerErrorText.textContent = 'Le mot de passe doit contenir au moins 6 caracteres';
+      registerError.style.display = 'block';
+      return;
+    }
+
+    try {
+      const submitBtn = registerForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Inscription...';
+
+      await AuthAPI.register(username, email, password);
+      window.location.href = '/overview.html';
+    } catch (error) {
+      registerErrorText.textContent = error.message;
+      registerError.style.display = 'block';
+      const submitBtn = registerForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = false;
+      submitBtn.textContent = "S'inscrire maintenant !";
+    }
+  });
+});
+</script>
 </body>
 </html>
