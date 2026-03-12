@@ -107,6 +107,34 @@ router.post('/logout', authenticate, async (req, res) => {
   }
 });
 
+// PUT /api/auth/password - Change password
+router.put('/password', authenticate, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Mot de passe actuel et nouveau requis' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir au moins 6 caracteres' });
+    }
+
+    const isValid = await req.user.validatePassword(currentPassword);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Mot de passe actuel incorrect' });
+    }
+
+    req.user.password_hash = newPassword;
+    await req.user.save();
+
+    res.json({ message: 'Mot de passe modifie avec succes' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // GET /api/auth/me
 router.get('/me', authenticate, async (req, res) => {
   res.json({ user: req.user.toJSON() });

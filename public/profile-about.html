@@ -5504,10 +5504,72 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
+<script src="js/api/friends.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+
+  try {
+    var profileData = await UsersAPI.getProfile(userId);
+    var user = profileData.user;
+    var stats = profileData.stats || {};
+
+    // Update profile header
+    var headerNames = document.querySelectorAll('.user-short-description-title a, .profile-header-info-name');
+    headerNames.forEach(function(el) { el.textContent = user.display_name || user.username; });
+
+    // Update avatar data-src
+    var headerAvatars = document.querySelectorAll('.profile-header .user-avatar-content [data-src]');
+    headerAvatars.forEach(function(el) { el.setAttribute('data-src', user.avatar_url || 'img/avatar/01.jpg'); });
+
+    // Update cover
+    var coverImg = document.querySelector('.profile-header-cover img');
+    if (coverImg) coverImg.src = user.cover_url || 'img/cover/01.jpg';
+
+    // Update level badge
+    var badgeTexts = document.querySelectorAll('.profile-header .user-avatar-badge-text');
+    badgeTexts.forEach(function(el) { el.textContent = user.level || 1; });
+
+    // Update About Me bio
+    var bioEl = document.querySelector('.widget-box-content .paragraph');
+    if (bioEl) bioEl.textContent = user.bio || 'Pas de description.';
+
+    // Update information lines
+    var infoLines = document.querySelectorAll('.information-line');
+    if (infoLines.length >= 5) {
+      // Joined
+      infoLines[0].querySelector('.information-line-text').textContent = new Date(user.createdAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+      // City
+      infoLines[1].querySelector('.information-line-text').textContent = user.city || 'Non renseigne';
+      // Country
+      infoLines[2].querySelector('.information-line-text').textContent = user.country || 'Non renseigne';
+      // Age/Role
+      infoLines[3].querySelector('.information-line-title').textContent = 'Role';
+      infoLines[3].querySelector('.information-line-text').textContent = user.role === 'artist' ? 'Artiste' : user.role === 'admin' ? 'Admin' : 'Membre';
+      // Web/Level
+      infoLines[4].querySelector('.information-line-title').textContent = 'Niveau';
+      infoLines[4].querySelector('.information-line-text').innerHTML = 'Niveau ' + (user.level || 1) + ' - ' + (user.xp || 0) + ' XP';
+    }
+
+    // Update stat blocks
+    var statTitles = document.querySelectorAll('.stat-block-text');
+    if (statTitles.length >= 2) {
+      statTitles[0].textContent = (stats.postCount || 0) + ' Posts';
+      statTitles[1].textContent = (stats.friendCount || 0) + ' Amis';
+    }
+
+    // Update progress arc subtitle
+    var arcSubtitle = document.querySelector('.progress-arc-summary-subtitle');
+    if (arcSubtitle) arcSubtitle.textContent = user.display_name || user.username;
+  } catch (e) {
+    console.error('Error loading profile:', e);
+  }
 });
 </script>
 </body>

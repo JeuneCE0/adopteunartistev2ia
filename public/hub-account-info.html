@@ -4513,7 +4513,7 @@
           <!-- SIDEBAR BOX FOOTER -->
           <div class="sidebar-box-footer">
             <!-- BUTTON -->
-            <p class="button primary">Save Changes!</p>
+            <p class="button primary" id="save-account-btn">Sauvegarder</p>
             <!-- /BUTTON -->
 
             <!-- BUTTON -->
@@ -4833,10 +4833,46 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var user = PageInit.user;
+  var emailInput = document.getElementById('account-email');
+  var usernameInput = document.getElementById('account-url-username');
+
+  // Pre-fill
+  if (emailInput) { emailInput.value = user.email || ''; emailInput.closest('.form-input').classList.add('active'); }
+  if (usernameInput) { usernameInput.value = user.username || ''; usernameInput.closest('.form-input').classList.add('active'); }
+
+  // Update label
+  var urlLabel = document.querySelector('label[for="account-url-username"]');
+  if (urlLabel) urlLabel.textContent = 'Nom d\'utilisateur';
+
+  document.getElementById('save-account-btn').addEventListener('click', async function() {
+    var btn = this;
+    btn.textContent = 'Sauvegarde...';
+    btn.style.pointerEvents = 'none';
+
+    try {
+      var updates = {};
+      if (emailInput && emailInput.value.trim()) updates.display_name = user.display_name;
+      await UsersAPI.updateProfile(user.id, updates);
+      btn.textContent = 'Sauvegarde !';
+      btn.style.background = '#4caf50';
+    } catch (err) {
+      btn.textContent = err.message || 'Erreur';
+      btn.style.background = '#e74c3c';
+    }
+    setTimeout(function() {
+      btn.textContent = 'Sauvegarder';
+      btn.style.background = '';
+      btn.style.pointerEvents = '';
+    }, 2000);
+  });
 });
 </script>
 </body>

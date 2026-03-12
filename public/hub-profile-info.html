@@ -4513,7 +4513,7 @@
           <!-- SIDEBAR BOX FOOTER -->
           <div class="sidebar-box-footer">
             <!-- BUTTON -->
-            <p class="button primary">Save Changes!</p>
+            <p class="button primary" id="save-profile-btn">Sauvegarder</p>
             <!-- /BUTTON -->
 
             <!-- BUTTON -->
@@ -4626,39 +4626,25 @@
             </div>
             <!-- /USER PREVIEW -->
 
-            <!-- UPLOAD BOX -->
-            <div class="upload-box">
-              <!-- UPLOAD BOX ICON -->
+            <!-- UPLOAD BOX - AVATAR -->
+            <div class="upload-box" id="avatar-upload-box" style="cursor:pointer;" onclick="document.getElementById('avatar-input').click();">
+              <input type="file" id="avatar-input" accept="image/*" style="display:none;">
               <svg class="upload-box-icon icon-members">
                 <use xlink:href="#svg-members"></use>
               </svg>
-              <!-- /UPLOAD BOX ICON -->
-          
-              <!-- UPLOAD BOX TITLE -->
-              <p class="upload-box-title">Change Avatar</p>
-              <!-- /UPLOAD BOX TITLE -->
-          
-              <!-- UPLOAD BOX TEXT -->
-              <p class="upload-box-text">110x110px size minimum</p>
-              <!-- /UPLOAD BOX TEXT -->
+              <p class="upload-box-title">Changer l'avatar</p>
+              <p class="upload-box-text" id="avatar-status">110x110px minimum</p>
             </div>
             <!-- /UPLOAD BOX -->
-          
-            <!-- UPLOAD BOX -->
-            <div class="upload-box">
-              <!-- UPLOAD BOX ICON -->
+
+            <!-- UPLOAD BOX - COVER -->
+            <div class="upload-box" id="cover-upload-box" style="cursor:pointer;" onclick="document.getElementById('cover-input').click();">
+              <input type="file" id="cover-input" accept="image/*" style="display:none;">
               <svg class="upload-box-icon icon-photos">
                 <use xlink:href="#svg-photos"></use>
               </svg>
-              <!-- /UPLOAD BOX ICON -->
-          
-              <!-- UPLOAD BOX TITLE -->
-              <p class="upload-box-title">Change Cover</p>
-              <!-- /UPLOAD BOX TITLE -->
-          
-              <!-- UPLOAD BOX TEXT -->
-              <p class="upload-box-text">1184x300px size minimum</p>
-              <!-- /UPLOAD BOX TEXT -->
+              <p class="upload-box-title">Changer la couverture</p>
+              <p class="upload-box-text" id="cover-status">1184x300px minimum</p>
             </div>
             <!-- /UPLOAD BOX -->
           </div>
@@ -4736,39 +4722,23 @@
                 <div class="form-row split">
                   <!-- FORM ITEM -->
                   <div class="form-item">
-                    <!-- FORM SELECT -->
-                    <div class="form-select">
-                      <label for="profile-country">Country</label>
-                      <select id="profile-country" name="profile_country">
-                        <option value="0">Select your Country</option>
-                        <option value="1" selected>United States</option>
-                      </select>
-                      <!-- FORM SELECT ICON -->
-                      <svg class="form-select-icon icon-small-arrow">
-                        <use xlink:href="#svg-small-arrow"></use>
-                      </svg>
-                      <!-- /FORM SELECT ICON -->
+                    <!-- FORM INPUT -->
+                    <div class="form-input small">
+                      <label for="profile-country">Pays</label>
+                      <input type="text" id="profile-country" name="profile_country" placeholder="Votre pays">
                     </div>
-                    <!-- /FORM SELECT -->
+                    <!-- /FORM INPUT -->
                   </div>
                   <!-- /FORM ITEM -->
 
                   <!-- FORM ITEM -->
                   <div class="form-item">
-                    <!-- FORM SELECT -->
-                    <div class="form-select">
-                      <label for="profile-city">City</label>
-                      <select id="profile-city" name="profile_city">
-                        <option value="0">Select your City</option>
-                        <option value="1" selected>New York</option>
-                      </select>
-                      <!-- FORM SELECT ICON -->
-                      <svg class="form-select-icon icon-small-arrow">
-                        <use xlink:href="#svg-small-arrow"></use>
-                      </svg>
-                      <!-- /FORM SELECT ICON -->
+                    <!-- FORM INPUT -->
+                    <div class="form-input small">
+                      <label for="profile-city">Ville</label>
+                      <input type="text" id="profile-city" name="profile_city" placeholder="Votre ville">
                     </div>
-                    <!-- /FORM SELECT -->
+                    <!-- /FORM INPUT -->
                   </div>
                   <!-- /FORM ITEM -->
                 </div>
@@ -5348,10 +5318,109 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var user = PageInit.user;
+
+  // Pre-fill form with current data
+  var nameInput = document.getElementById('profile-name');
+  var taglineInput = document.getElementById('profile-tagline');
+  var descInput = document.getElementById('profile-description');
+  var emailInput = document.getElementById('profile-public-email');
+  var websiteInput = document.getElementById('profile-public-website');
+  var countryInput = document.getElementById('profile-country');
+  var cityInput = document.getElementById('profile-city');
+  var birthdayInput = document.getElementById('profile-birthday');
+
+  if (nameInput) { nameInput.value = user.display_name || ''; nameInput.closest('.form-input').classList.add('active'); }
+  if (taglineInput) { taglineInput.value = user.bio ? user.bio.substring(0, 50) : ''; if (taglineInput.value) taglineInput.closest('.form-input').classList.add('active'); }
+  if (descInput) descInput.value = user.bio || '';
+  if (emailInput) { emailInput.value = user.email || ''; emailInput.closest('.form-input').classList.add('active'); }
+  if (websiteInput && user.website) { websiteInput.value = user.website; websiteInput.closest('.form-input').classList.add('active'); }
+  if (countryInput && user.country) { countryInput.value = user.country; countryInput.closest('.form-input').classList.add('active'); }
+  if (cityInput && user.city) { cityInput.value = user.city; cityInput.closest('.form-input').classList.add('active'); }
+  if (birthdayInput && user.birthday) { birthdayInput.value = user.birthday; birthdayInput.closest('.form-input').classList.add('active'); }
+
+  // Avatar upload
+  document.getElementById('avatar-input').addEventListener('change', async function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var status = document.getElementById('avatar-status');
+    status.textContent = 'Upload en cours...';
+    status.style.color = '#615dfa';
+    try {
+      var data = await UsersAPI.uploadAvatar(user.id, file);
+      status.textContent = 'Avatar mis a jour !';
+      status.style.color = '#4caf50';
+      user.avatar_url = data.avatar_url;
+      AuthAPI.setUser(user);
+    } catch (err) {
+      status.textContent = err.message || 'Erreur upload';
+      status.style.color = '#e74c3c';
+    }
+  });
+
+  // Cover upload
+  document.getElementById('cover-input').addEventListener('change', async function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var status = document.getElementById('cover-status');
+    status.textContent = 'Upload en cours...';
+    status.style.color = '#615dfa';
+    try {
+      var data = await UsersAPI.uploadCover(user.id, file);
+      status.textContent = 'Couverture mise a jour !';
+      status.style.color = '#4caf50';
+      user.cover_url = data.cover_url;
+      AuthAPI.setUser(user);
+    } catch (err) {
+      status.textContent = err.message || 'Erreur upload';
+      status.style.color = '#e74c3c';
+    }
+  });
+
+  // Save profile
+  document.getElementById('save-profile-btn').addEventListener('click', async function() {
+    var btn = this;
+    btn.textContent = 'Sauvegarde...';
+    btn.style.pointerEvents = 'none';
+
+    var updates = {
+      display_name: nameInput ? nameInput.value.trim() : undefined,
+      bio: descInput ? descInput.value.trim() : undefined,
+      country: countryInput ? countryInput.value.trim() : undefined,
+      city: cityInput ? cityInput.value.trim() : undefined,
+      birthday: birthdayInput ? birthdayInput.value.trim() : undefined
+    };
+
+    // Remove undefined values
+    Object.keys(updates).forEach(function(k) { if (!updates[k]) delete updates[k]; });
+
+    try {
+      var data = await UsersAPI.updateProfile(user.id, updates);
+      btn.textContent = 'Sauvegarde !';
+      btn.style.background = '#4caf50';
+      AuthAPI.setUser(data.user);
+      setTimeout(function() {
+        btn.textContent = 'Sauvegarder';
+        btn.style.background = '';
+        btn.style.pointerEvents = '';
+      }, 2000);
+    } catch (err) {
+      btn.textContent = err.message || 'Erreur';
+      btn.style.background = '#e74c3c';
+      setTimeout(function() {
+        btn.textContent = 'Sauvegarder';
+        btn.style.background = '';
+        btn.style.pointerEvents = '';
+      }, 2000);
+    }
+  });
 });
 </script>
 </body>
