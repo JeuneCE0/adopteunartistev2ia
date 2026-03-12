@@ -105,13 +105,12 @@ app.get('/api/seed-demo', async (req, res) => {
     const User = require('./models/User');
     const existing = await User.findOne({ where: { email: 'demo@adopteunartiste.com' } });
     if (existing) {
-      return res.json({ message: 'Demo user already exists', username: existing.username });
+      await existing.destroy();
     }
-    const password_hash = await bcrypt.hash('Demo1234!', 10);
     const user = await User.create({
       username: 'demoartiste',
       email: 'demo@adopteunartiste.com',
-      password_hash,
+      password_hash: 'Demo1234!',
       role: 'artist',
       display_name: 'Artiste Demo',
       bio: 'Compte de demonstration - Bienvenue sur Adopte un Artiste !',
