@@ -110,7 +110,7 @@ app.get('/api/seed-demo', async (req, res) => {
     const user = await User.create({
       username: 'demoartiste',
       email: 'demo@adopteunartiste.com',
-      password_hash: 'Demo1234!',
+      password_hash: 'Demo12345',
       role: 'artist',
       display_name: 'Artiste Demo',
       bio: 'Compte de demonstration - Bienvenue sur Adopte un Artiste !',
