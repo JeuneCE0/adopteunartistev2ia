@@ -13,6 +13,11 @@ const GroupMember = require('./GroupMember');
 const ForumCategory = require('./ForumCategory');
 const ForumThread = require('./ForumThread');
 const ForumReply = require('./ForumReply');
+const Product = require('./Product');
+const CartItem = require('./CartItem');
+const Order = require('./Order');
+const OrderItem = require('./OrderItem');
+const Review = require('./Review');
 
 // User <-> Post
 User.hasMany(Post, { foreignKey: 'user_id', as: 'posts' });
@@ -73,6 +78,24 @@ ForumReply.belongsTo(ForumThread, { foreignKey: 'thread_id' });
 ForumReply.belongsTo(User, { foreignKey: 'user_id', as: 'author' });
 User.hasMany(ForumReply, { foreignKey: 'user_id', as: 'forumReplies' });
 
+// Product / Marketplace
+User.hasMany(Product, { foreignKey: 'seller_id', as: 'products' });
+Product.belongsTo(User, { foreignKey: 'seller_id', as: 'seller' });
+User.hasMany(CartItem, { foreignKey: 'user_id', as: 'cartItems' });
+CartItem.belongsTo(User, { foreignKey: 'user_id' });
+CartItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+Product.hasMany(CartItem, { foreignKey: 'product_id' });
+User.hasMany(Order, { foreignKey: 'buyer_id', as: 'orders' });
+Order.belongsTo(User, { foreignKey: 'buyer_id', as: 'buyer' });
+Order.hasMany(OrderItem, { foreignKey: 'order_id', as: 'items' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
+OrderItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+Product.hasMany(OrderItem, { foreignKey: 'product_id' });
+User.hasMany(Review, { foreignKey: 'user_id', as: 'reviews' });
+Review.belongsTo(User, { foreignKey: 'user_id', as: 'reviewer' });
+Product.hasMany(Review, { foreignKey: 'product_id', as: 'reviews' });
+Review.belongsTo(Product, { foreignKey: 'product_id' });
+
 const db = {
   sequelize,
   User,
@@ -88,7 +111,12 @@ const db = {
   GroupMember,
   ForumCategory,
   ForumThread,
-  ForumReply
+  ForumReply,
+  Product,
+  CartItem,
+  Order,
+  OrderItem,
+  Review
 };
 
 module.exports = db;

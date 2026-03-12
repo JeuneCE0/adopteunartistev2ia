@@ -51,6 +51,8 @@ app.use('/api/messages', require('./routes/messages'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/groups', require('./routes/groups'));
 app.use('/api/forums', require('./routes/forums'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/orders', require('./routes/orders'));
 
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {
