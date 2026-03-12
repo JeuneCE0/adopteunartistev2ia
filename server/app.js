@@ -50,14 +50,33 @@ app.use(async (req, res, next) => {
   if (!dbReady && req.path.startsWith('/api/')) {
     try {
       await sequelize.authenticate();
-      await sequelize.sync();
       dbReady = true;
     } catch (error) {
-      console.error('Database initialization failed:', error);
-      return res.status(503).json({ error: 'Service temporarily unavailable' });
+      console.error('Database connection failed:', error.message);
+      return res.status(503).json({ error: 'Database unavailable', detail: error.message });
     }
   }
   next();
+});
+
+// Health check
+app.get('/api/health', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ status: 'ok', db: 'connected', env: process.env.NODE_ENV, hasDbUrl: !!process.env.DATABASE_URL });
+  } catch (error) {
+    res.status(500).json({ status: 'error', db: error.message, hasDbUrl: !!process.env.DATABASE_URL });
+  }
+});
+
+// Setup endpoint - sync all tables (run once)
+app.get('/api/setup', async (req, res) => {
+  try {
+    await sequelize.sync();
+    res.json({ message: 'All tables synced successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // API Routes
