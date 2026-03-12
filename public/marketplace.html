@@ -5780,5 +5780,43 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  try {
+    var data = await ProductsAPI.list({ page: 1, limit: 12 });
+    if (data.products && data.products.length > 0) {
+      var grid = document.querySelector('.grid.grid-3-3-3-3');
+      if (grid) {
+        grid.innerHTML = '';
+        data.products.forEach(function(product) {
+          grid.insertAdjacentHTML('beforeend', createProductHTML(product));
+        });
+      }
+    }
+  } catch(e) { console.log('Products load:', e.message); }
+
+  function createProductHTML(product) {
+    var seller = product.seller || {};
+    return '<div class="product-preview">' +
+      '<a href="marketplace-product.html?id=' + product.id + '">' +
+      '<figure class="product-preview-image liquid">' +
+      '<img src="' + (product.images && product.images[0] ? product.images[0] : 'img/marketplace/items/01.jpg') + '" alt="' + product.title + '">' +
+      '</figure></a>' +
+      '<div class="product-preview-info">' +
+      '<p class="text-sticker"><span class="highlighted">' + (product.price || 0) + ' EUR</span></p>' +
+      '<p class="product-preview-title"><a href="marketplace-product.html?id=' + product.id + '">' + product.title + '</a></p>' +
+      '<p class="product-preview-category">' + (product.category || 'Art') + '</p>' +
+      '<p class="product-preview-text">' + (product.description || '').substring(0, 80) + '</p>' +
+      '</div></div>';
+    }
+});
+</script>
 </body>
 </html>

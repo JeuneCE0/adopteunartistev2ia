@@ -11301,5 +11301,68 @@
 <script src="js/widget/twitter.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
+<script src="js/api/friends.js"></script>
+<script src="js/api/interactions.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  var isOwnProfile = (String(userId) === String(PageInit.user.id));
+
+  try {
+    var profile = await UsersAPI.getProfile(userId);
+
+    // Update profile header name
+    var titles = document.querySelectorAll('.profile-header-info .user-short-description-title a');
+    titles.forEach(function(el) { el.textContent = profile.display_name || profile.username; });
+
+    // Update profile header text
+    var texts = document.querySelectorAll('.profile-header-info .user-short-description-text a');
+    texts.forEach(function(el) { el.textContent = '@' + profile.username; });
+
+    // Update level badge
+    var badges = document.querySelectorAll('.profile-header .user-avatar-badge-text');
+    badges.forEach(function(el) { el.textContent = profile.level || 1; });
+
+    // Update cover image
+    if (profile.cover_url) {
+      var cover = document.querySelector('.profile-header-cover img');
+      if (cover) cover.src = profile.cover_url;
+    }
+
+    // Update avatar data-src
+    if (profile.avatar_url) {
+      var avatars = document.querySelectorAll('.profile-header .hexagon-image-100-110, .profile-header .hexagon-image-82-90');
+      avatars.forEach(function(el) { el.setAttribute('data-src', profile.avatar_url); });
+    }
+  } catch(e) { console.error('Profile load error:', e); }
+
+  // Load user posts
+  try {
+    var postsData = await PostsAPI.getUserPosts(userId, 1, 10);
+    // Find the timeline post area - replace first hardcoded post
+    var timeline = document.querySelector('.grid.grid-9-3, .grid.grid-8-4');
+    if (timeline && postsData.posts && postsData.posts.length > 0) {
+      var postContainer = document.createElement('div');
+      postContainer.id = 'profile-feed';
+      postsData.posts.forEach(function(post) {
+        postContainer.insertAdjacentHTML('beforeend', PageInit.createPostHTML(post));
+      });
+      // Insert after the quick post form or at the beginning
+      var firstColumn = timeline.querySelector('.grid-column');
+      if (firstColumn) {
+        firstColumn.insertAdjacentElement('afterbegin', postContainer);
+      }
+    }
+  } catch(e) { console.log('Posts load:', e.message); }
+});
+</script>
 </body>
 </html>

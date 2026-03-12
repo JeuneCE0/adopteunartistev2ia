@@ -6985,6 +6985,40 @@
 <!-- global.maps -->
 <script src="js/global/global.maps.js"></script>
 <!-- google maps api -->
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/events.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  try {
+    var data = await EventsAPI.list({ page: 1, limit: 12 });
+    if (data.events && data.events.length > 0) {
+      var grid = document.querySelector('.grid.grid-4-4-4');
+      if (grid) {
+        grid.innerHTML = '';
+        data.events.forEach(function(evt) {
+          var date = new Date(evt.start_date || evt.startDate);
+          var month = date.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+          var day = date.getDate();
+          grid.insertAdjacentHTML('beforeend',
+            '<div class="event-preview">' +
+            '<figure class="event-preview-cover liquid" style="background:url(\'' + (evt.image_url || 'img/cover/40.jpg') + '\') center/cover;"></figure>' +
+            '<div class="event-preview-info">' +
+            '<div class="date-sticker"><p class="date-sticker-day">' + day + '</p><p class="date-sticker-month">' + month + '</p></div>' +
+            '<p class="event-preview-title">' + evt.title + '</p>' +
+            '<p class="event-preview-text">' + (evt.location || 'En ligne') + '</p>' +
+            '</div></div>'
+          );
+        });
+      }
+    }
+  } catch(e) { console.log('Events load:', e.message); }
+});
+</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
 </body>
 </html>

@@ -8951,5 +8951,47 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/posts.js"></script>
+<script src="js/api/friends.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var user = PageInit.user;
+
+  // Update stats boxes with user data
+  var profileViews = document.querySelector('.stat-profile-views .stats-box-value');
+  if (profileViews) profileViews.textContent = '0';
+
+  var postsCreated = document.querySelector('.stat-posts-created .stats-box-value');
+  if (postsCreated) postsCreated.textContent = '0';
+
+  var reactionsReceived = document.querySelector('.stat-reactions .stats-box-value');
+  if (reactionsReceived) reactionsReceived.textContent = '0';
+
+  var friendsCount = document.querySelector('.stat-friends .stats-box-value');
+  if (friendsCount) friendsCount.textContent = '0';
+
+  // Load real data
+  try {
+    var friendsData = await FriendsAPI.getMyFriends(1, 1);
+    if (friendsCount && friendsData.total !== undefined) {
+      friendsCount.textContent = friendsData.total;
+    }
+  } catch(e) { console.log('Friends stats:', e.message); }
+
+  try {
+    var postsData = await PostsAPI.getUserPosts(user.id, 1, 1);
+    if (postsCreated && postsData.total !== undefined) {
+      postsCreated.textContent = postsData.total;
+    }
+  } catch(e) { console.log('Posts stats:', e.message); }
+});
+</script>
 </body>
 </html>

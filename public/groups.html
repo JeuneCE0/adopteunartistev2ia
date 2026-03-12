@@ -6173,5 +6173,37 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/groups.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  try {
+    var data = await GroupsAPI.list(1, 12);
+    if (data.groups && data.groups.length > 0) {
+      var grid = document.querySelector('.grid.grid-4-4-4');
+      if (grid) {
+        grid.innerHTML = '';
+        data.groups.forEach(function(group) {
+          grid.insertAdjacentHTML('beforeend',
+            '<div class="user-preview">' +
+            '<figure class="user-preview-cover liquid" style="background:url(\'' + (group.cover_url || 'img/cover/29.jpg') + '\') center/cover;"></figure>' +
+            '<div class="user-preview-info">' +
+            '<p class="user-short-description-title"><a href="group-timeline.html?id=' + group.id + '">' + group.name + '</a></p>' +
+            '<p class="user-short-description-text">' + (group.type || 'public') + '</p>' +
+            '<div class="user-preview-actions" style="margin-top:12px;">' +
+            '<a class="button secondary full" href="group-timeline.html?id=' + group.id + '">Voir le groupe</a>' +
+            '</div></div></div>'
+          );
+        });
+      }
+    }
+  } catch(e) { console.log('Groups load:', e.message); }
+});
+</script>
 </body>
 </html>

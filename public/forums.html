@@ -4791,5 +4791,44 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/forums.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  try {
+    var data = await ForumsAPI.getCategories();
+    var categories = data.categories || data;
+    if (categories && categories.length > 0) {
+      var table = document.querySelector('.table-body');
+      if (table) {
+        table.innerHTML = '';
+        categories.forEach(function(cat) {
+          table.insertAdjacentHTML('beforeend',
+            '<div class="table-row medium">' +
+            '<div class="table-column">' +
+            '<div class="forum-category">' +
+            '<a href="forums-category.html?id=' + cat.id + '">' +
+            '<p class="forum-category-title">' + cat.name + '</p>' +
+            '<p class="forum-category-text">' + (cat.description || '') + '</p>' +
+            '</a></div></div>' +
+            '<div class="table-column centered padded-medium">' +
+            '<p class="table-title">' + (cat.thread_count || 0) + '</p>' +
+            '<p class="table-text">discussions</p></div>' +
+            '<div class="table-column centered padded-medium">' +
+            '<p class="table-title">' + (cat.reply_count || 0) + '</p>' +
+            '<p class="table-text">reponses</p></div>' +
+            '</div>'
+          );
+        });
+      }
+    }
+  } catch(e) { console.log('Forums load:', e.message); }
+});
+</script>
 </body>
 </html>
