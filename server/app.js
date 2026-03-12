@@ -109,7 +109,7 @@ app.get('/api/seed-demo', async (req, res) => {
     }
     const password_hash = await bcrypt.hash('Demo1234!', 10);
     const user = await User.create({
-      username: 'demo_artiste',
+      username: 'demoartiste',
       email: 'demo@adopteunartiste.com',
       password_hash,
       role: 'artist',
