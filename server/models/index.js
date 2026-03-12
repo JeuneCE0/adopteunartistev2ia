@@ -8,6 +8,11 @@ const Conversation = require('./Conversation');
 const ConversationParticipant = require('./ConversationParticipant');
 const Message = require('./Message');
 const Notification = require('./Notification');
+const Group = require('./Group');
+const GroupMember = require('./GroupMember');
+const ForumCategory = require('./ForumCategory');
+const ForumThread = require('./ForumThread');
+const ForumReply = require('./ForumReply');
 
 // User <-> Post
 User.hasMany(Post, { foreignKey: 'user_id', as: 'posts' });
@@ -50,6 +55,24 @@ Message.belongsTo(User, { foreignKey: 'sender_id', as: 'sender' });
 User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
 Notification.belongsTo(User, { foreignKey: 'user_id' });
 
+// Group <-> User (many-to-many through GroupMember)
+Group.belongsToMany(User, { through: GroupMember, foreignKey: 'group_id', otherKey: 'user_id', as: 'members' });
+User.belongsToMany(Group, { through: GroupMember, foreignKey: 'user_id', otherKey: 'group_id', as: 'groups' });
+Group.belongsTo(User, { foreignKey: 'creator_id', as: 'creator' });
+User.hasMany(Group, { foreignKey: 'creator_id', as: 'createdGroups' });
+GroupMember.belongsTo(User, { foreignKey: 'user_id' });
+GroupMember.belongsTo(Group, { foreignKey: 'group_id' });
+
+// Forum
+ForumCategory.hasMany(ForumThread, { foreignKey: 'category_id', as: 'threads' });
+ForumThread.belongsTo(ForumCategory, { foreignKey: 'category_id', as: 'category' });
+ForumThread.belongsTo(User, { foreignKey: 'user_id', as: 'author' });
+User.hasMany(ForumThread, { foreignKey: 'user_id', as: 'threads' });
+ForumThread.hasMany(ForumReply, { foreignKey: 'thread_id', as: 'replies' });
+ForumReply.belongsTo(ForumThread, { foreignKey: 'thread_id' });
+ForumReply.belongsTo(User, { foreignKey: 'user_id', as: 'author' });
+User.hasMany(ForumReply, { foreignKey: 'user_id', as: 'forumReplies' });
+
 const db = {
   sequelize,
   User,
@@ -60,7 +83,12 @@ const db = {
   Conversation,
   ConversationParticipant,
   Message,
-  Notification
+  Notification,
+  Group,
+  GroupMember,
+  ForumCategory,
+  ForumThread,
+  ForumReply
 };
 
 module.exports = db;
