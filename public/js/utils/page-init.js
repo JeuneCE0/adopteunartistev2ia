@@ -82,7 +82,7 @@ const PageInit = {
     return date.toLocaleDateString('fr-FR');
   },
 
-  // Create a post HTML element
+  // Create a post HTML element with reactions and comments
   createPostHTML(post) {
     const author = post.author || {};
     const timeAgo = this.timeAgo(post.created_at || post.createdAt);
@@ -90,10 +90,16 @@ const PageInit = {
       ? `<div class="post-image" style="margin-top:12px;"><img src="${post.image_url}" alt="Post image" style="width:100%;border-radius:12px;max-height:400px;object-fit:cover;"></div>`
       : '';
 
+    const reactionCount = post.reactionCount || 0;
+    const commentCount = post.commentCount || 0;
+    const userReaction = post.userReaction || null;
+    const likeActiveClass = userReaction ? 'active' : '';
+    const likeActiveStyle = userReaction ? 'color:#615dfa;' : '';
+
     return `
-    <div class="widget-box no-padding" data-post-id="${post.id}">
+    <div class="widget-box no-padding" data-post-id="${post.id}" style="margin-bottom:16px;">
       <div class="widget-box-status">
-        <div class="widget-box-status-content">
+        <div class="widget-box-status-content" style="padding:24px;">
           <div class="user-status">
             <a class="user-status-avatar" href="profile-timeline.html?id=${author.id}">
               <div class="user-avatar small no-outline">
@@ -109,8 +115,29 @@ const PageInit = {
             </p>
             <p class="user-status-text small">${timeAgo}</p>
           </div>
-          <p class="widget-box-status-text">${post.content || ''}</p>
+          <p class="widget-box-status-text" style="margin-top:12px;">${post.content || ''}</p>
           ${imageHTML}
+
+          <!-- REACTIONS BAR -->
+          <div class="content-actions" style="margin-top:16px;display:flex;align-items:center;gap:16px;padding-top:12px;border-top:1px solid #eaeaf5;">
+            <div class="content-action" style="cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="PostInteractions.react(${post.id}, this)">
+              <span class="reaction-icon ${likeActiveClass}" style="font-size:16px;${likeActiveStyle}">&#x2764;</span>
+              <span class="reaction-count" style="font-size:13px;color:#9aa4bf;">${reactionCount}</span>
+            </div>
+            <div class="content-action" style="cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="PostInteractions.toggleComments(${post.id}, this)">
+              <span style="font-size:16px;">&#x1F4AC;</span>
+              <span class="comment-count" style="font-size:13px;color:#9aa4bf;">${commentCount}</span>
+            </div>
+          </div>
+
+          <!-- COMMENTS SECTION (hidden by default) -->
+          <div class="post-comments-section" id="comments-${post.id}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #eaeaf5;">
+            <div class="comments-list" id="comments-list-${post.id}"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Ecrire un commentaire..." style="flex:1;padding:8px 12px;border:1px solid #dedeea;border-radius:12px;font-size:13px;outline:none;">
+              <button onclick="PostInteractions.addComment(${post.id})" style="padding:8px 16px;background:#615dfa;color:#fff;border:none;border-radius:12px;font-size:13px;cursor:pointer;">Envoyer</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>`;

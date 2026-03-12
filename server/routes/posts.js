@@ -1,6 +1,7 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const { User, Post, Friendship } = require('../models');
+const { User, Post, Friendship, Reaction, Comment } = require('../models');
+const sequelize = require('../config/database');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
@@ -75,8 +76,10 @@ router.get('/feed', authenticate, async (req, res) => {
       distinct: true
     });
 
+    const enrichedPosts = await enrichPosts(posts, req.user.id);
+
     res.json({
-      posts,
+      posts: enrichedPosts,
       total: count,
       page: parseInt(page),
       totalPages: Math.ceil(count / limit)
@@ -194,5 +197,23 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
+
+// Helper to enrich posts with reaction/comment counts
+async function enrichPosts(posts, userId) {
+  return Promise.all(posts.map(async (post) => {
+    const postJson = post.toJSON ? post.toJSON() : post;
+
+    const reactionCount = await Reaction.count({ where: { post_id: postJson.id } });
+    const commentCount = await Comment.count({ where: { post_id: postJson.id } });
+
+    let userReaction = null;
+    if (userId) {
+      const reaction = await Reaction.findOne({ where: { post_id: postJson.id, user_id: userId } });
+      if (reaction) userReaction = reaction.type;
+    }
+
+    return { ...postJson, reactionCount, commentCount, userReaction };
+  }));
+}
 
 module.exports = router;
