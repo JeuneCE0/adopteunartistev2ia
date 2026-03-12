@@ -28,7 +28,7 @@ app.use(cors());
 // Rate limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1000,
   message: { error: 'Trop de requetes, reessayez plus tard' }
 });
 app.use('/api/', apiLimiter);
@@ -43,6 +43,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/posts', require('./routes/posts'));
+app.use('/api/friends', require('./routes/friends'));
 
 // Catch-all: serve index.html for non-API routes that don't match a static file
 app.get('*', (req, res, next) => {

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/vendor/tiny-slider.css">
   <!-- favicon -->
   <link rel="icon" href="img/favicon.ico">
-  <title>Vikinger | Members</title>
+  <title>Adopte un Artiste | Membres</title>
 </head>
 <body>
 
@@ -4388,7 +4388,15 @@
     </div>
     <!-- /SECTION FILTERS BAR -->
 
-    <!-- GRID -->
+    <!-- DYNAMIC MEMBERS GRID -->
+    <div class="grid grid-4-4-4 centered" id="members-grid"></div>
+    <!-- LOAD MORE -->
+    <div id="members-load-more" style="text-align:center;padding:20px;display:none;">
+      <p class="button small secondary" id="members-load-more-btn">Charger plus</p>
+    </div>
+
+    <!-- STATIC GRID (hidden) -->
+    <div style="display:none;">
     <div class="grid grid-4-4-4 centered">
       <!-- USER PREVIEW -->
       <div class="user-preview">
@@ -6805,5 +6813,63 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/utils/page-init.js"></script>
+<!-- Members logic -->
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var initialized = await PageInit.init();
+  if (!initialized) return;
+
+  var currentPage = 1;
+  var membersGrid = document.getElementById('members-grid');
+  var loadMoreContainer = document.getElementById('members-load-more');
+  var loadMoreBtn = document.getElementById('members-load-more-btn');
+
+  async function loadMembers(page, append) {
+    try {
+      var data = await UsersAPI.listMembers({ page: page, limit: 12 });
+      if (!append) membersGrid.innerHTML = '';
+
+      data.users.forEach(function(user) {
+        membersGrid.insertAdjacentHTML('beforeend', PageInit.createMemberHTML(user));
+      });
+
+      loadMoreContainer.style.display = data.page < data.totalPages ? 'block' : 'none';
+    } catch (error) {
+      console.error('Load members error:', error);
+    }
+  }
+
+  loadMembers(1, false);
+
+  loadMoreBtn.addEventListener('click', function() {
+    currentPage++;
+    loadMembers(currentPage, true);
+  });
+
+  // Search
+  var searchInput = document.getElementById('friends-search');
+  if (searchInput) {
+    var searchForm = searchInput.closest('form');
+    if (searchForm) {
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        currentPage = 1;
+        membersGrid.innerHTML = '';
+        // Override listMembers with search
+        UsersAPI.listMembers({ search: searchInput.value, page: 1, limit: 12 }).then(function(data) {
+          data.users.forEach(function(user) {
+            membersGrid.insertAdjacentHTML('beforeend', PageInit.createMemberHTML(user));
+          });
+          loadMoreContainer.style.display = data.page < data.totalPages ? 'block' : 'none';
+        });
+      });
+    }
+  }
+});
+</script>
 </body>
 </html>

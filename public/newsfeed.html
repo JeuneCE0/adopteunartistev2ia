@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/vendor/tiny-slider.css">
   <!-- favicon -->
   <link rel="icon" href="img/favicon.ico">
-  <title>Vikinger | Newsfeed</title>
+  <title>Adopte un Artiste | Fil d'actualite</title>
 </head>
 <body>
 
@@ -5287,7 +5287,7 @@
                 <div class="form-item">
                   <!-- FORM TEXTAREA -->
                   <div class="form-textarea">
-                    <textarea id="quick-post-text" name="quick-post-text" placeholder="Hi Marina! Share your post here..."></textarea>
+                    <textarea id="quick-post-text" name="quick-post-text" placeholder="Partagez quelque chose avec la communaute..."></textarea>
                     <!-- FORM TEXTAREA LIMIT TEXT -->
                     <p class="form-textarea-limit-text">998/1000</p>
                     <!-- /FORM TEXTAREA LIMIT TEXT -->
@@ -5341,12 +5341,14 @@
               <!-- QUICK POST FOOTER ACTIONS -->
               <div class="quick-post-footer-actions">
                 <!-- BUTTON -->
-                <p class="button small void">Discard</p>
+                <p class="button small void" id="quick-post-discard">Annuler</p>
                 <!-- /BUTTON -->
-      
+
                 <!-- BUTTON -->
-                <p class="button small secondary">Post</p>
+                <p class="button small secondary" id="quick-post-submit">Publier</p>
                 <!-- /BUTTON -->
+                <!-- HIDDEN FILE INPUT -->
+                <input type="file" id="quick-post-image" accept="image/*" style="display:none;">
               </div>
               <!-- /QUICK POST FOOTER ACTIONS -->
           </div>
@@ -5398,6 +5400,18 @@
           <!-- /SIMPLE TAB ITEM -->
         </div>
         <!-- /SIMPLE TAB ITEMS -->
+
+        <!-- DYNAMIC FEED CONTAINER -->
+        <div id="dynamic-feed"></div>
+        <!-- /DYNAMIC FEED CONTAINER -->
+
+        <!-- LOAD MORE BUTTON -->
+        <div id="feed-load-more" style="text-align:center;padding:20px;display:none;">
+          <p class="button small secondary" id="load-more-btn">Charger plus</p>
+        </div>
+
+        <!-- STATIC POSTS BELOW (hidden when dynamic feed loads) -->
+        <div id="static-posts" style="display:none;">
 
         <!-- WIDGET BOX -->
         <div class="widget-box no-padding">
@@ -13206,5 +13220,95 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
+<script src="js/api/friends.js"></script>
+<script src="js/utils/page-init.js"></script>
+<!-- Newsfeed logic -->
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  const initialized = await PageInit.init();
+  if (!initialized) return;
+
+  let currentPage = 1;
+  const feedContainer = document.getElementById('dynamic-feed');
+  const loadMoreContainer = document.getElementById('feed-load-more');
+  const loadMoreBtn = document.getElementById('load-more-btn');
+
+  // Load feed
+  async function loadFeed(page, append) {
+    try {
+      const data = await PostsAPI.getFeed(page, 10);
+      if (!append) feedContainer.innerHTML = '';
+
+      if (data.posts.length === 0 && page === 1) {
+        feedContainer.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun post pour le moment. Publiez quelque chose !</p></div>';
+        loadMoreContainer.style.display = 'none';
+        return;
+      }
+
+      data.posts.forEach(function(post) {
+        feedContainer.insertAdjacentHTML('beforeend', PageInit.createPostHTML(post));
+      });
+
+      loadMoreContainer.style.display = data.page < data.totalPages ? 'block' : 'none';
+    } catch (error) {
+      console.error('Feed error:', error);
+    }
+  }
+
+  loadFeed(1, false);
+
+  // Load more
+  loadMoreBtn.addEventListener('click', function() {
+    currentPage++;
+    loadFeed(currentPage, true);
+  });
+
+  // Quick post submit
+  var quickPostSubmit = document.getElementById('quick-post-submit');
+  var quickPostText = document.getElementById('quick-post-text');
+  var quickPostImage = document.getElementById('quick-post-image');
+  var quickPostDiscard = document.getElementById('quick-post-discard');
+
+  // Photo button triggers file input
+  var photoBtn = document.querySelector('.quick-post-footer-action[data-title="Insert Photo"]');
+  if (photoBtn) {
+    photoBtn.addEventListener('click', function() {
+      quickPostImage.click();
+    });
+  }
+
+  quickPostSubmit.addEventListener('click', async function() {
+    var content = quickPostText.value.trim();
+    var imageFile = quickPostImage.files[0] || null;
+
+    if (!content && !imageFile) return;
+
+    quickPostSubmit.textContent = 'Publication...';
+    quickPostSubmit.style.pointerEvents = 'none';
+
+    try {
+      var data = await PostsAPI.create(content, 'public', imageFile);
+      quickPostText.value = '';
+      quickPostImage.value = '';
+      feedContainer.insertAdjacentHTML('afterbegin', PageInit.createPostHTML(data.post));
+      quickPostSubmit.textContent = 'Publier';
+      quickPostSubmit.style.pointerEvents = 'auto';
+    } catch (error) {
+      alert(error.message);
+      quickPostSubmit.textContent = 'Publier';
+      quickPostSubmit.style.pointerEvents = 'auto';
+    }
+  });
+
+  quickPostDiscard.addEventListener('click', function() {
+    quickPostText.value = '';
+    quickPostImage.value = '';
+  });
+});
+</script>
 </body>
 </html>
