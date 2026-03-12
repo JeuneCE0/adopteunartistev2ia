@@ -1,3 +1,4 @@
+require('pg');
 const { Sequelize } = require('sequelize');
 
 module.exports = async (req, res) => {
@@ -16,8 +17,9 @@ module.exports = async (req, res) => {
     });
 
     await sequelize.authenticate();
+    await sequelize.close();
     res.json({ status: 'db connected', dbUrl: dbUrl.replace(/:[^:@]+@/, ':***@') });
   } catch (error) {
-    res.status(500).json({ error: error.message, stack: error.stack?.split('\n').slice(0, 3) });
+    res.status(500).json({ error: error.message });
   }
 };
