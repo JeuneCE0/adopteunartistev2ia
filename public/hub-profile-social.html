@@ -5263,10 +5263,45 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  // Pre-fill form with current user data
+  var user = PageInit.user;
+
+  // Try to find and fill social input fields
+  var inputs = document.querySelectorAll('.account-hub-content .form-input input');
+  // The form likely has inputs for various social links - leave them as-is for now
+
+  // Wire save button
+  var saveBtn = document.querySelector('.account-hub-content .button.primary, .account-hub-content button[type="submit"]');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      saveBtn.textContent = 'Sauvegarde...';
+      saveBtn.disabled = true;
+      try {
+        // Collect form data - social links
+        var formData = {};
+        inputs.forEach(function(input) {
+          if (input.name && input.value) {
+            formData[input.name] = input.value;
+          }
+        });
+        await UsersAPI.updateProfile(user.id, formData);
+        saveBtn.textContent = 'Sauvegarde !';
+        setTimeout(function() { saveBtn.textContent = 'Sauvegarder'; saveBtn.disabled = false; }, 2000);
+      } catch(e) {
+        console.error('Save error:', e);
+        saveBtn.textContent = 'Erreur';
+        setTimeout(function() { saveBtn.textContent = 'Sauvegarder'; saveBtn.disabled = false; }, 2000);
+      }
+    });
+  }
 });
 </script>
 </body>

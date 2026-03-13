@@ -230,6 +230,159 @@ const PageInit = {
     </div>`;
   },
 
+  // Load profile header for profile-* pages
+  async loadProfileHeader(userId) {
+    try {
+      var profile = await UsersAPI.getProfile(userId);
+
+      // Update profile header name
+      var titles = document.querySelectorAll('.profile-header-info .user-short-description-title a');
+      titles.forEach(function(el) { el.textContent = profile.display_name || profile.username; });
+
+      // Update profile header text
+      var texts = document.querySelectorAll('.profile-header-info .user-short-description-text a');
+      texts.forEach(function(el) { el.textContent = '@' + profile.username; });
+
+      // Update level badge
+      var badges = document.querySelectorAll('.profile-header .user-avatar-badge-text');
+      badges.forEach(function(el) { el.textContent = profile.level || 1; });
+
+      // Update cover image
+      if (profile.cover_url) {
+        var cover = document.querySelector('.profile-header-cover img');
+        if (cover) cover.src = profile.cover_url;
+      }
+
+      // Update avatar data-src
+      if (profile.avatar_url) {
+        var avatars = document.querySelectorAll('.profile-header .hexagon-image-100-110, .profile-header .hexagon-image-82-90');
+        avatars.forEach(function(el) { el.setAttribute('data-src', profile.avatar_url); });
+      }
+
+      // Update profile stats
+      var statTitles = document.querySelectorAll('.profile-header .user-stat-title');
+      if (statTitles.length >= 2) {
+        statTitles[0].textContent = profile.postCount || 0;
+        statTitles[1].textContent = profile.friendCount || 0;
+      }
+
+      // Update nav links to include user id
+      var profileLinks = document.querySelectorAll('.profile-header a.profile-header-stat-link, .section-navigation a');
+      profileLinks.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href && href.indexOf('profile-') === 0 && href.indexOf('?') === -1) {
+          link.href = href + '?id=' + userId;
+        }
+      });
+
+      return profile;
+    } catch(e) {
+      console.error('Profile header load error:', e);
+      return null;
+    }
+  },
+
+  // Load group header for group-* pages
+  async loadGroupHeader(groupId) {
+    try {
+      var group = await GroupsAPI.get(groupId);
+      var g = group.group || group;
+
+      // Update group name
+      var titles = document.querySelectorAll('.profile-header-info .user-short-description-title a, .profile-header-info .user-short-description-title');
+      titles.forEach(function(el) {
+        if (el.tagName === 'A') el.textContent = g.name;
+        else if (!el.querySelector('a')) el.textContent = g.name;
+      });
+
+      // Update group description
+      var texts = document.querySelectorAll('.profile-header-info .user-short-description-text');
+      texts.forEach(function(el) { el.textContent = g.description || g.type || 'Groupe'; });
+
+      // Update cover image
+      if (g.cover_url) {
+        var cover = document.querySelector('.profile-header-cover img');
+        if (cover) cover.src = g.cover_url;
+      }
+
+      // Update avatar
+      if (g.avatar_url) {
+        var avatars = document.querySelectorAll('.profile-header .hexagon-image-100-110, .profile-header .hexagon-image-82-90, .profile-header .hexagon-image-124-136');
+        avatars.forEach(function(el) { el.setAttribute('data-src', g.avatar_url); });
+      }
+
+      // Update member count stat
+      var statTitles = document.querySelectorAll('.profile-header .user-stat-title');
+      if (statTitles.length >= 1) {
+        statTitles[0].textContent = g.memberCount || 0;
+      }
+
+      return g;
+    } catch(e) {
+      console.error('Group header load error:', e);
+      return null;
+    }
+  },
+
+  // Create group card HTML
+  createGroupCardHTML(group) {
+    return '<div class="user-preview">' +
+      '<a href="group-timeline.html?id=' + group.id + '">' +
+      '<figure class="user-preview-cover" style="background:url(\'' + (group.cover_url || 'img/cover/29.jpg') + '\') center/cover;height:80px;border-radius:12px 12px 0 0;"></figure>' +
+      '</a>' +
+      '<div class="user-preview-info" style="padding:12px;text-align:center;">' +
+        '<a href="group-timeline.html?id=' + group.id + '">' +
+          '<div style="width:60px;height:60px;border-radius:50%;overflow:hidden;margin:-42px auto 8px;border:3px solid #fff;background:#f5f5fa;">' +
+            '<img src="' + (group.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+          '</div>' +
+        '</a>' +
+        '<a href="group-timeline.html?id=' + group.id + '">' +
+          '<p style="font-weight:700;font-size:14px;">' + group.name + '</p>' +
+        '</a>' +
+        '<p style="font-size:12px;color:#9aa4bf;">' + (group.type || 'public') + '</p>' +
+        '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + (group.memberCount || 0) + ' membres</p>' +
+      '</div>' +
+    '</div>';
+  },
+
+  // Create photo card HTML
+  createPhotoHTML(post) {
+    return '<div class="photo-preview">' +
+      '<figure class="photo-preview-image liquid">' +
+        '<img src="' + post.image_url + '" alt="photo" style="width:100%;height:200px;object-fit:cover;border-radius:12px;">' +
+      '</figure>' +
+      '<div class="photo-preview-info" style="padding:8px;">' +
+        '<p style="font-size:12px;color:#9aa4bf;">' + this.timeAgo(post.created_at || post.createdAt) + '</p>' +
+      '</div>' +
+    '</div>';
+  },
+
+  // Create friend request HTML
+  createRequestHTML(request) {
+    var user = request.requester || request.sender || request;
+    return '<div class="notification-box" data-request-id="' + request.id + '">' +
+      '<div class="user-status request">' +
+        '<a class="user-status-avatar" href="profile-timeline.html?id=' + user.id + '">' +
+          '<div class="user-avatar small no-outline"><div class="user-avatar-content">' +
+            '<div style="width:30px;height:30px;border-radius:50%;overflow:hidden;">' +
+              '<img src="' + (user.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+            '</div>' +
+          '</div></div>' +
+        '</a>' +
+        '<p class="user-status-title"><a class="bold" href="profile-timeline.html?id=' + user.id + '">' + (user.display_name || user.username) + '</a></p>' +
+        '<p class="user-status-text small-space">Demande d\'ami</p>' +
+        '<div class="action-request-list">' +
+          '<div class="action-request accept" style="cursor:pointer;" data-request-id="' + request.id + '">' +
+            '<svg class="action-request-icon icon-add-friend"><use xlink:href="#svg-add-friend"></use></svg>' +
+          '</div>' +
+          '<div class="action-request decline" style="cursor:pointer;" data-request-id="' + request.id + '">' +
+            '<svg class="action-request-icon icon-remove-friend"><use xlink:href="#svg-remove-friend"></use></svg>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  },
+
   // Create member card HTML
   createMemberHTML(user) {
     return `

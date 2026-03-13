@@ -6654,10 +6654,101 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var productId = PageInit.getUrlParam('id');
+  if (!productId) {
+    document.querySelector('.content-grid').innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#9aa4bf;font-size:16px;">Produit non trouve</p><a href="marketplace.html" class="button secondary" style="margin-top:12px;">Retour au marketplace</a></div>';
+    return;
+  }
+
+  try {
+    var data = await ProductsAPI.get(productId);
+    var product = data.product || data;
+
+    // Update section title
+    var sectionTitle = document.querySelector('.section-title');
+    if (sectionTitle) sectionTitle.textContent = product.title || product.name;
+
+    // Update section pretitle
+    var pretitle = document.querySelector('.section-pretitle');
+    if (pretitle) pretitle.textContent = product.category || 'Marketplace';
+
+    // Update product images
+    var sliderItems = document.querySelectorAll('.product-box .slider-panel-slide figure img, .product-preview-image img');
+    if (sliderItems.length > 0 && product.image_url) {
+      sliderItems[0].src = product.image_url;
+    }
+
+    // Update description tab content
+    var tabContents = document.querySelectorAll('.tab-box-item-content');
+    if (tabContents.length > 0) {
+      var descTitle = tabContents[0].querySelector('.tab-box-item-title');
+      if (descTitle) descTitle.textContent = product.title || product.name;
+      var descPara = tabContents[0].querySelector('.tab-box-item-paragraph');
+      if (descPara) descPara.textContent = product.description || 'Aucune description';
+    }
+
+    // Update reviews tab
+    if (tabContents.length > 2 && product.reviews) {
+      var reviewsContainer = tabContents[2];
+      if (product.reviews.length > 0) {
+        var reviewHtml = '';
+        product.reviews.forEach(function(review) {
+          var reviewer = review.User || review.user || {};
+          reviewHtml += '<div style="padding:12px 0;border-bottom:1px solid #eaeaf5;">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+              '<img src="' + (reviewer.avatar_url || 'img/avatar/01.jpg') + '" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">' +
+              '<p style="font-weight:700;font-size:13px;">' + (reviewer.display_name || reviewer.username || 'Anonyme') + '</p>' +
+              '<span style="color:#9aa4bf;font-size:12px;">' + (review.rating || 0) + '/5</span>' +
+            '</div>' +
+            '<p style="font-size:13px;color:#3e3f5e;">' + (review.content || '') + '</p>' +
+          '</div>';
+        });
+        reviewsContainer.innerHTML = reviewHtml;
+      }
+    }
+
+    // Update sidebar price
+    var priceElements = document.querySelectorAll('.price-title, .sidebar-box .product-info-price');
+    priceElements.forEach(function(el) {
+      el.textContent = (product.price || 0) + ' EUR';
+    });
+
+    // Update seller info in sidebar
+    var seller = product.seller || product.User || {};
+    var sellerName = document.querySelector('.sidebar-box .user-short-description-title a, .sidebar-box .user-preview-title');
+    if (sellerName) {
+      sellerName.textContent = seller.display_name || seller.username || 'Vendeur';
+      if (sellerName.tagName === 'A') sellerName.href = 'profile-timeline.html?id=' + seller.id;
+    }
+
+    // Wire Add to Cart button
+    var buyBtn = document.querySelector('.button.primary, .sidebar-box .button');
+    if (buyBtn && buyBtn.textContent.toLowerCase().indexOf('add') > -1 || buyBtn && buyBtn.textContent.toLowerCase().indexOf('cart') > -1 || buyBtn && buyBtn.textContent.toLowerCase().indexOf('buy') > -1) {
+      buyBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        try {
+          await ProductsAPI.addToCart(productId);
+          buyBtn.textContent = 'Ajoute au panier !';
+          setTimeout(function() { buyBtn.textContent = 'Ajouter au panier'; }, 2000);
+        } catch(err) {
+          console.error('Cart error:', err);
+          buyBtn.textContent = 'Erreur';
+          setTimeout(function() { buyBtn.textContent = 'Ajouter au panier'; }, 2000);
+        }
+      });
+    }
+  } catch(e) {
+    console.error('Product load error:', e);
+    document.querySelector('.content-grid').innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#9aa4bf;font-size:16px;">Erreur de chargement du produit</p><a href="marketplace.html" class="button secondary" style="margin-top:12px;">Retour au marketplace</a></div>';
+  }
 });
 </script>
 </body>

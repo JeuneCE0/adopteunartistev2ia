@@ -50,6 +50,42 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
+// Get groups for a specific user
+router.get('/user/:userId', optionalAuth, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const offset = (page - 1) * limit;
+
+    const memberships = await GroupMember.findAndCountAll({
+      where: { user_id: userId },
+      include: [{
+        model: Group,
+        include: [{ model: User, as: 'creator', attributes: ['id', 'username', 'display_name', 'avatar_url'] }]
+      }],
+      limit,
+      offset,
+      order: [['created_at', 'DESC']]
+    });
+
+    const groups = await Promise.all(memberships.rows.map(async (m) => {
+      const g = m.Group.toJSON();
+      g.memberCount = await GroupMember.count({ where: { group_id: g.id } });
+      if (req.user) {
+        const membership = await GroupMember.findOne({ where: { group_id: g.id, user_id: req.user.id } });
+        g.isMember = !!membership;
+      }
+      return g;
+    }));
+
+    res.json({ groups, total: memberships.count, page, totalPages: Math.ceil(memberships.count / limit) });
+  } catch (error) {
+    console.error('Get user groups error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // Get group by ID
 router.get('/:id', optionalAuth, async (req, res) => {
   try {

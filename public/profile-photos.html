@@ -7037,10 +7037,39 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+
+  // Load profile header
+  await PageInit.loadProfileHeader(userId);
+
+  // Load posts and filter for photos
+  try {
+    var data = await PostsAPI.getUserPosts(userId, 1, 50);
+    var posts = (data.posts || []).filter(function(p) { return p.image_url; });
+
+    var grid = document.querySelector('.grid.grid-3-3-3-3.centered');
+    if (!grid) grid = document.querySelector('.grid.grid-4-4-4.centered');
+    if (grid) {
+      if (posts.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;"><p style="color:#9aa4bf;font-size:14px;">Pas encore de photos</p></div>';
+      } else {
+        grid.innerHTML = '';
+        posts.forEach(function(post) {
+          grid.insertAdjacentHTML('beforeend', PageInit.createPhotoHTML(post));
+        });
+      }
+    }
+  } catch(e) {
+    console.error('Photos load error:', e);
+  }
 });
 </script>
 </body>
