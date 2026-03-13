@@ -5709,10 +5709,28 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  await PageInit.loadProfileHeader(userId);
+  try {
+    var data = await PostsAPI.getUserPosts(userId, 1, 20);
+    var posts = (data.posts || []).filter(function(p) { return !p.image_url; });
+    var grid = document.querySelector('.grid.grid-1, .grid.grid-3-6-3 .grid-column:first-child, .post-peek-list');
+    if (grid) {
+      if (posts.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun article de blog</p></div>';
+      } else {
+        grid.innerHTML = '';
+        posts.forEach(function(post) { grid.insertAdjacentHTML('beforeend', PageInit.createPostHTML(post)); });
+      }
+    }
+  } catch(e) { console.error('Blog load error:', e); }
 });
 </script>
 </body>

@@ -5683,10 +5683,31 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/subscriptions.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var contentArea = document.querySelector('.account-hub-content .widget-box-content, .account-hub-content .table-body');
+  if (contentArea) {
+    try {
+      var data = await SubscriptionsAPI.getEarnings().catch(function() { return { earnings: [] }; });
+      var earnings = data.earnings || [];
+      if (earnings.length === 0) {
+        contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucune vente pour le moment</p></div>';
+      } else {
+        var html = '';
+        earnings.forEach(function(e) {
+          html += '<div style="padding:12px;border-bottom:1px solid #eaeaf5;display:flex;justify-content:space-between;">' +
+            '<p>' + PageInit.timeAgo(e.created_at || e.createdAt) + '</p>' +
+            '<p style="font-weight:700;color:#4caf50;">+' + (e.amount || 0) + ' EUR</p>' +
+          '</div>';
+        });
+        contentArea.innerHTML = html;
+      }
+    } catch(e) { contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucune donnee disponible</p></div>'; }
+  }
 });
 </script>
 </body>

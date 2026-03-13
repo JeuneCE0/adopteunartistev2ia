@@ -5547,12 +5547,72 @@
 <script src="js/form/form.utils.js"></script>
 <!-- SVG icons -->
 <script src="js/utils/svg-loader.js"></script>
-<!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/forums.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var threadId = PageInit.getUrlParam('id');
+  if (!threadId) return;
+  try {
+    var data = await ForumsAPI.getThread(threadId);
+    var thread = data.thread || data;
+    var replies = thread.replies || data.replies || [];
+    // Update title
+    var title = document.querySelector('.section-title');
+    if (title) title.textContent = thread.title;
+    var pretitle = document.querySelector('.section-pretitle');
+    if (pretitle) pretitle.textContent = 'Discussion';
+    // Find discussion content area
+    var contentArea = document.querySelector('.widget-box .widget-box-content, .forum-discussion-body, .discussion-content');
+    if (!contentArea) contentArea = document.querySelector('.grid-column:first-child .widget-box');
+    if (contentArea) {
+      var author = thread.author || thread.User || {};
+      var html = '<div style="padding:20px;border-bottom:2px solid #eaeaf5;margin-bottom:16px;">' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+          '<img src="' + (author.avatar_url || 'img/avatar/01.jpg') + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' +
+          '<div><p style="font-weight:700;">' + (author.display_name || author.username || 'Anonyme') + '</p>' +
+          '<p style="font-size:11px;color:#9aa4bf;">' + PageInit.timeAgo(thread.created_at || thread.createdAt) + '</p></div>' +
+        '</div>' +
+        '<p style="line-height:1.6;">' + (thread.content || thread.body || '') + '</p>' +
+      '</div>';
+      // Replies
+      replies.forEach(function(reply) {
+        var rAuthor = reply.author || reply.User || {};
+        html += '<div style="padding:16px;border-bottom:1px solid #eaeaf5;">' +
+          '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">' +
+            '<img src="' + (rAuthor.avatar_url || 'img/avatar/01.jpg') + '" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">' +
+            '<div><p style="font-weight:700;font-size:13px;">' + (rAuthor.display_name || rAuthor.username || 'Anonyme') + '</p>' +
+            '<p style="font-size:11px;color:#9aa4bf;">' + PageInit.timeAgo(reply.created_at || reply.createdAt) + '</p></div>' +
+          '</div>' +
+          '<p style="font-size:14px;line-height:1.5;">' + (reply.content || reply.body || '') + '</p>' +
+        '</div>';
+      });
+      // Reply form
+      html += '<div style="padding:20px;margin-top:16px;">' +
+        '<textarea id="reply-content" placeholder="Votre reponse..." style="width:100%;min-height:100px;padding:12px;border:1px solid #dedeea;border-radius:12px;font-size:14px;resize:vertical;"></textarea>' +
+        '<button id="submit-reply" class="button primary" style="margin-top:8px;">Repondre</button>' +
+      '</div>';
+      contentArea.innerHTML = html;
+      // Wire reply button
+      document.getElementById('submit-reply').addEventListener('click', async function() {
+        var content = document.getElementById('reply-content').value.trim();
+        if (!content) return;
+        try {
+          this.disabled = true;
+          this.textContent = 'Envoi...';
+          await ForumsAPI.reply(threadId, content);
+          location.reload();
+        } catch(e) {
+          console.error('Reply error:', e);
+          this.disabled = false;
+          this.textContent = 'Repondre';
+        }
+      });
+    }
+  } catch(e) { console.error('Discussion load error:', e); }
 });
 </script>
 </body>

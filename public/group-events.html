@@ -6006,12 +6006,47 @@
 <script src="js/global/global.maps.js"></script>
 <!-- google maps api -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-<!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/groups.js"></script>
+<script src="js/api/events.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var groupId = PageInit.getUrlParam('id');
+  if (!groupId) return;
+  await PageInit.loadGroupHeader(groupId);
+  // Update nav links
+  var navLinks = document.querySelectorAll('.section-navigation a, .profile-header a');
+  navLinks.forEach(function(link) {
+    var href = link.getAttribute('href');
+    if (href && href.indexOf('group-') === 0 && href.indexOf('?') === -1) {
+      link.href = href + '?id=' + groupId;
+    }
+  });
+  try {
+    var data = await EventsAPI.list({ group_id: groupId, limit: 20 });
+    var events = data.events || [];
+    var grid = document.querySelector('.grid.grid-4-4-4.centered, .grid.grid-3-3-3.centered, .event-list');
+    if (grid) {
+      if (events.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="color:#9aa4bf;">Aucun evenement pour ce groupe</p></div>';
+      } else {
+        grid.innerHTML = '';
+        events.forEach(function(evt) {
+          var d = new Date(evt.start_date || evt.date);
+          grid.insertAdjacentHTML('beforeend',
+            '<div class="event-preview" style="padding:16px;background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08);">' +
+              '<p style="font-weight:700;font-size:14px;">' + evt.title + '</p>' +
+              '<p style="font-size:12px;color:#615dfa;margin-top:4px;">' + d.toLocaleDateString('fr-FR') + '</p>' +
+              '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + (evt.location || '') + '</p>' +
+            '</div>');
+        });
+      }
+    }
+  } catch(e) { console.error('Group events error:', e); }
 });
 </script>
 </body>

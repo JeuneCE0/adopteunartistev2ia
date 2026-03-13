@@ -5269,10 +5269,26 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  await PageInit.loadProfileHeader(userId);
+  var streamArea = document.querySelector('.grid.grid-9-3 .grid-column:first-child, .stream-box');
+  if (streamArea) {
+    try {
+      var data = await apiRequest('/api/streams?user_id=' + userId + '&status=live');
+      var streams = data.streams || [];
+      if (streams.length === 0) {
+        streamArea.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun stream en cours</p></div>';
+      }
+    } catch(e) {
+      streamArea.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun stream en cours</p></div>';
+    }
+  }
 });
 </script>
 </body>

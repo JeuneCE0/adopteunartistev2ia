@@ -5596,10 +5596,19 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/forums.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  await PageInit.loadProfileHeader(userId);
+  var contentArea = document.querySelector('.grid.grid-9-3 .grid-column:first-child, .table-body, .forum-list');
+  if (contentArea) {
+    contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucune activite forum</p></div>';
+  }
 });
 </script>
 </body>

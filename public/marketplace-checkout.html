@@ -4678,10 +4678,31 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
+<script src="js/api/orders.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  // Wire checkout button
+  var checkoutBtn = document.querySelector('.button.primary, button[type="submit"]');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      this.disabled = true;
+      this.textContent = 'Traitement...';
+      try {
+        await OrdersAPI.checkout();
+        this.textContent = 'Commande passee !';
+        setTimeout(function() { window.location.href = 'marketplace.html'; }, 2000);
+      } catch(err) {
+        console.error('Checkout error:', err);
+        this.textContent = 'Erreur - Reessayer';
+        this.disabled = false;
+      }
+    });
+  }
 });
 </script>
 </body>

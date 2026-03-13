@@ -6767,12 +6767,36 @@
 <script src="js/global/global.maps.js"></script>
 <!-- google maps api -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-<!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/events.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  try {
+    var data = await EventsAPI.list({ limit: 20 });
+    var events = data.events || [];
+    // Filter for today's events
+    var today = new Date().toDateString();
+    var todayEvents = events.filter(function(e) { return new Date(e.start_date || e.date).toDateString() === today; });
+    var grid = document.querySelector('.calendar-events-list, .event-list, .grid');
+    if (grid) {
+      if (todayEvents.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun evenement aujourd\'hui</p><a href="events.html" class="button secondary" style="margin-top:12px;">Voir tous les evenements</a></div>';
+      } else {
+        var html = '';
+        todayEvents.forEach(function(evt) {
+          html += '<div class="event-preview" style="padding:16px;border-bottom:1px solid #eaeaf5;">' +
+            '<p style="font-weight:700;font-size:14px;">' + evt.title + '</p>' +
+            '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + (evt.location || '') + '</p>' +
+            '<p style="font-size:12px;color:#615dfa;margin-top:4px;">' + new Date(evt.start_date || evt.date).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) + '</p>' +
+          '</div>';
+        });
+        grid.innerHTML = html;
+      }
+    }
+  } catch(e) { console.error('Daily events error:', e); }
 });
 </script>
 </body>

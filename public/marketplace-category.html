@@ -6192,10 +6192,41 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var category = PageInit.getUrlParam('category') || '';
+  if (category) {
+    var title = document.querySelector('.section-title');
+    if (title) title.textContent = category;
+  }
+  try {
+    var params = { limit: 24 };
+    if (category) params.category = category;
+    var data = await ProductsAPI.list(params);
+    var products = data.products || [];
+    var grid = document.querySelector('.grid.grid-4-4-4.centered, .grid.grid-3-3-3.centered');
+    if (grid) {
+      if (products.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="color:#9aa4bf;">Aucun produit dans cette categorie</p></div>';
+      } else {
+        grid.innerHTML = '';
+        products.forEach(function(p) {
+          grid.insertAdjacentHTML('beforeend',
+            '<div class="product-preview">' +
+              '<a href="marketplace-product.html?id=' + p.id + '">' +
+                '<figure style="height:160px;overflow:hidden;border-radius:12px 12px 0 0;"><img src="' + (p.image_url || 'img/marketplace/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;"></figure>' +
+              '</a>' +
+              '<div style="padding:12px;"><a href="marketplace-product.html?id=' + p.id + '"><p style="font-weight:700;font-size:14px;">' + (p.title || p.name) + '</p></a>' +
+              '<p style="color:#615dfa;font-weight:700;margin-top:4px;">' + (p.price || 0) + ' EUR</p></div>' +
+            '</div>');
+        });
+      }
+    }
+  } catch(e) { console.error('Category products error:', e); }
 });
 </script>
 </body>

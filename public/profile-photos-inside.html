@@ -7466,10 +7466,30 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  await PageInit.loadProfileHeader(userId);
+  try {
+    var data = await PostsAPI.getUserPosts(userId, 1, 50);
+    var photos = (data.posts || []).filter(function(p) { return p.image_url; });
+    var grid = document.querySelector('.grid.grid-3-3-3-3.centered, .grid.grid-4-4-4.centered, .photo-list');
+    if (grid) {
+      if (photos.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="color:#9aa4bf;">Aucune photo</p></div>';
+      } else {
+        grid.innerHTML = '';
+        photos.forEach(function(post) {
+          grid.insertAdjacentHTML('beforeend', PageInit.createPhotoHTML(post));
+        });
+      }
+    }
+  } catch(e) { console.error('Photos inside load error:', e); }
 });
 </script>
 </body>

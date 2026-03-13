@@ -5121,10 +5121,35 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var userId = PageInit.getUrlParam('id') || PageInit.user.id;
+  await PageInit.loadProfileHeader(userId);
+  try {
+    var data = await apiRequest('/api/badges/user/' + userId).catch(function() { return { badges: [] }; });
+    var badges = data.badges || [];
+    var grid = document.querySelector('.grid.grid-4-4-4.centered, .grid.grid-3-3-3-3.centered, .badge-item-list');
+    if (grid) {
+      if (badges.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="color:#9aa4bf;">Aucun badge obtenu</p><a href="badges.html" class="button secondary" style="margin-top:12px;">Voir tous les badges</a></div>';
+      } else {
+        grid.innerHTML = '';
+        badges.forEach(function(b) {
+          var badge = b.Badge || b.badge || b;
+          grid.insertAdjacentHTML('beforeend',
+            '<div class="badge-item" style="text-align:center;padding:16px;">' +
+              '<img src="' + (badge.image_url || 'img/badge/completionist-s.png') + '" alt="' + badge.name + '" style="width:80px;height:80px;">' +
+              '<p style="font-weight:700;font-size:14px;margin-top:8px;">' + badge.name + '</p>' +
+              '<p style="font-size:12px;color:#9aa4bf;">' + (badge.description || '') + '</p>' +
+            '</div>');
+        });
+      }
+    }
+  } catch(e) { console.error('Badges load error:', e); }
 });
 </script>
 </body>

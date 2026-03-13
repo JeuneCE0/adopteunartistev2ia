@@ -5071,10 +5071,33 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/orders.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content, .account-hub-content .table-body');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (contentArea) {
+    try {
+      var data = await OrdersAPI.getMyOrders();
+      var orders = data.orders || [];
+      if (orders.length === 0) {
+        contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun telechargement</p></div>';
+      } else {
+        var html = '';
+        orders.forEach(function(o) {
+          html += '<div style="padding:16px;border-bottom:1px solid #eaeaf5;">' +
+            '<p style="font-weight:700;">Commande #' + o.id + '</p>' +
+            '<p style="font-size:12px;color:#9aa4bf;">' + PageInit.timeAgo(o.created_at || o.createdAt) + ' - ' + (o.status || 'en cours') + '</p>' +
+            '<p style="color:#615dfa;font-weight:700;">' + (o.total || 0) + ' EUR</p>' +
+          '</div>';
+        });
+        contentArea.innerHTML = html;
+      }
+    } catch(e) { contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucune donnee disponible</p></div>'; }
+  }
 });
 </script>
 </body>

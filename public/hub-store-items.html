@@ -5105,10 +5105,32 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  try {
+    var data = await ProductsAPI.getMyProducts();
+    var products = data.products || [];
+    var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content, .account-hub-content .table-body');
+    if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+    if (contentArea) {
+      if (products.length === 0) {
+        contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun produit</p></div>';
+      } else {
+        var html = '';
+        products.forEach(function(p) {
+          html += '<div style="padding:16px;border-bottom:1px solid #eaeaf5;display:flex;align-items:center;gap:16px;">' +
+            '<img src="' + (p.image_url || 'img/marketplace/01.jpg') + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">' +
+            '<div style="flex:1;"><a href="marketplace-product.html?id=' + p.id + '" style="font-weight:700;">' + (p.title || p.name) + '</a><p style="color:#615dfa;font-size:13px;">' + (p.price || 0) + ' EUR</p></div>' +
+          '</div>';
+        });
+        contentArea.innerHTML = html;
+      }
+    }
+  } catch(e) { console.error('Store items error:', e); }
 });
 </script>
 </body>

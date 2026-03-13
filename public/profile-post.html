@@ -6094,10 +6094,28 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/users.js"></script>
+<script src="js/api/posts.js"></script>
+<script src="js/api/interactions.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var postId = PageInit.getUrlParam('id');
+  if (!postId) return;
+  try {
+    var data = await PostsAPI.getPost(postId);
+    var post = data.post || data;
+    var userId = post.author ? post.author.id : PageInit.user.id;
+    await PageInit.loadProfileHeader(userId);
+    var postArea = document.querySelector('.grid.grid-9-3 .grid-column:first-child, .post-content');
+    if (postArea) {
+      postArea.innerHTML = PageInit.createPostHTML(post);
+    }
+  } catch(e) {
+    console.error('Post load error:', e);
+  }
 });
 </script>
 </body>

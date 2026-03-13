@@ -5513,10 +5513,26 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/products.js"></script>
+<script src="js/api/subscriptions.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
-  await PageInit.init();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  try {
+    var products = await ProductsAPI.getMyProducts().catch(function() { return { products: [] }; });
+    var prods = products.products || [];
+    var contentArea = document.querySelector('.account-hub-content .widget-box-content');
+    if (contentArea) {
+      contentArea.innerHTML = '<div style="padding:16px;">' +
+        '<div style="display:flex;gap:24px;flex-wrap:wrap;">' +
+          '<div style="flex:1;min-width:120px;padding:20px;background:#f5f5fa;border-radius:12px;text-align:center;"><p style="font-size:24px;font-weight:700;">' + prods.length + '</p><p style="color:#9aa4bf;font-size:13px;">Produits</p></div>' +
+          '<div style="flex:1;min-width:120px;padding:20px;background:#f5f5fa;border-radius:12px;text-align:center;"><p style="font-size:24px;font-weight:700;">' + (PageInit.user.role === 'artist' ? 'Artiste' : 'Membre') + '</p><p style="color:#9aa4bf;font-size:13px;">Statut</p></div>' +
+        '</div>' +
+      '</div>';
+    }
+  } catch(e) { console.error('Store account error:', e); }
 });
 </script>
 </body>
