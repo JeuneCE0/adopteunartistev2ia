@@ -4793,75 +4793,82 @@
       </div>
       <!-- /SECTION HEADER -->
 
-      <!-- SECTION FILTERS BAR -->
-      <div class="section-filters-bar centered v3">
+      <!-- STORE TOOLBAR -->
+      <div class="section-filters-bar centered v3" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <!-- FILTER TABS -->
         <div class="filter-tabs">
-          <!-- FILTER TAB -->
-          <div class="filter-tab">
-            <!-- FILTER TAB TEXT -->
-            <p class="filter-tab-text">Best Sellers</p>
-            <!-- /FILTER TAB TEXT -->
-          </div>
-          <!-- /FILTER TAB -->
-    
-          <!-- FILTER TAB -->
-          <div class="filter-tab active">
-            <!-- FILTER TAB TEXT -->
-            <p class="filter-tab-text">Recently Added</p>
-            <!-- /FILTER TAB TEXT -->
-          </div>
-          <!-- /FILTER TAB -->
-    
-          <!-- FILTER TAB -->
-          <div class="filter-tab">
-            <!-- FILTER TAB TEXT -->
-            <p class="filter-tab-text">Best Rated</p>
-            <!-- /FILTER TAB TEXT -->
-          </div>
-          <!-- /FILTER TAB -->
-    
-          <!-- FILTER TAB -->
-          <div class="filter-tab">
-            <!-- FILTER TAB TEXT -->
-            <p class="filter-tab-text">Lowest Price</p>
-            <!-- /FILTER TAB TEXT -->
-          </div>
-          <!-- /FILTER TAB -->
-    
-          <!-- FILTER TAB -->
-          <div class="filter-tab">
-            <!-- FILTER TAB TEXT -->
-            <p class="filter-tab-text">Highest Price</p>
-            <!-- /FILTER TAB TEXT -->
-          </div>
-          <!-- /FILTER TAB -->
+          <div class="filter-tab active" data-sort="recent"><p class="filter-tab-text">Recents</p></div>
+          <div class="filter-tab" data-sort="price-asc"><p class="filter-tab-text">Prix croissant</p></div>
+          <div class="filter-tab" data-sort="price-desc"><p class="filter-tab-text">Prix decroissant</p></div>
         </div>
         <!-- /FILTER TABS -->
-    
-        <!-- FORM -->
-        <form class="form">
-          <!-- FORM SELECT -->
-          <div class="form-select">
-            <label for="store-filter-category">Filter By</label>
-            <select id="store-filter-category" name="store_filter_category">
-              <option value="0">Best Sellers</option>
-              <option value="1">Recently Added</option>
-              <option value="2">Best Rated</option>
-              <option value="3">Lowest Price</option>
-              <option value="4">Highest Price</option>
-            </select>
-            <!-- FORM SELECT ICON -->
-            <svg class="form-select-icon icon-small-arrow">
-              <use xlink:href="#svg-small-arrow"></use>
-            </svg>
-            <!-- /FORM SELECT ICON -->
-          </div>
-          <!-- /FORM SELECT -->
-        </form>
-        <!-- /FORM -->
+
+        <!-- ADD PRODUCT BUTTON (owner only, injected by JS) -->
+        <div id="store-owner-actions" style="display:none;">
+          <button id="add-product-btn" class="button small secondary" style="white-space:nowrap;">+ Ajouter un produit</button>
+        </div>
       </div>
-      <!-- /SECTION FILTERS BAR -->
+      <!-- /STORE TOOLBAR -->
+
+      <!-- CREATE/EDIT PRODUCT MODAL -->
+      <div id="product-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;overflow-y:auto;">
+        <div style="max-width:560px;margin:60px auto;background:#fff;border-radius:16px;padding:32px;position:relative;">
+          <button id="product-modal-close" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#9aa4bf;">&times;</button>
+          <h3 id="product-modal-title" style="font-size:18px;font-weight:700;margin-bottom:24px;">Ajouter un produit</h3>
+          <form id="product-form">
+            <input type="hidden" id="pf-id" value="">
+            <div style="margin-bottom:16px;">
+              <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Titre *</label>
+              <input type="text" id="pf-title" required style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="Nom du produit ou service">
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Description</label>
+              <textarea id="pf-description" rows="4" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;resize:vertical;" placeholder="Decrivez votre produit ou service..."></textarea>
+            </div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;">
+              <div style="flex:1;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Prix (EUR) *</label>
+                <input type="number" id="pf-price" min="0" step="0.01" required style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="0.00">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Type</label>
+                <select id="pf-type" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;background:#fff;">
+                  <option value="digital">Digital</option>
+                  <option value="physical">Physique</option>
+                  <option value="service">Service</option>
+                  <option value="commission">Commission</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;">
+              <div style="flex:1;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Categorie</label>
+                <input type="text" id="pf-category" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="Art, Musique, Design...">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Stock</label>
+                <input type="number" id="pf-stock" min="-1" value="-1" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="-1 = illimite">
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Image du produit</label>
+              <input type="file" id="pf-image" accept="image/*" style="width:100%;padding:10px;border:1px solid #dedeea;border-radius:12px;font-size:13px;">
+              <div id="pf-image-preview" style="margin-top:8px;display:none;">
+                <img id="pf-image-preview-img" style="max-width:100%;max-height:160px;border-radius:8px;object-fit:cover;">
+              </div>
+            </div>
+            <div style="margin-bottom:20px;">
+              <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Lien de telechargement (produit digital)</label>
+              <input type="url" id="pf-download-url" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="https://...">
+            </div>
+            <div style="display:flex;gap:12px;">
+              <button type="submit" id="pf-submit" class="button medium primary" style="flex:1;">Publier le produit</button>
+              <button type="button" id="pf-cancel" class="button medium" style="flex:0;background:#eaeaf5;color:#3e3f5e;">Annuler</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- /CREATE/EDIT PRODUCT MODAL -->
 
       <!-- GRID -->
       <div class="grid grid-3-3-3-3 centered">
@@ -5476,34 +5483,231 @@
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
+
   var userId = PageInit.getUrlParam('id') || PageInit.user.id;
-  await PageInit.loadProfileHeader(userId);
-  try {
-    var data = await ProductsAPI.list({ seller_id: userId, limit: 20 });
-    var products = data.products || [];
-    var grid = document.querySelector('.grid.grid-4-4-4.centered, .grid.grid-3-3-3.centered');
-    if (grid) {
-      if (products.length === 0) {
-        grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="color:#9aa4bf;">Aucun produit en vente</p></div>';
+  var isOwner = (String(userId) === String(PageInit.user.id));
+  var profile = await PageInit.loadProfileHeader(userId);
+
+  var grid = document.querySelector('.grid.grid-3-3-3-3.centered, .grid.grid-4-4-4.centered, .grid.grid-3-3-3.centered');
+  var ownerActions = document.getElementById('store-owner-actions');
+  var modal = document.getElementById('product-modal');
+  var form = document.getElementById('product-form');
+  var addBtn = document.getElementById('add-product-btn');
+  var closeBtn = document.getElementById('product-modal-close');
+  var cancelBtn = document.getElementById('pf-cancel');
+  var modalTitle = document.getElementById('product-modal-title');
+  var submitBtn = document.getElementById('pf-submit');
+  var imageInput = document.getElementById('pf-image');
+  var imagePreview = document.getElementById('pf-image-preview');
+  var imagePreviewImg = document.getElementById('pf-image-preview-img');
+
+  // Show owner controls
+  if (isOwner && ownerActions) {
+    ownerActions.style.display = '';
+  }
+
+  // Image preview on file select
+  if (imageInput) {
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreviewImg.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
       } else {
-        grid.innerHTML = '';
-        products.forEach(function(p) {
-          grid.insertAdjacentHTML('beforeend',
-            '<div class="product-preview">' +
-              '<a href="marketplace-product.html?id=' + p.id + '">' +
-                '<figure style="height:160px;overflow:hidden;border-radius:12px 12px 0 0;">' +
-                  '<img src="' + (p.image_url || 'img/marketplace/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
-                '</figure>' +
-              '</a>' +
-              '<div style="padding:12px;">' +
-                '<a href="marketplace-product.html?id=' + p.id + '"><p style="font-weight:700;font-size:14px;">' + (p.title || p.name) + '</p></a>' +
-                '<p style="color:#615dfa;font-weight:700;margin-top:4px;">' + (p.price || 0) + ' EUR</p>' +
-              '</div>' +
-            '</div>');
+        imagePreview.style.display = 'none';
+      }
+    });
+  }
+
+  // Modal open/close
+  function openModal(editProduct) {
+    form.reset();
+    imagePreview.style.display = 'none';
+    document.getElementById('pf-id').value = '';
+    if (editProduct) {
+      modalTitle.textContent = 'Modifier le produit';
+      submitBtn.textContent = 'Enregistrer';
+      document.getElementById('pf-id').value = editProduct.id;
+      document.getElementById('pf-title').value = editProduct.title || '';
+      document.getElementById('pf-description').value = editProduct.description || '';
+      document.getElementById('pf-price').value = editProduct.price || '';
+      document.getElementById('pf-type').value = editProduct.type || 'digital';
+      document.getElementById('pf-category').value = editProduct.category || '';
+      document.getElementById('pf-stock').value = editProduct.stock != null ? editProduct.stock : -1;
+      document.getElementById('pf-download-url').value = editProduct.download_url || '';
+      if (editProduct.image_url) {
+        imagePreviewImg.src = editProduct.image_url;
+        imagePreview.style.display = 'block';
+      }
+    } else {
+      modalTitle.textContent = 'Ajouter un produit';
+      submitBtn.textContent = 'Publier le produit';
+    }
+    modal.style.display = '';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  if (addBtn) addBtn.addEventListener('click', function() { openModal(null); });
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+
+  // Submit product (create or update)
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var editId = document.getElementById('pf-id').value;
+    submitBtn.disabled = true;
+    submitBtn.textContent = editId ? 'Enregistrement...' : 'Publication...';
+
+    try {
+      if (editId) {
+        // Update existing product
+        var updateData = {
+          title: document.getElementById('pf-title').value.trim(),
+          description: document.getElementById('pf-description').value.trim(),
+          price: parseFloat(document.getElementById('pf-price').value),
+          type: document.getElementById('pf-type').value,
+          category: document.getElementById('pf-category').value.trim(),
+          stock: parseInt(document.getElementById('pf-stock').value) || -1,
+          download_url: document.getElementById('pf-download-url').value.trim()
+        };
+        await ProductsAPI.update(editId, updateData);
+        PageInit.toast('Produit modifie !', 'success');
+      } else {
+        // Create new product
+        var formData = new FormData();
+        formData.append('title', document.getElementById('pf-title').value.trim());
+        formData.append('description', document.getElementById('pf-description').value.trim());
+        formData.append('price', document.getElementById('pf-price').value);
+        formData.append('type', document.getElementById('pf-type').value);
+        formData.append('category', document.getElementById('pf-category').value.trim());
+        formData.append('stock', document.getElementById('pf-stock').value || '-1');
+        var dlUrl = document.getElementById('pf-download-url').value.trim();
+        if (dlUrl) formData.append('download_url', dlUrl);
+        if (imageInput.files[0]) formData.append('image', imageInput.files[0]);
+        await ProductsAPI.create(formData);
+        PageInit.toast('Produit publie !', 'success');
+      }
+      closeModal();
+      loadProducts();
+    } catch(err) {
+      PageInit.toast(err.message || 'Erreur', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = editId ? 'Enregistrer' : 'Publier le produit';
+    }
+  });
+
+  // Delete product
+  async function deleteProduct(productId) {
+    if (!confirm('Supprimer ce produit ?')) return;
+    try {
+      await ProductsAPI.delete(productId);
+      PageInit.toast('Produit supprime', 'success');
+      loadProducts();
+    } catch(err) {
+      PageInit.toast(err.message || 'Erreur de suppression', 'error');
+    }
+  }
+
+  // Build product card HTML
+  function productCardHTML(p) {
+    var typeLabels = { digital: 'Digital', physical: 'Physique', service: 'Service', commission: 'Commission' };
+    var typeLabel = typeLabels[p.type] || p.type || '';
+    var ownerControls = isOwner ?
+      '<div style="display:flex;gap:6px;margin-top:8px;">' +
+        '<button class="edit-product-btn button small secondary" data-product-id="' + p.id + '" style="flex:1;font-size:11px;padding:4px 8px;">Modifier</button>' +
+        '<button class="delete-product-btn button small" data-product-id="' + p.id + '" style="flex:0;font-size:11px;padding:4px 8px;background:#fee;color:#e74c3c;">Supprimer</button>' +
+      '</div>' : '';
+
+    return '<div class="product-preview aua-fade-in" data-product-json=\'' + JSON.stringify(p).replace(/'/g, '&#39;') + '\'>' +
+      '<a href="marketplace-product.html?id=' + p.id + '">' +
+        '<figure style="height:180px;overflow:hidden;border-radius:12px 12px 0 0;position:relative;">' +
+          '<img src="' + (p.image_url || 'img/marketplace/items/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+          (typeLabel ? '<span style="position:absolute;top:8px;left:8px;background:rgba(97,93,250,0.9);color:#fff;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;">' + typeLabel + '</span>' : '') +
+        '</figure>' +
+      '</a>' +
+      '<div style="padding:14px;">' +
+        '<a href="marketplace-product.html?id=' + p.id + '"><p style="font-weight:700;font-size:14px;color:#3e3f5e;">' + (p.title || '') + '</p></a>' +
+        (p.category ? '<p style="font-size:12px;color:#9aa4bf;margin-top:2px;">' + p.category + '</p>' : '') +
+        '<p style="color:#615dfa;font-weight:700;font-size:16px;margin-top:6px;">' + parseFloat(p.price || 0).toFixed(2) + ' EUR</p>' +
+        ownerControls +
+      '</div>' +
+    '</div>';
+  }
+
+  // Load and render products
+  async function loadProducts() {
+    if (grid) PageInit.showLoading(grid);
+    try {
+      var data = await ProductsAPI.list({ seller_id: userId, limit: 40 });
+      var products = data.products || [];
+      if (!grid) return;
+
+      if (products.length === 0) {
+        var emptyMsg = isOwner
+          ? '<div class="aua-empty-state aua-fade-in" style="grid-column:1/-1;">' +
+              '<div class="aua-empty-icon">&#x1F3A8;</div>' +
+              '<p class="aua-empty-title">Votre boutique est vide</p>' +
+              '<p class="aua-empty-text">Ajoutez vos oeuvres, services ou commissions pour commencer a vendre</p>' +
+              '<button class="button small secondary" onclick="document.getElementById(\'add-product-btn\').click()">+ Ajouter mon premier produit</button>' +
+            '</div>'
+          : '<div class="aua-empty-state" style="grid-column:1/-1;">' +
+              '<div class="aua-empty-icon">&#x1F6D2;</div>' +
+              '<p class="aua-empty-title">Aucun produit en vente</p>' +
+              '<p class="aua-empty-text">' + (profile ? (profile.display_name || profile.username) : 'Cet artiste') + ' n\'a pas encore de produits</p>' +
+            '</div>';
+        grid.innerHTML = emptyMsg;
+        return;
+      }
+
+      grid.innerHTML = '';
+      products.forEach(function(p) {
+        grid.insertAdjacentHTML('beforeend', productCardHTML(p));
+      });
+
+      // Wire edit/delete buttons
+      if (isOwner) {
+        grid.querySelectorAll('.edit-product-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var card = this.closest('.product-preview');
+            var product = JSON.parse(card.getAttribute('data-product-json'));
+            openModal(product);
+          });
+        });
+        grid.querySelectorAll('.delete-product-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteProduct(this.getAttribute('data-product-id'));
+          });
         });
       }
+    } catch(e) {
+      console.error('Store load error:', e);
+      if (grid) PageInit.showEmpty(grid, '&#x26A0;', 'Erreur de chargement', 'Impossible de charger les produits');
     }
-  } catch(e) { console.error('Store load error:', e); }
+  }
+
+  loadProducts();
+
+  // Sort tabs
+  document.querySelectorAll('.filter-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      loadProducts();
+    });
+  });
 });
 </script>
 </body>

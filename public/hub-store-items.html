@@ -4522,50 +4522,86 @@
           <!-- SECTION HEADER INFO -->
           <div class="section-header-info">
             <!-- SECTION PRETITLE -->
-            <p class="section-pretitle">My Store</p>
+            <p class="section-pretitle">Ma Boutique</p>
             <!-- /SECTION PRETITLE -->
 
             <!-- SECTION TITLE -->
-            <h2 class="section-title">Manage Items</h2>
+            <h2 class="section-title">Gerer mes produits</h2>
             <!-- /SECTION TITLE -->
           </div>
           <!-- /SECTION HEADER INFO -->
         </div>
         <!-- /SECTION HEADER -->
 
-        <!-- GRID -->
-        <div class="grid grid-3-3-3 centered-on-mobile">
-          <!-- CREATE ENTITY BOX -->
-          <div class="create-entity-box v2">
-            <!-- CREATE ENTITY BOX COVER -->
-            <div class="create-entity-box-cover"></div>
-            <!-- /CREATE ENTITY BOX COVER -->
-        
-            <!-- CREATE ENTITY BOX AVATAR -->
-            <div class="create-entity-box-avatar primary">
-              <!-- CREATE ENTITY BOX AVATAR ICON -->
-              <svg class="create-entity-box-avatar-icon icon-item">
-                <use xlink:href="#svg-item"></use>
-              </svg>
-              <!-- /CREATE ENTITY BOX AVATAR ICON -->
-            </div>
-            <!-- /CREATE ENTITY BOX AVATAR -->
-        
-            <!-- CREATE ENTITY BOX INFO -->
-            <div class="create-entity-box-info">
-              <!-- CREATE ENTITY BOX TITLE -->
-              <p class="create-entity-box-title">Your Item Name Here</p>
-              <!-- /CREATE ENTITY BOX TITLE -->
-        
-              <!-- CREATE ENTITY BOX CATEGORY -->
-              <p class="create-entity-box-category">Category</p>
-              <!-- /CREATE ENTITY BOX CATEGORY -->
-        
-              <!-- BUTTON -->
-              <p class="button primary full popup-manage-item-trigger">Create New Item!</p>
-              <!-- /BUTTON -->
-            </div>
-            <!-- /CREATE ENTITY BOX INFO -->
+        <!-- ADD PRODUCT BAR -->
+        <div style="margin-bottom:24px;">
+          <button id="hub-add-product-btn" class="button medium primary">+ Ajouter un produit</button>
+        </div>
+
+        <!-- PRODUCTS LIST -->
+        <div id="hub-products-list">
+          <!-- Loaded dynamically -->
+        </div>
+
+        <!-- PRODUCT MODAL (reusable) -->
+        <div id="hub-product-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;overflow-y:auto;">
+          <div style="max-width:560px;margin:60px auto;background:#fff;border-radius:16px;padding:32px;position:relative;">
+            <button id="hub-modal-close" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#9aa4bf;">&times;</button>
+            <h3 id="hub-modal-title" style="font-size:18px;font-weight:700;margin-bottom:24px;">Ajouter un produit</h3>
+            <form id="hub-product-form">
+              <input type="hidden" id="hub-pf-id" value="">
+              <div style="margin-bottom:16px;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Titre *</label>
+                <input type="text" id="hub-pf-title" required style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="Nom du produit ou service">
+              </div>
+              <div style="margin-bottom:16px;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Description</label>
+                <textarea id="hub-pf-description" rows="3" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;resize:vertical;" placeholder="Decrivez votre produit..."></textarea>
+              </div>
+              <div style="display:flex;gap:12px;margin-bottom:16px;">
+                <div style="flex:1;">
+                  <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Prix (EUR) *</label>
+                  <input type="number" id="hub-pf-price" min="0" step="0.01" required style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="0.00">
+                </div>
+                <div style="flex:1;">
+                  <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Type</label>
+                  <select id="hub-pf-type" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;background:#fff;">
+                    <option value="digital">Digital</option>
+                    <option value="physical">Physique</option>
+                    <option value="service">Service</option>
+                    <option value="commission">Commission</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;margin-bottom:16px;">
+                <div style="flex:1;">
+                  <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Categorie</label>
+                  <input type="text" id="hub-pf-category" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="Art, Musique...">
+                </div>
+                <div style="flex:1;">
+                  <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Stock (-1 = illimite)</label>
+                  <input type="number" id="hub-pf-stock" min="-1" value="-1" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Image</label>
+                <input type="file" id="hub-pf-image" accept="image/*" style="width:100%;padding:10px;border:1px solid #dedeea;border-radius:12px;font-size:13px;">
+              </div>
+              <div style="margin-bottom:20px;">
+                <label style="font-size:13px;font-weight:600;color:#3e3f5e;display:block;margin-bottom:6px;">Lien de telechargement</label>
+                <input type="url" id="hub-pf-download-url" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;" placeholder="https://...">
+              </div>
+              <div style="display:flex;gap:12px;">
+                <button type="submit" id="hub-pf-submit" class="button medium primary" style="flex:1;">Publier</button>
+                <button type="button" id="hub-pf-cancel" class="button medium" style="flex:0;background:#eaeaf5;color:#3e3f5e;">Annuler</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- LEGACY GRID (removed, replaced by dynamic list above) -->
+        <div class="grid grid-3-3-3 centered-on-mobile" style="display:none;">
+          <div class="create-entity-box v2" style="display:none;">
           </div>
           <!-- /CREATE ENTITY BOX -->
 
@@ -5111,26 +5147,140 @@
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
-  try {
-    var data = await ProductsAPI.getMyProducts();
-    var products = data.products || [];
-    var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content, .account-hub-content .table-body');
-    if (!contentArea) contentArea = document.querySelector('.account-hub-content');
-    if (contentArea) {
-      if (products.length === 0) {
-        contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun produit</p></div>';
-      } else {
-        var html = '';
-        products.forEach(function(p) {
-          html += '<div style="padding:16px;border-bottom:1px solid #eaeaf5;display:flex;align-items:center;gap:16px;">' +
-            '<img src="' + (p.image_url || 'img/marketplace/01.jpg') + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">' +
-            '<div style="flex:1;"><a href="marketplace-product.html?id=' + p.id + '" style="font-weight:700;">' + (p.title || p.name) + '</a><p style="color:#615dfa;font-size:13px;">' + (p.price || 0) + ' EUR</p></div>' +
-          '</div>';
-        });
-        contentArea.innerHTML = html;
-      }
+
+  var listEl = document.getElementById('hub-products-list');
+  var modal = document.getElementById('hub-product-modal');
+  var form = document.getElementById('hub-product-form');
+  var addBtn = document.getElementById('hub-add-product-btn');
+  var closeBtn = document.getElementById('hub-modal-close');
+  var cancelBtn = document.getElementById('hub-pf-cancel');
+  var modalTitle = document.getElementById('hub-modal-title');
+  var submitBtn = document.getElementById('hub-pf-submit');
+
+  function openModal(product) {
+    form.reset();
+    document.getElementById('hub-pf-id').value = '';
+    if (product) {
+      modalTitle.textContent = 'Modifier le produit';
+      submitBtn.textContent = 'Enregistrer';
+      document.getElementById('hub-pf-id').value = product.id;
+      document.getElementById('hub-pf-title').value = product.title || '';
+      document.getElementById('hub-pf-description').value = product.description || '';
+      document.getElementById('hub-pf-price').value = product.price || '';
+      document.getElementById('hub-pf-type').value = product.type || 'digital';
+      document.getElementById('hub-pf-category').value = product.category || '';
+      document.getElementById('hub-pf-stock').value = product.stock != null ? product.stock : -1;
+      document.getElementById('hub-pf-download-url').value = product.download_url || '';
+    } else {
+      modalTitle.textContent = 'Ajouter un produit';
+      submitBtn.textContent = 'Publier';
     }
-  } catch(e) { console.error('Store items error:', e); }
+    modal.style.display = '';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() { modal.style.display = 'none'; document.body.style.overflow = ''; }
+
+  addBtn.addEventListener('click', function() { openModal(null); });
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+
+  // Submit
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var editId = document.getElementById('hub-pf-id').value;
+    submitBtn.disabled = true;
+    submitBtn.textContent = editId ? 'Enregistrement...' : 'Publication...';
+    try {
+      if (editId) {
+        await ProductsAPI.update(editId, {
+          title: document.getElementById('hub-pf-title').value.trim(),
+          description: document.getElementById('hub-pf-description').value.trim(),
+          price: parseFloat(document.getElementById('hub-pf-price').value),
+          type: document.getElementById('hub-pf-type').value,
+          category: document.getElementById('hub-pf-category').value.trim(),
+          stock: parseInt(document.getElementById('hub-pf-stock').value) || -1,
+          download_url: document.getElementById('hub-pf-download-url').value.trim()
+        });
+        PageInit.toast('Produit modifie !', 'success');
+      } else {
+        var fd = new FormData();
+        fd.append('title', document.getElementById('hub-pf-title').value.trim());
+        fd.append('description', document.getElementById('hub-pf-description').value.trim());
+        fd.append('price', document.getElementById('hub-pf-price').value);
+        fd.append('type', document.getElementById('hub-pf-type').value);
+        fd.append('category', document.getElementById('hub-pf-category').value.trim());
+        fd.append('stock', document.getElementById('hub-pf-stock').value || '-1');
+        var dlUrl = document.getElementById('hub-pf-download-url').value.trim();
+        if (dlUrl) fd.append('download_url', dlUrl);
+        var imageFile = document.getElementById('hub-pf-image').files[0];
+        if (imageFile) fd.append('image', imageFile);
+        await ProductsAPI.create(fd);
+        PageInit.toast('Produit publie !', 'success');
+      }
+      closeModal();
+      loadProducts();
+    } catch(err) {
+      PageInit.toast(err.message || 'Erreur', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = editId ? 'Enregistrer' : 'Publier';
+    }
+  });
+
+  // Delete
+  async function deleteProduct(id) {
+    if (!confirm('Supprimer ce produit ?')) return;
+    try { await ProductsAPI.delete(id); PageInit.toast('Supprime', 'success'); loadProducts(); }
+    catch(err) { PageInit.toast(err.message || 'Erreur', 'error'); }
+  }
+
+  // Load products
+  async function loadProducts() {
+    PageInit.showLoading(listEl);
+    try {
+      var data = await ProductsAPI.getMyProducts();
+      var products = data.products || [];
+      if (products.length === 0) {
+        PageInit.showEmpty(listEl, '&#x1F3A8;', 'Aucun produit', 'Ajoutez votre premier produit pour commencer a vendre !');
+        return;
+      }
+      var typeLabels = { digital: 'Digital', physical: 'Physique', service: 'Service', commission: 'Commission' };
+      var statusLabels = { active: 'Actif', draft: 'Brouillon', sold_out: 'Epuise', archived: 'Archive' };
+      var statusColors = { active: '#4caf50', draft: '#f39c12', sold_out: '#e74c3c', archived: '#9aa4bf' };
+      var html = '<div class="widget-box"><div class="widget-box-content">';
+      products.forEach(function(p) {
+        html += '<div class="aua-fade-in" style="padding:16px;border-bottom:1px solid #eaeaf5;display:flex;align-items:center;gap:16px;">' +
+          '<a href="marketplace-product.html?id=' + p.id + '"><img src="' + (p.image_url || 'img/marketplace/items/01.jpg') + '" style="width:70px;height:70px;object-fit:cover;border-radius:10px;"></a>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<a href="marketplace-product.html?id=' + p.id + '" style="font-weight:700;font-size:14px;color:#3e3f5e;">' + (p.title || '') + '</a>' +
+            '<div style="display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap;">' +
+              '<span style="color:#615dfa;font-weight:700;">' + parseFloat(p.price || 0).toFixed(2) + ' EUR</span>' +
+              '<span style="background:' + (statusColors[p.status] || '#9aa4bf') + ';color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">' + (statusLabels[p.status] || p.status) + '</span>' +
+              '<span style="font-size:11px;color:#9aa4bf;">' + (typeLabels[p.type] || p.type || '') + '</span>' +
+              (p.category ? '<span style="font-size:11px;color:#9aa4bf;">' + p.category + '</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+            '<button class="hub-edit-btn button small secondary" data-product=\'' + JSON.stringify(p).replace(/'/g, '&#39;') + '\' style="font-size:12px;padding:6px 12px;">Modifier</button>' +
+            '<button class="hub-delete-btn button small" data-id="' + p.id + '" style="font-size:12px;padding:6px 12px;background:#fee;color:#e74c3c;">Supprimer</button>' +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div></div>';
+      listEl.innerHTML = html;
+
+      listEl.querySelectorAll('.hub-edit-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { openModal(JSON.parse(this.getAttribute('data-product'))); });
+      });
+      listEl.querySelectorAll('.hub-delete-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { deleteProduct(this.getAttribute('data-id')); });
+      });
+    } catch(e) {
+      PageInit.showEmpty(listEl, '&#x26A0;', 'Erreur', e.message || 'Impossible de charger vos produits');
+    }
+  }
+
+  loadProducts();
 });
 </script>
 </body>

@@ -6721,7 +6721,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       el.textContent = (product.price || 0) + ' EUR';
     });
 
-    // Update seller info in sidebar
+    // Update seller info in sidebar - enhanced artist card
     var seller = product.seller || product.User || {};
     var sellerName = document.querySelector('.sidebar-box .user-short-description-title a, .sidebar-box .user-preview-title');
     if (sellerName) {
@@ -6729,25 +6729,98 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (sellerName.tagName === 'A') sellerName.href = 'profile-timeline.html?id=' + seller.id;
     }
 
-    // Wire Add to Cart button
-    var buyBtn = document.querySelector('.button.primary, .sidebar-box .button');
-    if (buyBtn && buyBtn.textContent.toLowerCase().indexOf('add') > -1 || buyBtn && buyBtn.textContent.toLowerCase().indexOf('cart') > -1 || buyBtn && buyBtn.textContent.toLowerCase().indexOf('buy') > -1) {
+    // Inject rich seller/artist card below sidebar
+    if (seller.id) {
+      var sidebarBoxes = document.querySelectorAll('.sidebar-box');
+      var lastSidebar = sidebarBoxes[sidebarBoxes.length - 1];
+      if (lastSidebar) {
+        var artistCard = document.createElement('div');
+        artistCard.className = 'widget-box aua-fade-in';
+        artistCard.style.marginTop = '16px';
+        var roleLabel = seller.role === 'artist'
+          ? '<span style="background:#615dfa;color:#fff;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;">Artiste</span>'
+          : '';
+        artistCard.innerHTML =
+          '<div class="widget-box-title" style="padding:16px 20px;"><h4>Vendeur</h4></div>' +
+          '<div style="padding:0 20px 20px;">' +
+            '<div style="display:flex;align-items:center;gap:14px;">' +
+              '<a href="profile-timeline.html?id=' + seller.id + '">' +
+                '<div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #615dfa;">' +
+                  '<img src="' + (seller.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+                '</div>' +
+              '</a>' +
+              '<div>' +
+                '<a href="profile-timeline.html?id=' + seller.id + '" style="font-weight:700;font-size:15px;color:#3e3f5e;">' + (seller.display_name || seller.username) + '</a> ' + roleLabel +
+                '<p style="font-size:12px;color:#9aa4bf;">@' + (seller.username || '') + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;margin-top:14px;">' +
+              '<a href="profile-store.html?id=' + seller.id + '" class="button small secondary" style="flex:1;text-align:center;">Voir la boutique</a>' +
+              '<a href="profile-timeline.html?id=' + seller.id + '" class="button small" style="flex:1;text-align:center;background:#eaeaf5;color:#3e3f5e;">Voir le profil</a>' +
+            '</div>' +
+          '</div>';
+        lastSidebar.parentNode.insertBefore(artistCard, lastSidebar.nextSibling);
+      }
+    }
+
+    // Type badge
+    var typeLabels = { digital: 'Digital', physical: 'Physique', service: 'Service', commission: 'Commission' };
+    var typeLabel = typeLabels[product.type] || '';
+    if (typeLabel) {
+      var pretitleEl = document.querySelector('.section-pretitle');
+      if (pretitleEl) pretitleEl.textContent = typeLabel + (product.category ? ' - ' + product.category : '');
+    }
+
+    // Wire Add to Cart button - find any primary button in sidebar
+    var allButtons = document.querySelectorAll('.sidebar-box .button, .product-info .button');
+    var buyBtn = null;
+    allButtons.forEach(function(btn) {
+      var txt = btn.textContent.toLowerCase();
+      if (txt.indexOf('add') > -1 || txt.indexOf('cart') > -1 || txt.indexOf('buy') > -1 || txt.indexOf('panier') > -1 || txt.indexOf('acheter') > -1) {
+        buyBtn = btn;
+      }
+    });
+    // If no buy button found, create one
+    if (!buyBtn) {
+      var priceArea = document.querySelector('.sidebar-box .product-info, .sidebar-box');
+      if (priceArea) {
+        var btnDiv = document.createElement('div');
+        btnDiv.style.padding = '0 20px 20px';
+        btnDiv.innerHTML = '<button class="button medium primary full" id="add-to-cart-btn" style="width:100%;">Ajouter au panier - ' + parseFloat(product.price || 0).toFixed(2) + ' EUR</button>';
+        priceArea.appendChild(btnDiv);
+        buyBtn = document.getElementById('add-to-cart-btn');
+      }
+    }
+    if (buyBtn) {
+      buyBtn.textContent = 'Ajouter au panier - ' + parseFloat(product.price || 0).toFixed(2) + ' EUR';
       buyBtn.addEventListener('click', async function(e) {
         e.preventDefault();
+        this.disabled = true;
+        this.textContent = 'Ajout en cours...';
         try {
           await ProductsAPI.addToCart(productId);
-          buyBtn.textContent = 'Ajoute au panier !';
-          setTimeout(function() { buyBtn.textContent = 'Ajouter au panier'; }, 2000);
+          PageInit.toast('Produit ajoute au panier !', 'success');
+          this.textContent = 'Ajoute au panier !';
+          this.style.background = '#4caf50';
+          var self = this;
+          setTimeout(function() {
+            self.textContent = 'Ajouter au panier - ' + parseFloat(product.price || 0).toFixed(2) + ' EUR';
+            self.style.background = '';
+            self.disabled = false;
+          }, 2000);
         } catch(err) {
-          console.error('Cart error:', err);
-          buyBtn.textContent = 'Erreur';
-          setTimeout(function() { buyBtn.textContent = 'Ajouter au panier'; }, 2000);
+          PageInit.toast(err.message || 'Erreur d\'ajout au panier', 'error');
+          this.textContent = 'Ajouter au panier - ' + parseFloat(product.price || 0).toFixed(2) + ' EUR';
+          this.disabled = false;
         }
       });
     }
   } catch(e) {
     console.error('Product load error:', e);
-    document.querySelector('.content-grid').innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#9aa4bf;font-size:16px;">Erreur de chargement du produit</p><a href="marketplace.html" class="button secondary" style="margin-top:12px;">Retour au marketplace</a></div>';
+    var contentGrid = document.querySelector('.content-grid');
+    if (contentGrid) {
+      PageInit.showEmpty(contentGrid, '&#x26A0;', 'Produit introuvable', 'Ce produit n\'existe pas ou a ete supprime', 'Retour au marketplace', 'marketplace.html');
+    }
   }
 });
 </script>
