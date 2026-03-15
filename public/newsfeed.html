@@ -13242,11 +13242,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Load feed
   async function loadFeed(page, append) {
     try {
+      if (!append) PageInit.showSkeleton(feedContainer, 3);
       const data = await PostsAPI.getFeed(page, 10);
       if (!append) feedContainer.innerHTML = '';
 
       if (data.posts.length === 0 && page === 1) {
-        feedContainer.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun post pour le moment. Publiez quelque chose !</p></div>';
+        PageInit.showEmpty(feedContainer, '&#x270D;', 'Aucun post pour le moment', 'Publiez quelque chose pour commencer !');
         loadMoreContainer.style.display = 'none';
         return;
       }
@@ -13258,6 +13259,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       loadMoreContainer.style.display = data.page < data.totalPages ? 'block' : 'none';
     } catch (error) {
       console.error('Feed error:', error);
+      if (!append) PageInit.showEmpty(feedContainer, '&#x26A0;', 'Erreur de chargement', 'Impossible de charger le fil d\'actualite');
     }
   }
 
@@ -13297,10 +13299,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       quickPostText.value = '';
       quickPostImage.value = '';
       feedContainer.insertAdjacentHTML('afterbegin', PageInit.createPostHTML(data.post));
+      PageInit.toast('Post publie !', 'success');
       quickPostSubmit.textContent = 'Publier';
       quickPostSubmit.style.pointerEvents = 'auto';
     } catch (error) {
-      alert(error.message);
+      PageInit.toast(error.message || 'Erreur de publication', 'error');
       quickPostSubmit.textContent = 'Publier';
       quickPostSubmit.style.pointerEvents = 'auto';
     }

@@ -6010,6 +6010,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   if (!initialized) return;
 
   var grid = document.getElementById('quests-grid');
+  if (grid) PageInit.showLoading(grid);
   try {
     var [allData, myData] = await Promise.all([
       apiRequest('/api/quests'),
@@ -6074,7 +6075,7 @@ async function startQuest(questId, btn) {
   } catch (e) {
     btn.disabled = false;
     btn.textContent = 'Commencer';
-    alert(e.message || 'Erreur');
+    PageInit.toast(e.message || 'Erreur', 'error');
   }
 }
 </script>

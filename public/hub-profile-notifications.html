@@ -5370,91 +5370,42 @@
 <script src="js/api/notifications.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const user = await PageInit.init();
-  if (!user) return;
-
-  let currentPage = 1;
-  let totalPages = 1;
-
-  // Mark all as read handler
-  const markAllBtn = document.querySelector('.section-header-action');
-  if (markAllBtn && markAllBtn.textContent.trim() === 'Mark all as Read') {
-    markAllBtn.textContent = 'Tout marquer comme lu';
-    markAllBtn.style.cursor = 'pointer';
-    markAllBtn.addEventListener('click', async () => {
-      try {
-        await NotificationsAPI.markAllAsRead();
-        loadNotifications();
-      } catch (error) {
-        console.error('Mark all read error:', error);
-      }
-    });
-  }
-
-  async function loadNotifications(page = 1) {
-    try {
-      const data = await NotificationsAPI.getAll(page);
-      const container = document.getElementById('dynamic-notifications');
-      totalPages = data.totalPages;
-      currentPage = page;
-
-      if (!data.notifications || data.notifications.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:40px;color:#adafca;">Aucune notification</p>';
-        document.getElementById('notifications-load-more').style.display = 'none';
-        return;
-      }
-
-      const html = data.notifications.map(notif => `
-        <div class="notification-box${notif.is_read ? '' : ' unread'}" data-notif-id="${notif.id}">
-          <div class="user-status notification">
-            <div class="user-status-avatar">
-              <div class="user-avatar small no-outline">
-                <div class="user-avatar-content">
-                  <img src="img/avatar/default.jpg" style="width:30px;height:30px;border-radius:50%;">
-                </div>
-              </div>
-            </div>
-            <p class="user-status-title">${escapeHTML(notif.title)}</p>
-            <p class="user-status-text">${notif.content ? escapeHTML(notif.content) : ''}</p>
-            <p class="user-status-timestamp floaty">${PageInit.timeAgo(notif.created_at)}</p>
-          </div>
-          ${notif.link ? '<a href="' + notif.link + '" class="notification-box-action button white">Voir</a>' : ''}
-        </div>
-      `).join('');
-
-      if (page === 1) {
-        container.innerHTML = html;
-      } else {
-        container.insertAdjacentHTML('beforeend', html);
-      }
-
-      document.getElementById('notifications-load-more').style.display = currentPage < totalPages ? '' : 'none';
-
-      // Click to mark as read
-      container.querySelectorAll('.notification-box.unread').forEach(el => {
-        el.addEventListener('click', async () => {
-          const id = el.dataset.notifId;
-          await NotificationsAPI.markAsRead(id);
-          el.classList.remove('unread');
-        });
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (!contentArea) return;
+  PageInit.showLoading(contentArea);
+  try {
+    var data = await NotificationsAPI.list();
+    var notifs = data.notifications || [];
+    if (notifs.length === 0) {
+      PageInit.showEmpty(contentArea, '&#x1F514;', 'Aucune notification', 'Vous n\'avez pas encore de notifications');
+    } else {
+      var html = '<div style="padding:12px 16px;text-align:right;border-bottom:1px solid #eaeaf5;"><button id="mark-all-read" class="button small secondary">Tout marquer comme lu</button></div>';
+      notifs.forEach(function(n) {
+        var isUnread = !n.read_at;
+        html += '<div class="notification-box aua-fade-in" style="padding:16px;border-bottom:1px solid #eaeaf5;' + (isUnread ? 'background:#f8f8ff;' : '') + '">' +
+          '<p style="font-size:14px;">' + (n.content || n.message || 'Notification') + '</p>' +
+          '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + PageInit.timeAgo(n.created_at || n.createdAt) + '</p>' +
+        '</div>';
       });
-    } catch (error) {
-      console.error('Load notifications error:', error);
+      contentArea.innerHTML = html;
+      var markAllBtn = document.getElementById('mark-all-read');
+      if (markAllBtn) {
+        markAllBtn.addEventListener('click', async function() {
+          try {
+            await NotificationsAPI.markAllRead();
+            PageInit.toast('Notifications marquees comme lues', 'success');
+            contentArea.querySelectorAll('.notification-box').forEach(function(el) { el.style.background = ''; });
+          } catch(e) { console.error(e); }
+        });
+      }
     }
+  } catch(e) {
+    PageInit.showEmpty(contentArea, '&#x1F514;', 'Aucune notification', 'Erreur de chargement');
   }
-
-  function escapeHTML(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  document.getElementById('load-more-notifs').addEventListener('click', () => {
-    loadNotifications(currentPage + 1);
-  });
-
-  loadNotifications();
 });
 </script>
 </body>

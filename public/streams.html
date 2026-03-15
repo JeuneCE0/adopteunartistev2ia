@@ -5947,6 +5947,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   var grid = document.getElementById('streams-grid');
   var banner = document.querySelector('.section-banner-title');
+  if (grid) PageInit.showLoading(grid);
   try {
     var data = await apiRequest('/api/streams?limit=12');
     var streams = data.streams || [];

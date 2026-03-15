@@ -6829,10 +6829,22 @@ document.addEventListener('DOMContentLoaded', async function() {
   var loadMoreContainer = document.getElementById('members-load-more');
   var loadMoreBtn = document.getElementById('members-load-more-btn');
 
-  async function loadMembers(page, append) {
+  // Check for search param from global search
+  var searchParam = PageInit.getUrlParam('search');
+
+  async function loadMembers(page, append, search) {
     try {
-      var data = await UsersAPI.listMembers({ page: page, limit: 12 });
+      if (!append) PageInit.showLoading(membersGrid);
+      var params = { page: page, limit: 12 };
+      if (search) params.search = search;
+      var data = await UsersAPI.listMembers(params);
       if (!append) membersGrid.innerHTML = '';
+
+      if (data.users.length === 0 && page === 1) {
+        PageInit.showEmpty(membersGrid, '&#x1F465;', 'Aucun membre trouve', search ? 'Essayez une autre recherche' : 'Aucun membre inscrit');
+        loadMoreContainer.style.display = 'none';
+        return;
+      }
 
       data.users.forEach(function(user) {
         membersGrid.insertAdjacentHTML('beforeend', PageInit.createMemberHTML(user));
@@ -6841,10 +6853,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       loadMoreContainer.style.display = data.page < data.totalPages ? 'block' : 'none';
     } catch (error) {
       console.error('Load members error:', error);
+      if (!append) PageInit.showEmpty(membersGrid, '&#x26A0;', 'Erreur de chargement', 'Impossible de charger les membres');
     }
   }
 
-  loadMembers(1, false);
+  loadMembers(1, false, searchParam);
+  if (searchParam && searchInput) searchInput.value = searchParam;
 
   loadMoreBtn.addEventListener('click', function() {
     currentPage++;

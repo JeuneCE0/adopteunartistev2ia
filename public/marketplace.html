@@ -5790,18 +5790,23 @@ document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
 
+  var grid = document.querySelector('.grid.grid-3-3-3-3');
+  if (grid) PageInit.showLoading(grid);
   try {
     var data = await ProductsAPI.list({ page: 1, limit: 12 });
     if (data.products && data.products.length > 0) {
-      var grid = document.querySelector('.grid.grid-3-3-3-3');
       if (grid) {
         grid.innerHTML = '';
         data.products.forEach(function(product) {
           grid.insertAdjacentHTML('beforeend', createProductHTML(product));
         });
       }
+    } else if (grid) {
+      PageInit.showEmpty(grid, '&#x1F6D2;', 'Aucun produit', 'Le marketplace est vide pour le moment');
     }
-  } catch(e) { console.log('Products load:', e.message); }
+  } catch(e) {
+    if (grid) PageInit.showEmpty(grid, '&#x26A0;', 'Erreur de chargement', e.message);
+  }
 
   function createProductHTML(product) {
     var seller = product.seller || {};

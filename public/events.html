@@ -6995,10 +6995,11 @@ document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
 
+  var grid = document.querySelector('.grid.grid-4-4-4');
+  if (grid) PageInit.showLoading(grid);
   try {
     var data = await EventsAPI.list({ page: 1, limit: 12 });
     if (data.events && data.events.length > 0) {
-      var grid = document.querySelector('.grid.grid-4-4-4');
       if (grid) {
         grid.innerHTML = '';
         data.events.forEach(function(evt) {
@@ -7016,8 +7017,12 @@ document.addEventListener('DOMContentLoaded', async function() {
           );
         });
       }
+    } else if (grid) {
+      PageInit.showEmpty(grid, '&#x1F4C5;', 'Aucun evenement', 'Aucun evenement programme pour le moment');
     }
-  } catch(e) { console.log('Events load:', e.message); }
+  } catch(e) {
+    if (grid) PageInit.showEmpty(grid, '&#x26A0;', 'Erreur de chargement', e.message);
+  }
 });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>

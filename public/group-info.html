@@ -5044,40 +5044,25 @@
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
 <script src="js/api/groups.js"></script>
-<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
-
   var groupId = PageInit.getUrlParam('id');
-  if (!groupId) return;
-
+  if (!groupId) { window.location.href = 'groups.html'; return; }
   var group = await PageInit.loadGroupHeader(groupId);
-
-  // Update nav links
-  var navLinks = document.querySelectorAll('.section-navigation a, .profile-header a');
-  navLinks.forEach(function(link) {
-    var href = link.getAttribute('href');
-    if (href && href.indexOf('group-') === 0 && href.indexOf('?') === -1) {
-      link.href = href + '?id=' + groupId;
-    }
-  });
-
-  // Fill description widget
-  if (group) {
-    var descWidget = document.querySelector('.widget-box-content .widget-box-status-text, .widget-box-content p');
-    if (descWidget) descWidget.textContent = group.description || 'Aucune description';
-
-    // Show creator info
-    if (group.creator) {
-      var creatorName = document.querySelector('.widget-box .user-short-description-title a');
-      if (creatorName) {
-        creatorName.textContent = group.creator.display_name || group.creator.username;
-        creatorName.href = 'profile-timeline.html?id=' + group.creator.id;
-      }
-    }
+  if (!group) return;
+  var contentArea = document.querySelector('.grid.grid-9-3 .grid-column:first-child, .widget-box-content');
+  if (contentArea) {
+    contentArea.innerHTML = '<div class="widget-box aua-fade-in"><div class="widget-box-title"><h4>A propos</h4></div><div class="widget-box-content">' +
+      '<p style="color:#3e3f5e;line-height:1.6;">' + (group.description || 'Aucune description') + '</p>' +
+      '<div style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap;">' +
+        '<div style="padding:12px 20px;background:#f5f5fa;border-radius:12px;"><p style="font-weight:700;font-size:18px;">' + (group.memberCount || 0) + '</p><p style="color:#9aa4bf;font-size:12px;">Membres</p></div>' +
+        '<div style="padding:12px 20px;background:#f5f5fa;border-radius:12px;"><p style="font-weight:700;font-size:18px;">' + (group.type || 'Public') + '</p><p style="color:#9aa4bf;font-size:12px;">Type</p></div>' +
+        '<div style="padding:12px 20px;background:#f5f5fa;border-radius:12px;"><p style="font-weight:700;font-size:18px;">' + PageInit.timeAgo(group.created_at || group.createdAt) + '</p><p style="color:#9aa4bf;font-size:12px;">Cree</p></div>' +
+      '</div>' +
+    '</div></div>';
   }
 });
 </script>

@@ -4801,11 +4801,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
 
+  var table = document.querySelector('.table-body');
+  if (table) PageInit.showLoading(table);
   try {
     var data = await ForumsAPI.getCategories();
     var categories = data.categories || data;
     if (categories && categories.length > 0) {
-      var table = document.querySelector('.table-body');
       if (table) {
         table.innerHTML = '';
         categories.forEach(function(cat) {
@@ -4827,8 +4828,12 @@ document.addEventListener('DOMContentLoaded', async function() {
           );
         });
       }
+    } else if (table) {
+      PageInit.showEmpty(table, '&#x1F4AC;', 'Aucune categorie', 'Les forums n\'ont pas encore de categories');
     }
-  } catch(e) { console.log('Forums load:', e.message); }
+  } catch(e) {
+    if (table) PageInit.showEmpty(table, '&#x26A0;', 'Erreur de chargement', e.message);
+  }
 });
 </script>
 </body>

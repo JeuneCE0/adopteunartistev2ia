@@ -5757,189 +5757,39 @@
 <script src="js/api/messages.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const user = await PageInit.init();
-  if (!user) return;
-
-  let currentConversationId = null;
-  let socket = null;
-
-  // Initialize Socket.io
-  function initSocket() {
-    if (typeof io !== 'undefined') {
-      socket = io({ auth: { token: AuthAPI.getToken() } });
-      socket.on('new_message', (message) => {
-        if (message.conversation_id === currentConversationId) {
-          appendMessage(message, user.id);
-          scrollToBottom();
-        }
-        loadConversations();
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (!contentArea) return;
+  PageInit.showLoading(contentArea);
+  try {
+    var data = await MessagesAPI.getConversations();
+    var convos = data.conversations || [];
+    if (convos.length === 0) {
+      PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Commencez une conversation avec un autre membre');
+    } else {
+      var html = '';
+      convos.forEach(function(c) {
+        var other = c.otherUser || c.participants?.[0] || {};
+        var lastMsg = c.lastMessage || {};
+        html += '<div class="notification-box aua-fade-in" style="padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #eaeaf5;cursor:pointer;" onclick="window.location.href=\'hub-profile-messages.html?conv=' + c.id + '\'">' +
+          '<div style="width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;">' +
+            '<img src="' + (other.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+          '</div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<p style="font-weight:700;font-size:14px;">' + (other.display_name || other.username || 'Utilisateur') + '</p>' +
+            '<p style="font-size:13px;color:#9aa4bf;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (lastMsg.content || 'Aucun message') + '</p>' +
+          '</div>' +
+          '<p style="font-size:12px;color:#9aa4bf;flex-shrink:0;">' + (lastMsg.created_at ? PageInit.timeAgo(lastMsg.created_at) : '') + '</p>' +
+        '</div>';
       });
-      socket.on('user_typing', (data) => {
-        if (data.conversationId === currentConversationId) {
-          document.getElementById('conv-user-status').textContent = 'En train d\'ecrire...';
-        }
-      });
-      socket.on('user_stop_typing', (data) => {
-        if (data.conversationId === currentConversationId) {
-          document.getElementById('conv-user-status').textContent = 'En ligne';
-        }
-      });
+      contentArea.innerHTML = html;
     }
+  } catch(e) {
+    PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Commencez une conversation avec un autre membre');
   }
-
-  // Load conversations list
-  async function loadConversations() {
-    try {
-      const data = await MessagesAPI.getConversations();
-      const container = document.getElementById('conversations-list');
-      if (!data.conversations || data.conversations.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:20px;color:#adafca;">Aucune conversation</p>';
-        return;
-      }
-      container.innerHTML = data.conversations.map(conv => {
-        const other = conv.participants.find(p => p.id !== user.id) || conv.participants[0];
-        const lastMsg = conv.lastMessage;
-        const unread = conv.unreadCount > 0 ? ' active' : '';
-        return `
-          <div class="chat-widget-message${unread}" data-conv-id="${conv.id}" data-user-id="${other.id}" style="cursor:pointer;">
-            <div class="user-status">
-              <div class="user-status-avatar">
-                <div class="user-avatar small no-outline${other.is_online ? ' online' : ''}">
-                  <div class="user-avatar-content">
-                    <img src="${other.avatar_url || 'img/avatar/default.jpg'}" style="width:30px;height:30px;border-radius:50%;">
-                  </div>
-                </div>
-              </div>
-              <p class="user-status-title"><span class="bold">${other.display_name || other.username}</span></p>
-              <p class="user-status-text">${lastMsg ? lastMsg.content.substring(0, 50) : 'Nouvelle conversation'}</p>
-              <p class="user-status-timestamp floaty">${lastMsg ? PageInit.timeAgo(lastMsg.created_at) : ''}</p>
-            </div>
-          </div>`;
-      }).join('');
-
-      // Click handlers
-      container.querySelectorAll('[data-conv-id]').forEach(el => {
-        el.addEventListener('click', () => openConversation(parseInt(el.dataset.convId), parseInt(el.dataset.userId)));
-      });
-    } catch (error) {
-      console.error('Load conversations error:', error);
-    }
-  }
-
-  // Open a conversation
-  async function openConversation(convId, otherUserId) {
-    currentConversationId = convId;
-    document.getElementById('conversations-panel').style.display = 'none';
-    document.getElementById('conversation-panel').style.display = '';
-
-    if (socket) socket.emit('join_conversation', convId);
-
-    try {
-      const data = await MessagesAPI.getMessages(convId);
-      const container = document.getElementById('messages-container');
-      if (!data.messages || data.messages.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:20px;color:#adafca;">Aucun message. Commencez la conversation!</p>';
-      } else {
-        container.innerHTML = data.messages.map(msg => createMessageHTML(msg, user.id)).join('');
-      }
-      scrollToBottom();
-
-      // Update header
-      const convData = await MessagesAPI.getConversations();
-      const conv = convData.conversations.find(c => c.id === convId);
-      if (conv) {
-        const other = conv.participants.find(p => p.id !== user.id);
-        if (other) {
-          document.getElementById('conv-user-name').textContent = other.display_name || other.username;
-          document.getElementById('conv-user-status').textContent = other.is_online ? 'En ligne' : 'Hors ligne';
-        }
-      }
-    } catch (error) {
-      console.error('Open conversation error:', error);
-    }
-  }
-
-  function createMessageHTML(msg, currentUserId) {
-    const side = msg.sender_id === currentUserId ? 'right' : 'left';
-    const avatarHTML = side === 'left' ? `
-      <div class="chat-widget-speaker-avatar">
-        <div class="user-avatar tiny no-outline">
-          <div class="user-avatar-content">
-            <img src="${msg.sender.avatar_url || 'img/avatar/default.jpg'}" style="width:24px;height:24px;border-radius:50%;">
-          </div>
-        </div>
-      </div>` : '';
-    return `
-      <div class="chat-widget-speaker ${side}">
-        ${avatarHTML}
-        <p class="chat-widget-speaker-message">${escapeHTML(msg.content)}</p>
-        <p class="chat-widget-speaker-timestamp">${PageInit.timeAgo(msg.created_at)}</p>
-      </div>`;
-  }
-
-  function appendMessage(msg, currentUserId) {
-    const container = document.getElementById('messages-container');
-    const firstP = container.querySelector('p[style]');
-    if (firstP && firstP.textContent.includes('Aucun message')) firstP.remove();
-    container.insertAdjacentHTML('beforeend', createMessageHTML(msg, currentUserId));
-  }
-
-  function scrollToBottom() {
-    const container = document.getElementById('messages-container');
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function escapeHTML(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  // Send message
-  document.getElementById('send-message-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = document.getElementById('message-input');
-    const content = input.value.trim();
-    if (!content || !currentConversationId) return;
-
-    try {
-      const data = await MessagesAPI.sendMessage(currentConversationId, content);
-      appendMessage(data.message, user.id);
-      scrollToBottom();
-      input.value = '';
-    } catch (error) {
-      console.error('Send message error:', error);
-    }
-  });
-
-  document.getElementById('send-message-btn').addEventListener('click', () => {
-    document.getElementById('send-message-form').dispatchEvent(new Event('submit'));
-  });
-
-  // Back button
-  document.getElementById('back-to-conversations').addEventListener('click', () => {
-    currentConversationId = null;
-    document.getElementById('conversations-panel').style.display = '';
-    document.getElementById('conversation-panel').style.display = 'none';
-    loadConversations();
-  });
-
-  // Typing indicator
-  let typingTimeout;
-  document.getElementById('message-input').addEventListener('input', () => {
-    if (socket && currentConversationId) {
-      socket.emit('typing', { conversationId: currentConversationId });
-      clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => {
-        socket.emit('stop_typing', { conversationId: currentConversationId });
-      }, 2000);
-    }
-  });
-
-  // Init
-  initSocket();
-  loadConversations();
 });
 </script>
 </body>

@@ -6008,6 +6008,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (!initialized) return;
 
   var grid = document.getElementById('badges-grid');
+  if (grid) PageInit.showLoading(grid);
   try {
     var [allData, userDataRes] = await Promise.all([
       apiRequest('/api/badges'),

@@ -12,6 +12,9 @@ const PageInit = {
       this.user = await AuthAPI.getMe();
       this.updateNavigation();
       this.setupLogout();
+      this.setupSearch();
+      this.initToastContainer();
+      this.markActiveNavLink();
       return true;
     } catch (error) {
       console.error('Page init error:', error);
@@ -386,7 +389,7 @@ const PageInit = {
   // Create member card HTML
   createMemberHTML(user) {
     return `
-    <div class="user-preview landscape">
+    <div class="user-preview landscape aua-fade-in">
       <a href="profile-timeline.html?id=${user.id}">
         <figure class="user-preview-cover" style="background:url('${user.cover_url || 'img/cover/01.jpg'}') center/cover;height:80px;border-radius:12px 12px 0 0;"></figure>
       </a>
@@ -403,5 +406,144 @@ const PageInit = {
         ${user.role === 'artist' ? '<span style="background:#615dfa;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;margin-top:4px;display:inline-block;">Artiste</span>' : ''}
       </div>
     </div>`;
+  },
+
+  // ===== LOADING SPINNER =====
+  showLoading(container) {
+    if (typeof container === 'string') container = document.querySelector(container);
+    if (!container) return;
+    container.innerHTML = '<div class="aua-loading"><div class="aua-spinner"></div></div>';
+  },
+
+  hideLoading(container) {
+    if (typeof container === 'string') container = document.querySelector(container);
+    if (!container) return;
+    var spinner = container.querySelector('.aua-loading');
+    if (spinner) spinner.remove();
+  },
+
+  // ===== EMPTY STATE =====
+  showEmpty(container, icon, title, text, buttonText, buttonHref) {
+    if (typeof container === 'string') container = document.querySelector(container);
+    if (!container) return;
+    var html = '<div class="aua-empty-state aua-fade-in">';
+    if (icon) html += '<div class="aua-empty-icon">' + icon + '</div>';
+    if (title) html += '<p class="aua-empty-title">' + title + '</p>';
+    if (text) html += '<p class="aua-empty-text">' + text + '</p>';
+    if (buttonText && buttonHref) {
+      html += '<a href="' + buttonHref + '" class="button small secondary">' + buttonText + '</a>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  },
+
+  // ===== TOAST NOTIFICATIONS =====
+  initToastContainer() {
+    if (!document.querySelector('.aua-toast-container')) {
+      var div = document.createElement('div');
+      div.className = 'aua-toast-container';
+      document.body.appendChild(div);
+    }
+  },
+
+  toast(message, type) {
+    type = type || 'info';
+    var container = document.querySelector('.aua-toast-container');
+    if (!container) {
+      this.initToastContainer();
+      container = document.querySelector('.aua-toast-container');
+    }
+    var toast = document.createElement('div');
+    toast.className = 'aua-toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(function() {
+      toast.classList.add('out');
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+  },
+
+  // ===== SEARCH SETUP =====
+  setupSearch() {
+    var searchInputs = document.querySelectorAll('.interactive-input input[type="text"], .header-search-input');
+    searchInputs.forEach(function(input) {
+      if (input.dataset.searchWired) return;
+      input.dataset.searchWired = 'true';
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          var query = this.value.trim();
+          if (query) {
+            window.location.href = 'members.html?search=' + encodeURIComponent(query);
+          }
+        }
+      });
+    });
+  },
+
+  // ===== ACTIVE NAV LINK =====
+  markActiveNavLink() {
+    var currentPage = window.location.pathname.split('/').pop() || 'newsfeed.html';
+    // Remove query string for matching
+    currentPage = currentPage.split('?')[0];
+
+    // Map pages to nav categories
+    var navMap = {
+      'newsfeed.html': 'Newsfeed',
+      'overview.html': 'Overview',
+      'members.html': 'Members',
+      'groups.html': 'Groups',
+      'badges.html': 'Badges',
+      'quests.html': 'Quests',
+      'streams.html': 'Streams',
+      'events.html': 'Events',
+      'events-daily.html': 'Events',
+      'events-weekly.html': 'Events',
+      'forums.html': 'Forums',
+      'forums-category.html': 'Forums',
+      'forums-discussion.html': 'Forums',
+      'marketplace.html': 'Marketplace',
+      'marketplace-category.html': 'Marketplace',
+      'marketplace-product.html': 'Marketplace',
+      'marketplace-cart.html': 'Marketplace',
+      'marketplace-checkout.html': 'Marketplace'
+    };
+
+    var navLabel = navMap[currentPage];
+    if (!navLabel) return;
+
+    // Highlight in sidebar
+    var sidebarLinks = document.querySelectorAll('.navigation-widget-section-link, .menu-item-link');
+    sidebarLinks.forEach(function(link) {
+      if (link.textContent.trim() === navLabel) {
+        link.classList.add('active');
+      }
+    });
+  },
+
+  // ===== XP BAR HTML =====
+  createXpBarHTML(currentXp, nextLevelXp) {
+    var pct = nextLevelXp > 0 ? Math.min(100, Math.round((currentXp / nextLevelXp) * 100)) : 0;
+    return '<div class="aua-xp-bar"><div class="aua-xp-bar-fill" style="width:' + pct + '%;"></div></div>' +
+      '<p style="font-size:11px;color:#9aa4bf;margin-top:4px;">' + currentXp + ' / ' + nextLevelXp + ' XP</p>';
+  },
+
+  // ===== SKELETON LOADING =====
+  showSkeleton(container, count) {
+    if (typeof container === 'string') container = document.querySelector(container);
+    if (!container) return;
+    count = count || 3;
+    var html = '';
+    for (var i = 0; i < count; i++) {
+      html += '<div class="widget-box no-padding" style="margin-bottom:16px;padding:24px;">' +
+        '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">' +
+          '<div class="aua-skeleton aua-skeleton-avatar"></div>' +
+          '<div style="flex:1;"><div class="aua-skeleton aua-skeleton-text short"></div><div class="aua-skeleton aua-skeleton-text" style="width:40%;"></div></div>' +
+        '</div>' +
+        '<div class="aua-skeleton aua-skeleton-text"></div>' +
+        '<div class="aua-skeleton aua-skeleton-text short"></div>' +
+      '</div>';
+    }
+    container.innerHTML = html;
   }
 };
