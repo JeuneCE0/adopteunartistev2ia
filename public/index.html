@@ -424,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
       submitBtn.textContent = 'Inscription...';
 
       await AuthAPI.register(username, email, password);
+      localStorage.setItem('aua_onboarding', '1');
       window.location.href = '/newsfeed.html';
     } catch (error) {
       registerErrorText.textContent = error.message;

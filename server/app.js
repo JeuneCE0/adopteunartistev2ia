@@ -15,7 +15,11 @@ app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false
 }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Rate limiting
 const apiLimiter = rateLimit({
@@ -71,8 +75,8 @@ app.get('/api/health', async (req, res) => {
 
 // Setup endpoint - sync all tables (protected)
 app.get('/api/setup', async (req, res) => {
-  const adminKey = process.env.ADMIN_SECRET || 'setup_secret_change_me';
-  if (req.query.key !== adminKey) {
+  const adminKey = process.env.ADMIN_SECRET;
+  if (!adminKey || req.query.key !== adminKey) {
     return res.status(403).json({ error: 'Acces refuse' });
   }
   try {
@@ -105,20 +109,22 @@ app.use('/api/streams', require('./routes/streams'));
 
 // Seed endpoint - creates demo account (protected)
 app.get('/api/seed-demo', async (req, res) => {
-  const adminKey = process.env.ADMIN_SECRET || 'setup_secret_change_me';
-  if (req.query.key !== adminKey) {
+  const adminKey = process.env.ADMIN_SECRET;
+  if (!adminKey || req.query.key !== adminKey) {
     return res.status(403).json({ error: 'Acces refuse' });
   }
   try {
     const User = require('./models/User');
+    const bcrypt = require('bcryptjs');
     const existing = await User.findOne({ where: { email: 'demo@adopteunartiste.com' } });
     if (existing) {
       await existing.destroy();
     }
+    const password_hash = await bcrypt.hash('Demo1234!', 10);
     const user = await User.create({
       username: 'demoartiste',
       email: 'demo@adopteunartiste.com',
-      password_hash: 'Demo12345',
+      password_hash,
       role: 'artist',
       display_name: 'Artiste Demo',
       bio: 'Compte de demonstration - Bienvenue sur Adopte un Artiste !',

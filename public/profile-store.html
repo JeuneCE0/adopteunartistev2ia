@@ -4574,13 +4574,13 @@
         <!-- /USER STATS -->
   
         <!-- PROFILE HEADER INFO ACTIONS -->
-        <div class="profile-header-info-actions">
+        <div class="profile-header-info-actions" id="profile-actions" style="display:none;">
           <!-- PROFILE HEADER INFO ACTION -->
-          <p class="profile-header-info-action button secondary"><span class="hide-text-mobile">Add</span> Friend +</p>
+          <p class="profile-header-info-action button secondary" id="btn-add-friend"><span class="hide-text-mobile">Ajouter</span> Ami +</p>
           <!-- /PROFILE HEADER INFO ACTION -->
-          
+
           <!-- PROFILE HEADER INFO ACTION -->
-          <p class="profile-header-info-action button primary"><span class="hide-text-mobile">Send</span> Message</p>
+          <p class="profile-header-info-action button primary" id="btn-send-message"><span class="hide-text-mobile">Envoyer</span> Message</p>
           <!-- /PROFILE HEADER INFO ACTION -->
         </div>
         <!-- /PROFILE HEADER INFO ACTIONS -->
@@ -5476,6 +5476,8 @@
 <script src="js/utils/svg-loader.js"></script>
 <!-- API modules -->
 <script src="js/api/auth.js"></script>
+<script src="js/api/friends.js"></script>
+<script src="js/api/messages.js"></script>
 <script src="js/api/users.js"></script>
 <script src="js/api/products.js"></script>
 <script src="js/utils/page-init.js"></script>

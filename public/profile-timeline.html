@@ -4574,13 +4574,13 @@
         <!-- /USER STATS -->
   
         <!-- PROFILE HEADER INFO ACTIONS -->
-        <div class="profile-header-info-actions">
+        <div class="profile-header-info-actions" id="profile-actions" style="display:none;">
           <!-- PROFILE HEADER INFO ACTION -->
-          <p class="profile-header-info-action button secondary"><span class="hide-text-mobile">Add</span> Friend +</p>
+          <p class="profile-header-info-action button secondary" id="btn-add-friend"><span class="hide-text-mobile">Ajouter</span> Ami +</p>
           <!-- /PROFILE HEADER INFO ACTION -->
-          
+
           <!-- PROFILE HEADER INFO ACTION -->
-          <p class="profile-header-info-action button primary"><span class="hide-text-mobile">Send</span> Message</p>
+          <p class="profile-header-info-action button primary" id="btn-send-message"><span class="hide-text-mobile">Envoyer</span> Message</p>
           <!-- /PROFILE HEADER INFO ACTION -->
         </div>
         <!-- /PROFILE HEADER INFO ACTIONS -->
@@ -11307,6 +11307,7 @@
 <script src="js/api/users.js"></script>
 <script src="js/api/posts.js"></script>
 <script src="js/api/friends.js"></script>
+<script src="js/api/messages.js"></script>
 <script src="js/api/interactions.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
@@ -11316,53 +11317,99 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   var userId = PageInit.getUrlParam('id') || PageInit.user.id;
   var isOwnProfile = (String(userId) === String(PageInit.user.id));
+  var profile = await PageInit.loadProfileHeader(userId);
 
-  try {
-    var profile = await UsersAPI.getProfile(userId);
+  // ===== PROFILE ACTION BUTTONS =====
+  var actionsEl = document.getElementById('profile-actions');
+  var addFriendBtn = document.getElementById('btn-add-friend');
+  var sendMsgBtn = document.getElementById('btn-send-message');
 
-    // Update profile header name
-    var titles = document.querySelectorAll('.profile-header-info .user-short-description-title a');
-    titles.forEach(function(el) { el.textContent = profile.display_name || profile.username; });
+  if (!isOwnProfile && actionsEl) {
+    actionsEl.style.display = '';
 
-    // Update profile header text
-    var texts = document.querySelectorAll('.profile-header-info .user-short-description-text a');
-    texts.forEach(function(el) { el.textContent = '@' + profile.username; });
+    // Check friendship status
+    try {
+      var friendsData = await FriendsAPI.getMyFriends(1, 100);
+      var friends = friendsData.friends || [];
+      var isFriend = friends.some(function(f) {
+        var fUser = f.friend || f.user || f;
+        return String(fUser.id) === String(userId);
+      });
+      if (isFriend) {
+        addFriendBtn.textContent = 'Ami';
+        addFriendBtn.classList.remove('secondary');
+        addFriendBtn.classList.add('primary');
+        addFriendBtn.style.opacity = '0.7';
+        addFriendBtn.style.pointerEvents = 'none';
+      }
+    } catch(e) {}
 
-    // Update level badge
-    var badges = document.querySelectorAll('.profile-header .user-avatar-badge-text');
-    badges.forEach(function(el) { el.textContent = profile.level || 1; });
+    // Add friend handler
+    addFriendBtn.addEventListener('click', async function() {
+      if (this.style.pointerEvents === 'none') return;
+      this.style.pointerEvents = 'none';
+      this.textContent = 'Envoi...';
+      try {
+        await FriendsAPI.sendRequest(userId);
+        this.textContent = 'Demande envoyee';
+        this.classList.remove('secondary');
+        this.classList.add('primary');
+        PageInit.toast('Demande d\'ami envoyee !', 'success');
+      } catch(err) {
+        if (err.message && err.message.indexOf('deja') > -1) {
+          this.textContent = 'Deja envoye';
+        } else {
+          this.textContent = 'Ajouter Ami +';
+          this.style.pointerEvents = '';
+          PageInit.toast(err.message || 'Erreur', 'error');
+        }
+      }
+    });
 
-    // Update cover image
-    if (profile.cover_url) {
-      var cover = document.querySelector('.profile-header-cover img');
-      if (cover) cover.src = profile.cover_url;
-    }
+    // Send message handler
+    sendMsgBtn.addEventListener('click', async function() {
+      this.textContent = 'Ouverture...';
+      try {
+        var data = await MessagesAPI.createConversation(userId);
+        var convId = data.conversation ? data.conversation.id : data.id;
+        window.location.href = 'hub-profile-messages.html?conv=' + convId;
+      } catch(err) {
+        PageInit.toast(err.message || 'Erreur', 'error');
+        this.textContent = 'Envoyer Message';
+      }
+    });
+  }
 
-    // Update avatar data-src
-    if (profile.avatar_url) {
-      var avatars = document.querySelectorAll('.profile-header .hexagon-image-100-110, .profile-header .hexagon-image-82-90');
-      avatars.forEach(function(el) { el.setAttribute('data-src', profile.avatar_url); });
-    }
-  } catch(e) { console.error('Profile load error:', e); }
+  // ===== LOAD USER POSTS =====
+  var timeline = document.querySelector('.grid.grid-9-3, .grid.grid-8-4');
+  var firstColumn = timeline ? timeline.querySelector('.grid-column') : null;
 
-  // Load user posts
+  if (firstColumn) {
+    // Show skeleton while loading
+    var feedContainer = document.createElement('div');
+    feedContainer.id = 'profile-feed';
+    firstColumn.insertAdjacentElement('afterbegin', feedContainer);
+    PageInit.showSkeleton(feedContainer, 2);
+  }
+
   try {
     var postsData = await PostsAPI.getUserPosts(userId, 1, 10);
-    // Find the timeline post area - replace first hardcoded post
-    var timeline = document.querySelector('.grid.grid-9-3, .grid.grid-8-4');
-    if (timeline && postsData.posts && postsData.posts.length > 0) {
-      var postContainer = document.createElement('div');
-      postContainer.id = 'profile-feed';
-      postsData.posts.forEach(function(post) {
-        postContainer.insertAdjacentHTML('beforeend', PageInit.createPostHTML(post));
-      });
-      // Insert after the quick post form or at the beginning
-      var firstColumn = timeline.querySelector('.grid-column');
-      if (firstColumn) {
-        firstColumn.insertAdjacentElement('afterbegin', postContainer);
+    if (feedContainer) {
+      if (postsData.posts && postsData.posts.length > 0) {
+        feedContainer.innerHTML = '';
+        postsData.posts.forEach(function(post) {
+          feedContainer.insertAdjacentHTML('beforeend', PageInit.createPostHTML(post));
+        });
+      } else {
+        var emptyMsg = isOwnProfile
+          ? 'Vous n\'avez pas encore publie. Partagez quelque chose !'
+          : (profile ? (profile.display_name || profile.username) : 'Cet utilisateur') + ' n\'a pas encore publie';
+        PageInit.showEmpty(feedContainer, '&#x270D;', 'Aucune publication', emptyMsg);
       }
     }
-  } catch(e) { console.log('Posts load:', e.message); }
+  } catch(e) {
+    if (feedContainer) PageInit.showEmpty(feedContainer, '&#x26A0;', 'Erreur de chargement', e.message);
+  }
 });
 </script>
 </body>

@@ -5755,24 +5755,111 @@
 <!-- API -->
 <script src="js/api/auth.js"></script>
 <script src="js/api/messages.js"></script>
+<script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
+
   var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content');
   if (!contentArea) contentArea = document.querySelector('.account-hub-content');
   if (!contentArea) return;
+
+  var convId = PageInit.getUrlParam('conv');
+
+  // ===== CONVERSATION VIEW =====
+  if (convId) {
+    PageInit.showLoading(contentArea);
+    try {
+      var msgData = await MessagesAPI.getMessages(convId, 1, 100);
+      var messages = msgData.messages || [];
+      var convoData = await MessagesAPI.getConversations();
+      var convos = convoData.conversations || [];
+      var thisConvo = convos.find(function(c) { return String(c.id) === String(convId); });
+      var other = thisConvo ? (thisConvo.otherUser || (thisConvo.participants && thisConvo.participants[0]) || {}) : {};
+      var otherName = other.display_name || other.username || 'Utilisateur';
+      var otherAvatar = other.avatar_url || 'img/avatar/01.jpg';
+
+      var html = '<div class="widget-box">' +
+        '<div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #eaeaf5;">' +
+          '<a href="hub-profile-messages.html" style="color:#9aa4bf;font-size:20px;text-decoration:none;">&larr;</a>' +
+          '<a href="profile-timeline.html?id=' + (other.id || '') + '"><div style="width:40px;height:40px;border-radius:50%;overflow:hidden;"><img src="' + otherAvatar + '" style="width:100%;height:100%;object-fit:cover;"></div></a>' +
+          '<div><a href="profile-timeline.html?id=' + (other.id || '') + '" style="font-weight:700;font-size:14px;color:#3e3f5e;">' + otherName + '</a></div>' +
+        '</div>' +
+        '<div id="chat-messages" style="height:400px;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;">';
+
+      if (messages.length === 0) {
+        html += '<div style="text-align:center;padding:40px;color:#9aa4bf;">Aucun message. Envoyez le premier !</div>';
+      } else {
+        messages.forEach(function(m) {
+          var isMe = String(m.sender_id || (m.sender && m.sender.id)) === String(PageInit.user.id);
+          var align = isMe ? 'flex-end' : 'flex-start';
+          var bg = isMe ? '#615dfa' : '#f5f5fa';
+          var color = isMe ? '#fff' : '#3e3f5e';
+          html += '<div style="align-self:' + align + ';max-width:70%;padding:10px 16px;border-radius:16px;background:' + bg + ';color:' + color + ';font-size:14px;line-height:1.4;">' +
+            '<p>' + (m.content || '') + '</p>' +
+            '<p style="font-size:10px;opacity:0.6;margin-top:4px;">' + PageInit.timeAgo(m.created_at || m.createdAt) + '</p>' +
+          '</div>';
+        });
+      }
+
+      html += '</div>' +
+        '<div style="padding:12px 20px;border-top:1px solid #eaeaf5;display:flex;gap:8px;">' +
+          '<input type="text" id="msg-input" placeholder="Ecrire un message..." style="flex:1;padding:10px 16px;border:1px solid #dedeea;border-radius:12px;font-size:14px;outline:none;">' +
+          '<button id="msg-send" class="button medium primary" style="white-space:nowrap;">Envoyer</button>' +
+        '</div>' +
+      '</div>';
+
+      contentArea.innerHTML = html;
+
+      // Auto scroll to bottom
+      var chatEl = document.getElementById('chat-messages');
+      if (chatEl) chatEl.scrollTop = chatEl.scrollHeight;
+
+      // Wire send
+      var input = document.getElementById('msg-input');
+      var sendBtn = document.getElementById('msg-send');
+
+      async function sendMessage() {
+        var text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        sendBtn.disabled = true;
+        try {
+          await MessagesAPI.sendMessage(convId, text);
+          chatEl.insertAdjacentHTML('beforeend',
+            '<div class="aua-fade-in" style="align-self:flex-end;max-width:70%;padding:10px 16px;border-radius:16px;background:#615dfa;color:#fff;font-size:14px;line-height:1.4;">' +
+              '<p>' + text + '</p><p style="font-size:10px;opacity:0.6;margin-top:4px;">a l\'instant</p>' +
+            '</div>');
+          chatEl.scrollTop = chatEl.scrollHeight;
+        } catch(err) {
+          PageInit.toast(err.message || 'Erreur d\'envoi', 'error');
+        }
+        sendBtn.disabled = false;
+        input.focus();
+      }
+
+      sendBtn.addEventListener('click', sendMessage);
+      input.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendMessage(); });
+
+    } catch(e) {
+      PageInit.showEmpty(contentArea, '&#x26A0;', 'Erreur', 'Impossible de charger la conversation');
+    }
+    return;
+  }
+
+  // ===== CONVERSATIONS LIST =====
   PageInit.showLoading(contentArea);
   try {
     var data = await MessagesAPI.getConversations();
     var convos = data.conversations || [];
     if (convos.length === 0) {
-      PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Commencez une conversation avec un autre membre');
+      PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Visitez le profil d\'un membre et cliquez "Envoyer Message" pour commencer');
     } else {
       var html = '';
       convos.forEach(function(c) {
-        var other = c.otherUser || c.participants?.[0] || {};
+        var other = c.otherUser || (c.participants && c.participants[0]) || {};
         var lastMsg = c.lastMessage || {};
         html += '<div class="notification-box aua-fade-in" style="padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #eaeaf5;cursor:pointer;" onclick="window.location.href=\'hub-profile-messages.html?conv=' + c.id + '\'">' +
           '<div style="width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;">' +
@@ -5788,7 +5875,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       contentArea.innerHTML = html;
     }
   } catch(e) {
-    PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Commencez une conversation avec un autre membre');
+    PageInit.showEmpty(contentArea, '&#x1F4AC;', 'Aucun message', 'Commencez une conversation depuis le profil d\'un membre');
   }
 });
 </script>

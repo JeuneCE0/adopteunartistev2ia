@@ -15,6 +15,7 @@ const PageInit = {
       this.setupSearch();
       this.initToastContainer();
       this.markActiveNavLink();
+      this.checkOnboarding();
       return true;
     } catch (error) {
       console.error('Page init error:', error);
@@ -278,10 +279,78 @@ const PageInit = {
         }
       });
 
+      // Wire profile action buttons (Add Friend / Send Message)
+      this.wireProfileActions(userId, profile);
+
       return profile;
     } catch(e) {
       console.error('Profile header load error:', e);
       return null;
+    }
+  },
+
+  // Wire Add Friend + Send Message buttons on profile pages
+  wireProfileActions(userId, profile) {
+    var self = this;
+    var isOwn = String(userId) === String(this.user.id);
+    var actionsEl = document.getElementById('profile-actions');
+    var addFriendBtn = document.getElementById('btn-add-friend');
+    var sendMsgBtn = document.getElementById('btn-send-message');
+
+    if (!actionsEl || isOwn) return;
+    actionsEl.style.display = '';
+
+    // Check existing friendship
+    if (addFriendBtn && typeof FriendsAPI !== 'undefined') {
+      FriendsAPI.getMyFriends(1, 200).then(function(data) {
+        var friends = data.friends || [];
+        var isFriend = friends.some(function(f) {
+          var u = f.friend || f.user || f;
+          return String(u.id) === String(userId);
+        });
+        if (isFriend) {
+          addFriendBtn.innerHTML = '<span class="hide-text-mobile">&#x2714;</span> Ami';
+          addFriendBtn.classList.replace('secondary', 'primary');
+          addFriendBtn.style.opacity = '0.7';
+          addFriendBtn.style.pointerEvents = 'none';
+        }
+      }).catch(function() {});
+
+      addFriendBtn.addEventListener('click', async function() {
+        if (this.style.pointerEvents === 'none') return;
+        this.style.pointerEvents = 'none';
+        this.textContent = 'Envoi...';
+        try {
+          await FriendsAPI.sendRequest(userId);
+          this.textContent = 'Demande envoyee';
+          this.classList.replace('secondary', 'primary');
+          self.toast('Demande d\'ami envoyee !', 'success');
+        } catch(err) {
+          var msg = err.message || '';
+          if (msg.indexOf('deja') > -1 || msg.indexOf('already') > -1 || msg.indexOf('existe') > -1) {
+            this.textContent = 'Deja envoye';
+          } else {
+            this.innerHTML = '<span class="hide-text-mobile">Ajouter</span> Ami +';
+            this.style.pointerEvents = '';
+            self.toast(msg || 'Erreur', 'error');
+          }
+        }
+      });
+    }
+
+    // Send message
+    if (sendMsgBtn && typeof MessagesAPI !== 'undefined') {
+      sendMsgBtn.addEventListener('click', async function() {
+        this.textContent = 'Ouverture...';
+        try {
+          var data = await MessagesAPI.createConversation(userId);
+          var convId = data.conversation ? data.conversation.id : data.id;
+          window.location.href = 'hub-profile-messages.html?conv=' + convId;
+        } catch(err) {
+          self.toast(err.message || 'Erreur', 'error');
+          this.innerHTML = '<span class="hide-text-mobile">Envoyer</span> Message';
+        }
+      });
     }
   },
 
@@ -526,6 +595,58 @@ const PageInit = {
     var pct = nextLevelXp > 0 ? Math.min(100, Math.round((currentXp / nextLevelXp) * 100)) : 0;
     return '<div class="aua-xp-bar"><div class="aua-xp-bar-fill" style="width:' + pct + '%;"></div></div>' +
       '<p style="font-size:11px;color:#9aa4bf;margin-top:4px;">' + currentXp + ' / ' + nextLevelXp + ' XP</p>';
+  },
+
+  // ===== ONBOARDING =====
+  checkOnboarding() {
+    if (localStorage.getItem('aua_onboarding') !== '1') return;
+    localStorage.removeItem('aua_onboarding');
+    var self = this;
+    var name = this.user.display_name || this.user.username;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'onboarding-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99999;display:flex;justify-content:center;align-items:center;';
+    overlay.innerHTML =
+      '<div style="background:#fff;border-radius:20px;padding:40px;max-width:520px;width:90%;text-align:center;animation:fadeInUp 0.4s ease;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">&#x1F3A8;</div>' +
+        '<h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Bienvenue sur Adopte un Artiste !</h2>' +
+        '<p style="color:#9aa4bf;font-size:14px;margin-bottom:24px;">Salut <strong>' + name + '</strong>, on est ravis de t\'accueillir dans la communaute. Voici comment bien demarrer :</p>' +
+        '<div style="text-align:left;margin-bottom:24px;">' +
+          '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">' +
+            '<span style="background:#615dfa;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">1</span>' +
+            '<div><p style="font-weight:700;font-size:14px;">Complete ton profil</p><p style="color:#9aa4bf;font-size:12px;">Ajoute un avatar, une bio et tes liens sociaux</p></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">' +
+            '<span style="background:#615dfa;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">2</span>' +
+            '<div><p style="font-weight:700;font-size:14px;">Decouvre la communaute</p><p style="color:#9aa4bf;font-size:12px;">Parcours les membres, rejoins des groupes et connecte-toi</p></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:flex-start;gap:12px;">' +
+            '<span style="background:#615dfa;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">3</span>' +
+            '<div><p style="font-weight:700;font-size:14px;">Publie et partage</p><p style="color:#9aa4bf;font-size:12px;">Poste tes creations, vends tes services sur la marketplace</p></div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+          '<a href="hub-profile-info.html" class="button secondary" style="font-size:13px;">Completer mon profil</a>' +
+          '<button id="onboarding-start" class="button primary" style="font-size:13px;">C\'est parti !</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    document.getElementById('onboarding-start').addEventListener('click', function() {
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.3s';
+      setTimeout(function() { overlay.remove(); }, 300);
+    });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+        setTimeout(function() { overlay.remove(); }, 300);
+      }
+    });
   },
 
   // ===== SKELETON LOADING =====

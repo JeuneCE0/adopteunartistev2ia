@@ -4869,27 +4869,144 @@
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
-  try {
-    var data = await apiRequest('/api/groups/user/' + PageInit.user.id);
-    var groups = data.groups || [];
-    var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content');
-    if (!contentArea) contentArea = document.querySelector('.account-hub-content');
-    if (contentArea) {
-      if (groups.length === 0) {
-        contentArea.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Vous n\'avez rejoint aucun groupe</p><a href="groups.html" class="button secondary" style="margin-top:12px;">Decouvrir des groupes</a></div>';
+
+  var contentArea = document.querySelector('.account-hub-content .widget-box-content');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (!contentArea) return;
+
+  // Header with create button
+  contentArea.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+    '<h3 style="font-size:16px;font-weight:700;">Mes groupes</h3>' +
+    '<button id="btn-create-group-hub" class="button primary" style="font-size:12px;">+ Creer un groupe</button>' +
+  '</div>' +
+  '<div id="my-groups-list"></div>' +
+  '<div id="modal-group-hub" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;">' +
+    '<div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;width:90%;">' +
+      '<h3 id="modal-group-title" style="margin-bottom:20px;font-size:18px;">Creer un groupe</h3>' +
+      '<input type="hidden" id="edit-group-id">' +
+      '<div style="display:flex;flex-direction:column;gap:16px;">' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Nom *</label>' +
+          '<input type="text" id="hub-group-name" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;" placeholder="Nom du groupe"></div>' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Description</label>' +
+          '<textarea id="hub-group-desc" rows="3" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;resize:vertical;" placeholder="Description..."></textarea></div>' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Type</label>' +
+          '<select id="hub-group-type" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;">' +
+            '<option value="public">Public</option><option value="private">Prive</option><option value="secret">Secret</option>' +
+          '</select></div>' +
+        '<div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;">' +
+          '<button id="btn-cancel-group-hub" class="button secondary">Annuler</button>' +
+          '<button id="btn-submit-group-hub" class="button primary">Creer</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  var modal = document.getElementById('modal-group-hub');
+  var listEl = document.getElementById('my-groups-list');
+
+  document.getElementById('btn-create-group-hub').addEventListener('click', function() {
+    document.getElementById('edit-group-id').value = '';
+    document.getElementById('hub-group-name').value = '';
+    document.getElementById('hub-group-desc').value = '';
+    document.getElementById('hub-group-type').value = 'public';
+    document.getElementById('modal-group-title').textContent = 'Creer un groupe';
+    document.getElementById('btn-submit-group-hub').textContent = 'Creer';
+    modal.style.display = 'flex';
+  });
+  document.getElementById('btn-cancel-group-hub').addEventListener('click', function() { modal.style.display = 'none'; });
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+
+  document.getElementById('btn-submit-group-hub').addEventListener('click', async function() {
+    var name = document.getElementById('hub-group-name').value.trim();
+    var desc = document.getElementById('hub-group-desc').value.trim();
+    var type = document.getElementById('hub-group-type').value;
+    var editId = document.getElementById('edit-group-id').value;
+    if (!name) { PageInit.toast('Le nom est requis', 'error'); return; }
+    try {
+      if (editId) {
+        await GroupsAPI.update(editId, { name: name, description: desc, type: type });
+        PageInit.toast('Groupe mis a jour !', 'success');
       } else {
-        var html = '';
-        groups.forEach(function(g) {
-          html += '<div class="notification-box" style="padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #eaeaf5;">' +
-            '<img src="' + (g.avatar_url || 'img/avatar/01.jpg') + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">' +
-            '<div style="flex:1;"><a href="group-timeline.html?id=' + g.id + '" style="font-weight:700;font-size:14px;">' + g.name + '</a>' +
-            '<p style="font-size:12px;color:#9aa4bf;">' + (g.memberCount || 0) + ' membres - ' + (g.type || 'public') + '</p></div>' +
-          '</div>';
-        });
-        contentArea.innerHTML = html;
+        await GroupsAPI.create(name, desc, type);
+        PageInit.toast('Groupe cree !', 'success');
       }
-    }
-  } catch(e) { console.error('Group management error:', e); }
+      modal.style.display = 'none';
+      loadMyGroups();
+    } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+  });
+
+  async function loadMyGroups() {
+    try {
+      var data = await apiRequest('/api/groups/user/' + PageInit.user.id);
+      var groups = data.groups || [];
+      if (groups.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center;padding:40px;">' +
+          '<p style="color:#9aa4bf;font-size:14px;">Vous n\'avez rejoint aucun groupe</p>' +
+          '<a href="groups.html" class="button secondary" style="margin-top:12px;">Decouvrir des groupes</a></div>';
+        return;
+      }
+      listEl.innerHTML = '';
+      groups.forEach(function(g) {
+        var isAdmin = g.creator_id === PageInit.user.id;
+        var actions = '<a href="group-timeline.html?id=' + g.id + '" class="button secondary" style="font-size:11px;padding:6px 12px;">Voir</a>';
+        if (isAdmin) {
+          actions += ' <button class="button primary btn-edit-group" data-id="' + g.id + '" data-name="' + (g.name || '').replace(/"/g, '&quot;') + '" data-desc="' + (g.description || '').replace(/"/g, '&quot;') + '" data-type="' + (g.type || 'public') + '" style="font-size:11px;padding:6px 12px;">Modifier</button>';
+          actions += ' <button class="button tertiary btn-delete-group" data-id="' + g.id + '" style="font-size:11px;padding:6px 12px;color:#e74c3c;">Supprimer</button>';
+        } else {
+          actions += ' <button class="button secondary btn-leave-group" data-id="' + g.id + '" style="font-size:11px;padding:6px 12px;">Quitter</button>';
+        }
+        listEl.insertAdjacentHTML('beforeend',
+          '<div class="aua-fade-in" style="padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #eaeaf5;">' +
+            '<img src="' + (g.avatar_url || 'img/avatar/01.jpg') + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">' +
+            '<div style="flex:1;">' +
+              '<a href="group-timeline.html?id=' + g.id + '" style="font-weight:700;font-size:14px;">' + g.name + '</a>' +
+              '<p style="font-size:12px;color:#9aa4bf;">' + (g.memberCount || 0) + ' membres &middot; ' + (g.type || 'public') +
+              (isAdmin ? ' &middot; <span style="color:#615dfa;">Admin</span>' : '') + '</p>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + actions + '</div>' +
+          '</div>'
+        );
+      });
+
+      // Wire edit buttons
+      listEl.querySelectorAll('.btn-edit-group').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.getElementById('edit-group-id').value = this.dataset.id;
+          document.getElementById('hub-group-name').value = this.dataset.name;
+          document.getElementById('hub-group-desc').value = this.dataset.desc;
+          document.getElementById('hub-group-type').value = this.dataset.type;
+          document.getElementById('modal-group-title').textContent = 'Modifier le groupe';
+          document.getElementById('btn-submit-group-hub').textContent = 'Enregistrer';
+          modal.style.display = 'flex';
+        });
+      });
+
+      // Wire delete buttons
+      listEl.querySelectorAll('.btn-delete-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          if (!confirm('Supprimer ce groupe ? Cette action est irreversible.')) return;
+          try {
+            await GroupsAPI.delete(this.dataset.id);
+            PageInit.toast('Groupe supprime', 'success');
+            loadMyGroups();
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+
+      // Wire leave buttons
+      listEl.querySelectorAll('.btn-leave-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          try {
+            await GroupsAPI.leave(this.dataset.id);
+            PageInit.toast('Groupe quitte', 'success');
+            loadMyGroups();
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+    } catch(e) { console.error('Group management error:', e); }
+  }
+
+  loadMyGroups();
 });
 </script>
 </body>

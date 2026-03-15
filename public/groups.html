@@ -4268,11 +4268,11 @@
       <!-- /SECTION BANNER ICON -->
   
       <!-- SECTION BANNER TITLE -->
-      <p class="section-banner-title">Groups (7)</p>
+      <p class="section-banner-title" id="groups-banner-title">Groupes</p>
       <!-- /SECTION BANNER TITLE -->
-  
+
       <!-- SECTION BANNER TEXT -->
-      <p class="section-banner-text">Browse all the groups of the community!</p>
+      <p class="section-banner-text">Decouvrez tous les groupes de la communaute !</p>
       <!-- /SECTION BANNER TEXT -->
     </div>
     <!-- /SECTION BANNER -->
@@ -6183,27 +6183,143 @@ document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
 
-  try {
-    var data = await GroupsAPI.list(1, 12);
-    if (data.groups && data.groups.length > 0) {
+  // Add create group button after the search bar
+  var filtersBar = document.querySelector('.section-filters-bar-actions');
+  if (filtersBar) {
+    filtersBar.insertAdjacentHTML('afterend',
+      '<div style="display:flex;align-items:center;margin-left:auto;">' +
+        '<button id="btn-create-group" class="button primary" style="white-space:nowrap;">+ Creer un groupe</button>' +
+      '</div>'
+    );
+  }
+
+  // Create group modal
+  document.body.insertAdjacentHTML('beforeend',
+    '<div id="modal-create-group" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;">' +
+      '<div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;width:90%;max-height:90vh;overflow-y:auto;">' +
+        '<h3 style="margin-bottom:20px;font-size:18px;">Creer un groupe</h3>' +
+        '<div class="form" style="display:flex;flex-direction:column;gap:16px;">' +
+          '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Nom du groupe *</label>' +
+            '<input type="text" id="group-name" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;" placeholder="Mon super groupe"></div>' +
+          '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Description</label>' +
+            '<textarea id="group-description" rows="3" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;resize:vertical;" placeholder="Decrivez votre groupe..."></textarea></div>' +
+          '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Type</label>' +
+            '<select id="group-type" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;">' +
+              '<option value="public">Public</option><option value="private">Prive</option><option value="secret">Secret</option>' +
+            '</select></div>' +
+          '<div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;">' +
+            '<button id="btn-cancel-group" class="button secondary">Annuler</button>' +
+            '<button id="btn-submit-group" class="button primary">Creer</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+
+  var modal = document.getElementById('modal-create-group');
+  document.getElementById('btn-create-group').addEventListener('click', function() { modal.style.display = 'flex'; });
+  document.getElementById('btn-cancel-group').addEventListener('click', function() { modal.style.display = 'none'; });
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+
+  document.getElementById('btn-submit-group').addEventListener('click', async function() {
+    var name = document.getElementById('group-name').value.trim();
+    var description = document.getElementById('group-description').value.trim();
+    var type = document.getElementById('group-type').value;
+    if (!name) { PageInit.toast('Le nom est requis', 'error'); return; }
+    try {
+      var data = await GroupsAPI.create(name, description, type);
+      PageInit.toast('Groupe cree !', 'success');
+      modal.style.display = 'none';
+      if (data.group) window.location.href = 'group-timeline.html?id=' + data.group.id;
+    } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+  });
+
+  // Search
+  var searchInput = document.getElementById('groups-search');
+  if (searchInput) {
+    searchInput.placeholder = 'Rechercher des groupes...';
+    var label = searchInput.previousElementSibling;
+    if (label && label.tagName === 'LABEL') label.textContent = 'Rechercher';
+  }
+
+  async function loadGroups(search) {
+    try {
+      PageInit.showLoading();
+      var data = await GroupsAPI.list(1, 50, search || '');
+      var groups = data.groups || [];
+      var banner = document.getElementById('groups-banner-title');
+      if (banner) banner.textContent = 'Groupes (' + (data.total || groups.length) + ')';
+
       var grid = document.querySelector('.grid.grid-4-4-4');
-      if (grid) {
-        grid.innerHTML = '';
-        data.groups.forEach(function(group) {
-          grid.insertAdjacentHTML('beforeend',
-            '<div class="user-preview">' +
-            '<figure class="user-preview-cover liquid" style="background:url(\'' + (group.cover_url || 'img/cover/29.jpg') + '\') center/cover;"></figure>' +
-            '<div class="user-preview-info">' +
-            '<p class="user-short-description-title"><a href="group-timeline.html?id=' + group.id + '">' + group.name + '</a></p>' +
-            '<p class="user-short-description-text">' + (group.type || 'public') + '</p>' +
-            '<div class="user-preview-actions" style="margin-top:12px;">' +
-            '<a class="button secondary full" href="group-timeline.html?id=' + group.id + '">Voir le groupe</a>' +
-            '</div></div></div>'
-          );
-        });
+      if (!grid) return;
+
+      if (groups.length === 0) {
+        grid.innerHTML = PageInit.showEmpty ? '' : '';
+        PageInit.showEmpty(grid, 'Aucun groupe trouve', search ? 'Essayez une autre recherche' : 'Soyez le premier a creer un groupe !');
+        return;
       }
+
+      grid.innerHTML = '';
+      groups.forEach(function(group) {
+        var joinBtn = '';
+        if (group.isMember) {
+          joinBtn = '<button class="button secondary full btn-leave-group" data-id="' + group.id + '" style="margin-top:8px;">Quitter</button>';
+        } else {
+          joinBtn = '<button class="button primary full btn-join-group" data-id="' + group.id + '" style="margin-top:8px;">Rejoindre</button>';
+        }
+        grid.insertAdjacentHTML('beforeend',
+          '<div class="user-preview aua-fade-in">' +
+          '<figure class="user-preview-cover liquid" style="background:url(\'' + (group.cover_url || 'img/cover/29.jpg') + '\') center/cover;"></figure>' +
+          '<div class="user-preview-info">' +
+          '<div class="user-short-description">' +
+          '<p class="user-short-description-title"><a href="group-timeline.html?id=' + group.id + '">' + group.name + '</a></p>' +
+          '<p class="user-short-description-text">' + (group.memberCount || 0) + ' membres &middot; ' + (group.type || 'public') + '</p>' +
+          '</div>' +
+          '<div class="user-preview-actions" style="margin-top:12px;">' +
+          '<a class="button secondary full" href="group-timeline.html?id=' + group.id + '">Voir</a>' +
+          joinBtn +
+          '</div></div></div>'
+        );
+      });
+
+      // Wire join/leave buttons
+      grid.querySelectorAll('.btn-join-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          try {
+            await GroupsAPI.join(this.dataset.id);
+            PageInit.toast('Groupe rejoint !', 'success');
+            loadGroups(searchInput ? searchInput.value.trim() : '');
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+      grid.querySelectorAll('.btn-leave-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          try {
+            await GroupsAPI.leave(this.dataset.id);
+            PageInit.toast('Groupe quitte', 'success');
+            loadGroups(searchInput ? searchInput.value.trim() : '');
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+    } catch(e) {
+      console.error('Groups load:', e);
+    } finally {
+      PageInit.hideLoading();
     }
-  } catch(e) { console.log('Groups load:', e.message); }
+  }
+
+  // Search handler
+  if (searchInput) {
+    var searchTimeout;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(function() { loadGroups(searchInput.value.trim()); }, 400);
+    });
+    var searchForm = searchInput.closest('form');
+    if (searchForm) searchForm.addEventListener('submit', function(e) { e.preventDefault(); loadGroups(searchInput.value.trim()); });
+  }
+
+  loadGroups();
 });
 </script>
 </body>
