@@ -56,6 +56,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get my products (seller dashboard) - MUST be before /:id
+router.get('/seller/my-products', authenticate, async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      where: { seller_id: req.user.id },
+      order: [['created_at', 'DESC']]
+    });
+    res.json({ products });
+  } catch (error) {
+    console.error('My products error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // Get product by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -150,20 +164,6 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.json({ message: 'Produit supprime' });
   } catch (error) {
     console.error('Delete product error:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
-// Get my products (seller dashboard)
-router.get('/seller/my-products', authenticate, async (req, res) => {
-  try {
-    const products = await Product.findAll({
-      where: { seller_id: req.user.id },
-      order: [['created_at', 'DESC']]
-    });
-    res.json({ products });
-  } catch (error) {
-    console.error('My products error:', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });

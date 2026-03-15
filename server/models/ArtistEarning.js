@@ -16,7 +16,7 @@ const ArtistEarning = sequelize.define('ArtistEarning', {
     allowNull: false
   },
   type: {
-    type: DataTypes.ENUM('subscription', 'sale', 'tip'),
+    type: DataTypes.ENUM('subscription', 'sale', 'tip', 'subscription_renewal'),
     allowNull: false
   },
   source_id: {

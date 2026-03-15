@@ -71,6 +71,11 @@ const PostInteractions = {
     var content = input.value.trim();
     if (!content) return;
 
+    // Disable input while sending
+    var sendBtn = input.nextElementSibling;
+    input.disabled = true;
+    if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = '...'; }
+
     try {
       var data = await apiRequest('/api/posts/' + postId + '/comments', {
         method: 'POST',
@@ -79,6 +84,10 @@ const PostInteractions = {
 
       input.value = '';
 
+      // Make sure comments section is visible
+      var section = document.getElementById('comments-' + postId);
+      if (section) section.style.display = 'block';
+
       var list = document.getElementById('comments-list-' + postId);
       if (list) {
         var noComments = list.querySelector('p');
@@ -86,6 +95,8 @@ const PostInteractions = {
           list.innerHTML = '';
         }
         list.insertAdjacentHTML('beforeend', PostInteractions.createCommentHTML(data.comment));
+        // Scroll to new comment
+        list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
       // Update comment count
@@ -98,22 +109,38 @@ const PostInteractions = {
       }
     } catch (error) {
       console.error('Add comment error:', error);
+      if (typeof PageInit !== 'undefined' && PageInit.toast) {
+        PageInit.toast('Erreur lors de l\'envoi du commentaire', 'error');
+      }
+    } finally {
+      input.disabled = false;
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Envoyer'; }
+      input.focus();
     }
   },
 
   createCommentHTML(comment, isReply) {
     var author = comment.author || {};
     var indent = isReply ? 'margin-left:32px;' : '';
+    var timeAgo = '';
+    if (typeof PageInit !== 'undefined' && PageInit.timeAgo) {
+      timeAgo = PageInit.timeAgo(comment.created_at || comment.createdAt);
+    }
 
-    return '<div style="display:flex;gap:8px;padding:6px 0;' + indent + '">' +
-      '<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;">' +
-        '<img src="' + (author.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
-      '</div>' +
-      '<div style="background:#f5f5fa;padding:8px 12px;border-radius:12px;flex:1;">' +
-        '<a href="profile-timeline.html?id=' + author.id + '" style="font-size:12px;font-weight:700;color:#3e3f5e;">' +
-          (author.display_name || author.username || '') +
-        '</a>' +
-        '<p style="font-size:13px;color:#3e3f5e;margin-top:2px;">' + (comment.content || '') + '</p>' +
+    return '<div class="aua-fade-in" style="display:flex;gap:8px;padding:6px 0;' + indent + '">' +
+      '<a href="profile-timeline.html?id=' + author.id + '" style="flex-shrink:0;">' +
+        '<div style="width:32px;height:32px;border-radius:50%;overflow:hidden;">' +
+          '<img src="' + (author.avatar_url || 'img/avatar/01.jpg') + '" style="width:100%;height:100%;object-fit:cover;">' +
+        '</div>' +
+      '</a>' +
+      '<div style="flex:1;">' +
+        '<div style="background:#f5f5fa;padding:10px 14px;border-radius:12px;">' +
+          '<a href="profile-timeline.html?id=' + author.id + '" style="font-size:12px;font-weight:700;color:#3e3f5e;">' +
+            (author.display_name || author.username || '') +
+          '</a>' +
+          '<p style="font-size:13px;color:#3e3f5e;margin-top:2px;line-height:1.4;">' + (comment.content || '') + '</p>' +
+        '</div>' +
+        (timeAgo ? '<p style="font-size:11px;color:#9aa4bf;margin-top:4px;margin-left:14px;">' + timeAgo + '</p>' : '') +
       '</div>' +
     '</div>';
   }

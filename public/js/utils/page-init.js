@@ -17,6 +17,7 @@ const PageInit = {
       this.markActiveNavLink();
       this.checkOnboarding();
       this.loadNotifications();
+      this.initSocket();
       return true;
     } catch (error) {
       console.error('Page init error:', error);
@@ -226,7 +227,7 @@ const PageInit = {
           <div class="post-comments-section" id="comments-${post.id}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #eaeaf5;">
             <div class="comments-list" id="comments-list-${post.id}"></div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Ecrire un commentaire..." style="flex:1;padding:8px 12px;border:1px solid #dedeea;border-radius:12px;font-size:13px;outline:none;">
+              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Ecrire un commentaire..." onkeydown="if(event.key==='Enter'){event.preventDefault();PostInteractions.addComment(${post.id});}" style="flex:1;padding:8px 12px;border:1px solid #dedeea;border-radius:12px;font-size:13px;outline:none;">
               <button onclick="PostInteractions.addComment(${post.id})" style="padding:8px 16px;background:#615dfa;color:#fff;border:none;border-radius:12px;font-size:13px;cursor:pointer;">Envoyer</button>
             </div>
           </div>
@@ -698,6 +699,145 @@ const PageInit = {
     }).catch(function(e) {
       console.log('Notifications load:', e.message || e);
     });
+  },
+
+  // ===== SOCKET.IO REAL-TIME =====
+  socket: null,
+
+  initSocket() {
+    // Only connect if socket.io client is available
+    if (typeof io === 'undefined') {
+      // Dynamically load socket.io client
+      var script = document.createElement('script');
+      script.src = '/socket.io/socket.io.js';
+      script.onload = this._connectSocket.bind(this);
+      script.onerror = function() { console.log('Socket.io not available (static hosting)'); };
+      document.head.appendChild(script);
+    } else {
+      this._connectSocket();
+    }
+  },
+
+  _connectSocket() {
+    if (typeof io === 'undefined') return;
+    var self = this;
+    var token = AuthAPI.getToken ? AuthAPI.getToken() : localStorage.getItem('aua_token');
+    if (!token) return;
+
+    try {
+      this.socket = io({
+        auth: { token: token },
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 2000,
+        reconnectionAttempts: 5
+      });
+
+      this.socket.on('connect', function() {
+        console.log('Socket connected');
+      });
+
+      // Real-time notifications
+      this.socket.on('new_notification', function(notification) {
+        // Show toast
+        self.toast(notification.content || notification.title || 'Nouvelle notification', 'info');
+
+        // Increment badge counter
+        var badges = document.querySelectorAll('.notification-count-badge');
+        badges.forEach(function(badge) {
+          var count = parseInt(badge.textContent) || 0;
+          badge.textContent = count + 1 > 9 ? '9+' : count + 1;
+        });
+
+        // Add unread class to bell icon
+        var bellIcons = document.querySelectorAll('.action-list-item-icon.icon-notification');
+        bellIcons.forEach(function(icon) {
+          var item = icon.closest('.action-list-item');
+          if (item) {
+            item.classList.add('unread');
+            if (!item.querySelector('.notification-count-badge')) {
+              var badge = document.createElement('span');
+              badge.className = 'notification-count-badge';
+              badge.style.cssText = 'position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;';
+              item.style.position = 'relative';
+              badge.textContent = '1';
+              item.appendChild(badge);
+            }
+          }
+        });
+
+        // Prepend to dropdown if visible
+        var dropdowns = document.querySelectorAll('.dropdown-box.header-dropdown');
+        dropdowns.forEach(function(dropdown) {
+          var title = dropdown.querySelector('.dropdown-box-header-title');
+          if (!title || title.textContent.trim() !== 'Notifications') return;
+          var list = dropdown.querySelector('.dropdown-box-list');
+          if (!list) return;
+          var typeIcons = {
+            friend_request: '&#x1F91D;', friend_accepted: '&#x2705;',
+            reaction: '&#x2764;', comment: '&#x1F4AC;',
+            order: '&#x1F6D2;', subscription: '&#x2B50;',
+            forum_reply: '&#x1F4DD;', event_rsvp: '&#x1F389;'
+          };
+          var icon = typeIcons[notification.type] || '&#x1F514;';
+          list.insertAdjacentHTML('afterbegin',
+            '<div class="dropdown-box-list-item" style="background:#f8f8ff;">' +
+              '<div class="user-status notification" style="cursor:pointer;" onclick="' +
+                (notification.link ? 'window.location.href=\'' + notification.link + '\'' : '') + '">' +
+                '<div style="display:flex;gap:12px;align-items:flex-start;padding:8px 0;">' +
+                  '<span style="font-size:20px;flex-shrink:0;">' + icon + '</span>' +
+                  '<div style="flex:1;">' +
+                    '<p style="font-size:13px;font-weight:700;color:#3e3f5e;">' + (notification.content || notification.title) + '</p>' +
+                    '<p style="font-size:11px;color:#9aa4bf;">a l\'instant</p>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          );
+        });
+      });
+
+      // Level up notification
+      this.socket.on('level_up', function(data) {
+        self.toast('Niveau ' + data.level + ' atteint ! +' + data.xpGained + ' XP', 'success');
+      });
+
+      // Badge earned
+      this.socket.on('badge_earned', function(data) {
+        self.toast('Badge debloque : ' + (data.name || data.badge_name || 'Nouveau badge') + ' !', 'success');
+      });
+
+      // User online/offline (update avatars)
+      this.socket.on('user_online', function(data) {
+        document.querySelectorAll('[data-user-id="' + data.userId + '"] .user-avatar-badge').forEach(function(badge) {
+          badge.classList.add('online');
+          badge.classList.remove('offline');
+        });
+      });
+
+      this.socket.on('user_offline', function(data) {
+        document.querySelectorAll('[data-user-id="' + data.userId + '"] .user-avatar-badge').forEach(function(badge) {
+          badge.classList.remove('online');
+          badge.classList.add('offline');
+        });
+      });
+
+      // New chat message (for message pages)
+      this.socket.on('new_message', function(data) {
+        if (window.location.pathname.indexOf('messages') === -1) {
+          // Show toast for messages received outside chat page
+          var sender = data.sender ? (data.sender.display_name || data.sender.username) : 'Quelqu\'un';
+          self.toast('Message de ' + sender, 'info');
+        }
+      });
+
+      this.socket.on('connect_error', function(err) {
+        console.log('Socket connection error:', err.message);
+      });
+
+    } catch(e) {
+      console.log('Socket init error:', e.message);
+    }
   },
 
   // ===== ONBOARDING =====

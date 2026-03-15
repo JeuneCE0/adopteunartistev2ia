@@ -131,8 +131,11 @@ router.get('/user/:userId', optionalAuth, async (req, res) => {
       offset: parseInt(offset)
     });
 
+    const userId = req.user ? req.user.id : null;
+    const enrichedPosts = await enrichPosts(posts, userId);
+
     res.json({
-      posts,
+      posts: enrichedPosts,
       total: count,
       page: parseInt(page),
       totalPages: Math.ceil(count / limit)
@@ -154,7 +157,10 @@ router.get('/:id', optionalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Post non trouve' });
     }
 
-    res.json({ post });
+    const userId = req.user ? req.user.id : null;
+    const [enrichedPost] = await enrichPosts([post], userId);
+
+    res.json({ post: enrichedPost });
   } catch (error) {
     console.error('Get post error:', error);
     res.status(500).json({ error: 'Erreur serveur' });
