@@ -4,6 +4,7 @@ const { authenticate, optionalAuth } = require('../middleware/auth');
 const { Group, GroupMember, User, Post } = require('../models');
 const { Op } = require('sequelize');
 const upload = require('../middleware/upload');
+const { awardXP } = require('../services/gamification');
 
 // List all groups (public + user's private groups)
 router.get('/', optionalAuth, async (req, res) => {
@@ -134,6 +135,10 @@ router.post('/', authenticate, async (req, res) => {
       user_id: req.user.id,
       role: 'admin'
     });
+
+    // Gamification
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'group_create', io).catch(e => console.error('XP error:', e));
 
     res.status(201).json({ group });
   } catch (error) {

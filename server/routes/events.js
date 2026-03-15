@@ -3,6 +3,8 @@ const router = express.Router();
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const { Event, EventAttendee, User, Group } = require('../models');
 const { Op } = require('sequelize');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 // List events
 router.get('/', async (req, res) => {
@@ -98,6 +100,10 @@ router.post('/', authenticate, async (req, res) => {
     // Creator is automatically going
     await EventAttendee.create({ event_id: event.id, user_id: req.user.id, status: 'going' });
 
+    // Gamification
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'event_create', io).catch(e => console.error('XP error:', e));
+
     res.status(201).json({ event });
   } catch (error) {
     console.error('Create event error:', error);
@@ -153,6 +159,19 @@ router.post('/:id/rsvp', authenticate, async (req, res) => {
     });
 
     if (!created) await attendee.update({ status });
+
+    // Notify event creator when someone RSVPs "going"
+    if (status === 'going' && event.creator_id !== req.user.id) {
+      const io = req.app.get('io');
+      const userName = req.user.display_name || req.user.username;
+      createNotification(io, {
+        userId: event.creator_id,
+        type: 'event_rsvp',
+        title: 'Nouveau participant',
+        content: userName + ' participera a "' + event.title + '"',
+        link: '/events.html'
+      }).catch(e => console.error('Notification error:', e));
+    }
 
     res.json({ attendee });
   } catch (error) {

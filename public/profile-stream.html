@@ -5273,23 +5273,54 @@
 <script src="js/api/messages.js"></script>
 <script src="js/api/users.js"></script>
 <script src="js/utils/page-init.js"></script>
+<script src="js/api/streams.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
   var ok = await PageInit.init();
   if (!ok) return;
   var userId = PageInit.getUrlParam('id') || PageInit.user.id;
   await PageInit.loadProfileHeader(userId);
+
   var streamArea = document.querySelector('.grid.grid-9-3 .grid-column:first-child, .stream-box');
-  if (streamArea) {
-    try {
-      var data = await apiRequest('/api/streams?user_id=' + userId + '&status=live');
-      var streams = data.streams || [];
-      if (streams.length === 0) {
-        streamArea.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun stream en cours</p></div>';
-      }
-    } catch(e) {
-      streamArea.innerHTML = '<div class="widget-box" style="text-align:center;padding:40px;"><p style="color:#9aa4bf;">Aucun stream en cours</p></div>';
+  if (!streamArea) return;
+
+  try {
+    // Load all streams for this user (live + ended)
+    var data = await apiRequest('/api/streams?user_id=' + userId + '&limit=20');
+    var streams = data.streams || [];
+
+    if (streams.length === 0) {
+      PageInit.showEmpty(streamArea, 'Aucun stream', 'Pas encore de streams publies');
+      return;
     }
+
+    streamArea.innerHTML = '';
+    streams.forEach(function(stream) {
+      var isLive = stream.status === 'live';
+      var date = PageInit.timeAgo ? PageInit.timeAgo(stream.created_at || stream.createdAt) : '';
+      var badge = isLive
+        ? '<span style="background:#e74c3c;color:#fff;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;animation:pulse 2s infinite;">EN DIRECT</span>'
+        : '<span style="background:#f5f5fa;color:#9aa4bf;padding:2px 10px;border-radius:10px;font-size:11px;">' + (stream.status || 'termine') + '</span>';
+
+      streamArea.insertAdjacentHTML('beforeend',
+        '<div class="widget-box aua-fade-in" style="margin-bottom:12px;padding:20px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<div style="flex:1;">' +
+              '<p style="font-weight:700;font-size:15px;color:#3e3f5e;">' + (stream.title || 'Stream sans titre') + '</p>' +
+              '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' +
+                (stream.viewer_count || 0) + ' spectateurs &middot; ' + date +
+              '</p>' +
+            '</div>' +
+            badge +
+          '</div>' +
+          (stream.description ? '<p style="font-size:13px;color:#6e7194;margin-top:10px;">' + stream.description + '</p>' : '') +
+          (stream.thumbnail_url ? '<img src="' + stream.thumbnail_url + '" style="width:100%;border-radius:8px;margin-top:12px;max-height:200px;object-fit:cover;">' : '') +
+        '</div>'
+      );
+    });
+  } catch(e) {
+    console.error('Stream load error:', e);
+    PageInit.showEmpty(streamArea, 'Aucun stream', 'Erreur de chargement');
   }
 });
 </script>

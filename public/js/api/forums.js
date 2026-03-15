@@ -19,6 +19,10 @@ const ForumsAPI = {
     return apiRequest(`${this.baseURL}/categories/${categoryId}/threads?page=${page}&limit=${limit}`);
   },
 
+  async getUserThreads(userId, page = 1, limit = 20) {
+    return apiRequest(`${this.baseURL}/user/${userId}/threads?page=${page}&limit=${limit}`);
+  },
+
   async getThread(threadId, page = 1) {
     return apiRequest(`${this.baseURL}/threads/${threadId}?page=${page}`);
   },

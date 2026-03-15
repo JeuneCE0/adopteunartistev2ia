@@ -16,6 +16,7 @@ const PageInit = {
       this.initToastContainer();
       this.markActiveNavLink();
       this.checkOnboarding();
+      this.loadNotifications();
       return true;
     } catch (error) {
       console.error('Page init error:', error);
@@ -595,6 +596,108 @@ const PageInit = {
     var pct = nextLevelXp > 0 ? Math.min(100, Math.round((currentXp / nextLevelXp) * 100)) : 0;
     return '<div class="aua-xp-bar"><div class="aua-xp-bar-fill" style="width:' + pct + '%;"></div></div>' +
       '<p style="font-size:11px;color:#9aa4bf;margin-top:4px;">' + currentXp + ' / ' + nextLevelXp + ' XP</p>';
+  },
+
+  // ===== NOTIFICATIONS =====
+  loadNotifications() {
+    if (typeof apiRequest === 'undefined') return;
+    var self = this;
+
+    apiRequest('/api/notifications?page=1&limit=10').then(function(data) {
+      var notifications = data.notifications || [];
+      var unreadCount = data.unreadCount || 0;
+      var unread = notifications.filter(function(n) { return !n.is_read; });
+
+      // Update notification badge count in header
+      var bellIcons = document.querySelectorAll('.action-list-item-icon.icon-notification');
+      bellIcons.forEach(function(icon) {
+        var item = icon.closest('.action-list-item');
+        if (item) {
+          if (unreadCount > 0) {
+            item.classList.add('unread');
+            // Add or update badge
+            var badge = item.querySelector('.notification-count-badge');
+            if (!badge) {
+              badge = document.createElement('span');
+              badge.className = 'notification-count-badge';
+              badge.style.cssText = 'position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;';
+              item.style.position = 'relative';
+              item.appendChild(badge);
+            }
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+          } else {
+            item.classList.remove('unread');
+            var existingBadge = item.querySelector('.notification-count-badge');
+            if (existingBadge) existingBadge.remove();
+          }
+        }
+      });
+
+      // Populate notification dropdown
+      var dropdowns = document.querySelectorAll('.dropdown-box.header-dropdown');
+      dropdowns.forEach(function(dropdown) {
+        var title = dropdown.querySelector('.dropdown-box-header-title');
+        if (!title || title.textContent.trim() !== 'Notifications') return;
+
+        var list = dropdown.querySelector('.dropdown-box-list');
+        if (!list) return;
+
+        if (notifications.length === 0) {
+          list.innerHTML = '<div style="text-align:center;padding:20px;"><p style="color:#9aa4bf;font-size:13px;">Aucune notification</p></div>';
+          return;
+        }
+
+        list.innerHTML = '';
+        notifications.slice(0, 6).forEach(function(notif) {
+          var timeAgo = self.timeAgo ? self.timeAgo(notif.created_at || notif.createdAt) : '';
+          var typeIcons = {
+            friend_request: '&#x1F91D;', friend_accepted: '&#x2705;',
+            reaction: '&#x2764;', comment: '&#x1F4AC;',
+            order: '&#x1F6D2;', order_update: '&#x1F4E6;',
+            subscription: '&#x2B50;', review: '&#x2B50;',
+            forum_reply: '&#x1F4DD;', event_rsvp: '&#x1F389;',
+            badge_earned: '&#x1F3C5;', level_up: '&#x2B06;'
+          };
+          var icon = typeIcons[notif.type] || '&#x1F514;';
+          var unreadClass = notif.is_read ? '' : 'style="background:#f8f8ff;"';
+
+          list.insertAdjacentHTML('beforeend',
+            '<div class="dropdown-box-list-item" ' + unreadClass + ' data-notif-id="' + notif.id + '">' +
+              '<div class="user-status notification" style="cursor:pointer;" onclick="' +
+                (notif.link ? 'window.location.href=\'' + notif.link + '\'' : '') + '">' +
+                '<div style="display:flex;gap:12px;align-items:flex-start;padding:8px 0;">' +
+                  '<span style="font-size:20px;flex-shrink:0;">' + icon + '</span>' +
+                  '<div style="flex:1;min-width:0;">' +
+                    '<p style="font-size:13px;font-weight:' + (notif.is_read ? '400' : '700') + ';color:#3e3f5e;line-height:1.4;">' + (notif.content || notif.title) + '</p>' +
+                    '<p style="font-size:11px;color:#9aa4bf;margin-top:2px;">' + timeAgo + '</p>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          );
+        });
+
+        // Update "View all" link text
+        var viewAll = dropdown.querySelector('.dropdown-box-button');
+        if (viewAll) {
+          viewAll.textContent = 'Voir toutes les notifications';
+          viewAll.href = 'hub-profile-notifications.html';
+        }
+
+        // Mark all as read button
+        var headerActions = dropdown.querySelector('.dropdown-box-header-actions');
+        if (headerActions && unreadCount > 0) {
+          headerActions.innerHTML = '<p class="dropdown-box-header-action" style="cursor:pointer;font-size:12px;color:#615dfa;" id="mark-all-read">Tout lire</p>';
+          document.getElementById('mark-all-read').addEventListener('click', function() {
+            apiRequest('/api/notifications/read-all', { method: 'PUT' }).then(function() {
+              self.loadNotifications();
+            }).catch(function() {});
+          });
+        }
+      });
+    }).catch(function(e) {
+      console.log('Notifications load:', e.message || e);
+    });
   },
 
   // ===== ONBOARDING =====

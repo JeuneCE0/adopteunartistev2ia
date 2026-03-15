@@ -5,6 +5,9 @@ const sequelize = require('../config/database');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
+
 const router = express.Router();
 
 // POST /api/posts - Create a post
@@ -31,6 +34,10 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
     const fullPost = await Post.findByPk(post.id, {
       include: [{ model: User, as: 'author', attributes: { exclude: ['password_hash'] } }]
     });
+
+    // Gamification: award XP for creating a post
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'post_create', io).catch(e => console.error('XP error:', e));
 
     res.status(201).json({ post: fullPost });
   } catch (error) {

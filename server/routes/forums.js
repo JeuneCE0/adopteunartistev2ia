@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const { ForumCategory, ForumThread, ForumReply, User } = require('../models');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 // List categories
 router.get('/categories', async (req, res) => {
@@ -73,6 +75,38 @@ router.get('/categories/:categoryId/threads', async (req, res) => {
   }
 });
 
+// Get threads by user
+router.get('/user/:userId/threads', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows: threads } = await ForumThread.findAndCountAll({
+      where: { user_id: req.params.userId },
+      include: [
+        { model: User, as: 'author', attributes: ['id', 'username', 'display_name', 'avatar_url'] },
+        { model: ForumCategory, as: 'category', attributes: ['id', 'name'] }
+      ],
+      order: [['created_at', 'DESC']],
+      limit,
+      offset
+    });
+
+    const result = await Promise.all(threads.map(async (thread) => {
+      const replyCount = await ForumReply.count({ where: { thread_id: thread.id } });
+      const t = thread.toJSON();
+      t.reply_count = replyCount;
+      return t;
+    }));
+
+    res.json({ threads: result, total: count, page, totalPages: Math.ceil(count / limit) });
+  } catch (error) {
+    console.error('User threads error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // Get thread with replies
 router.get('/threads/:id', async (req, res) => {
   try {
@@ -134,6 +168,10 @@ router.post('/categories/:categoryId/threads', authenticate, async (req, res) =>
       include: [{ model: User, as: 'author', attributes: ['id', 'username', 'display_name', 'avatar_url'] }]
     });
 
+    // Gamification
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'forum_thread', io).catch(e => console.error('XP error:', e));
+
     res.status(201).json({ thread: fullThread });
   } catch (error) {
     console.error('Create thread error:', error);
@@ -160,6 +198,20 @@ router.post('/threads/:id/replies', authenticate, async (req, res) => {
     const fullReply = await ForumReply.findByPk(reply.id, {
       include: [{ model: User, as: 'author', attributes: ['id', 'username', 'display_name', 'avatar_url', 'level'] }]
     });
+
+    // Gamification + notification
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'forum_reply', io).catch(e => console.error('XP error:', e));
+    if (thread.user_id !== req.user.id) {
+      const userName = req.user.display_name || req.user.username;
+      createNotification(io, {
+        userId: thread.user_id,
+        type: 'forum_reply',
+        title: 'Nouvelle reponse',
+        content: userName + ' a repondu a votre discussion "' + thread.title + '"',
+        link: '/forums-discussion.html?id=' + thread.id
+      }).catch(e => console.error('Notification error:', e));
+    }
 
     res.status(201).json({ reply: fullReply });
   } catch (error) {

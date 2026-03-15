@@ -5378,25 +5378,27 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (!contentArea) return;
   PageInit.showLoading(contentArea);
   try {
-    var data = await NotificationsAPI.list();
+    var data = await NotificationsAPI.getAll(1, 50);
     var notifs = data.notifications || [];
     if (notifs.length === 0) {
       PageInit.showEmpty(contentArea, '&#x1F514;', 'Aucune notification', 'Vous n\'avez pas encore de notifications');
     } else {
       var html = '<div style="padding:12px 16px;text-align:right;border-bottom:1px solid #eaeaf5;"><button id="mark-all-read" class="button small secondary">Tout marquer comme lu</button></div>';
       notifs.forEach(function(n) {
-        var isUnread = !n.read_at;
-        html += '<div class="notification-box aua-fade-in" style="padding:16px;border-bottom:1px solid #eaeaf5;' + (isUnread ? 'background:#f8f8ff;' : '') + '">' +
-          '<p style="font-size:14px;">' + (n.content || n.message || 'Notification') + '</p>' +
+        var isUnread = !n.is_read;
+        var linkStart = n.link ? '<a href="' + n.link + '" style="text-decoration:none;color:inherit;">' : '';
+        var linkEnd = n.link ? '</a>' : '';
+        html += linkStart + '<div class="notification-box aua-fade-in" style="padding:16px;border-bottom:1px solid #eaeaf5;cursor:pointer;' + (isUnread ? 'background:#f8f8ff;' : '') + '">' +
+          '<p style="font-size:14px;font-weight:' + (isUnread ? '700' : '400') + ';">' + (n.content || n.title || 'Notification') + '</p>' +
           '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + PageInit.timeAgo(n.created_at || n.createdAt) + '</p>' +
-        '</div>';
+        '</div>' + linkEnd;
       });
       contentArea.innerHTML = html;
       var markAllBtn = document.getElementById('mark-all-read');
       if (markAllBtn) {
         markAllBtn.addEventListener('click', async function() {
           try {
-            await NotificationsAPI.markAllRead();
+            await NotificationsAPI.markAllAsRead();
             PageInit.toast('Notifications marquees comme lues', 'success');
             contentArea.querySelectorAll('.notification-box').forEach(function(el) { el.style.background = ''; });
           } catch(e) { console.error(e); }

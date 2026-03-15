@@ -85,6 +85,29 @@ async function checkBadges(userId, io) {
         });
         earned = friendCount >= badge.requirement_value;
         break;
+      case 'products':
+        const { Product } = require('../models');
+        const productCount = await Product.count({ where: { seller_id: userId, status: 'active' } });
+        earned = productCount >= badge.requirement_value;
+        break;
+      case 'groups_created':
+        const { Group } = require('../models');
+        const groupCount = await Group.count({ where: { creator_id: userId } });
+        earned = groupCount >= badge.requirement_value;
+        break;
+      case 'forum_threads':
+        const { ForumThread } = require('../models');
+        const threadCount = await ForumThread.count({ where: { user_id: userId } });
+        earned = threadCount >= badge.requirement_value;
+        break;
+      case 'comments':
+        const { Comment } = require('../models');
+        const commentCount = await Comment.count({ where: { user_id: userId } });
+        earned = commentCount >= badge.requirement_value;
+        break;
+      case 'registration':
+        earned = true; // Always earned if user exists
+        break;
     }
 
     if (earned) {

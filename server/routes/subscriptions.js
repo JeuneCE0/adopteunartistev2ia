@@ -3,6 +3,8 @@ const router = express.Router();
 const { authenticate } = require('../middleware/auth');
 const { SubscriptionTier, Subscription, ArtistEarning, User } = require('../models');
 const { Op } = require('sequelize');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 // Get artist's tiers
 router.get('/tiers/:artistId', async (req, res) => {
@@ -128,6 +130,18 @@ router.post('/subscribe', authenticate, async (req, res) => {
       source_id: subscription.id
     });
 
+    // Gamification + notify artist
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'subscription_create', io).catch(e => console.error('XP error:', e));
+    const userName = req.user.display_name || req.user.username;
+    createNotification(io, {
+      userId: tier.artist_id,
+      type: 'subscription',
+      title: 'Nouveau supporter !',
+      content: userName + ' s\'est abonne a votre palier "' + tier.name + '"',
+      link: '/hub-store-statement.html'
+    }).catch(e => console.error('Notification error:', e));
+
     res.status(201).json({ subscription });
   } catch (error) {
     console.error('Subscribe error:', error);
@@ -212,6 +226,68 @@ router.get('/earnings', authenticate, async (req, res) => {
     });
   } catch (error) {
     console.error('Earnings error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Check and expire subscriptions
+router.post('/check-expiry', authenticate, async (req, res) => {
+  // Admin only or could be called by a cron job
+  try {
+    const expired = await Subscription.findAll({
+      where: {
+        status: 'active',
+        current_period_end: { [Op.lt]: new Date() }
+      },
+      include: [
+        { model: SubscriptionTier, as: 'tier' },
+        { model: User, as: 'subscriber', attributes: ['id', 'display_name'] },
+        { model: User, as: 'artist', attributes: ['id', 'display_name'] }
+      ]
+    });
+
+    let renewed = 0;
+    let cancelled = 0;
+
+    for (const sub of expired) {
+      // Auto-renew: create new period and record earning
+      const now = new Date();
+      const newEnd = new Date(now);
+      newEnd.setMonth(newEnd.getMonth() + 1);
+
+      await sub.update({
+        current_period_start: now,
+        current_period_end: newEnd
+      });
+
+      // Record renewal earning
+      if (sub.tier) {
+        await ArtistEarning.create({
+          artist_id: sub.artist_id,
+          amount: sub.tier.price,
+          type: 'subscription_renewal',
+          source_id: sub.id
+        });
+      }
+
+      // Notify artist
+      const io = req.app.get('io');
+      if (io) {
+        createNotification(io, {
+          userId: sub.artist_id,
+          type: 'subscription_renewed',
+          title: 'Abonnement renouvele',
+          content: (sub.subscriber ? sub.subscriber.display_name : 'Un membre') + ' a renouvele son abonnement',
+          link: '/hub-store-statement.html'
+        }).catch(() => {});
+      }
+
+      renewed++;
+    }
+
+    res.json({ message: `${renewed} abonnements renouveles, ${cancelled} annules` });
+  } catch (error) {
+    console.error('Subscription expiry check error:', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });

@@ -2,6 +2,8 @@ const express = require('express');
 const { Op } = require('sequelize');
 const { User, Friendship } = require('../models');
 const { authenticate } = require('../middleware/auth');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 const router = express.Router();
 
@@ -139,6 +141,17 @@ router.post('/request/:userId', authenticate, async (req, res) => {
       receiver_id: receiverId
     });
 
+    // Notify the receiver
+    const io = req.app.get('io');
+    const userName = req.user.display_name || req.user.username;
+    createNotification(io, {
+      userId: receiverId,
+      type: 'friend_request',
+      title: 'Demande d\'ami',
+      content: userName + ' vous a envoye une demande d\'ami',
+      link: '/hub-profile-requests.html'
+    }).catch(e => console.error('Notification error:', e));
+
     res.status(201).json({ message: 'Demande d\'ami envoyee', friendship });
   } catch (error) {
     console.error('Send request error:', error);
@@ -161,6 +174,22 @@ router.put('/accept/:requestId', authenticate, async (req, res) => {
     }
 
     await friendship.update({ status: 'accepted' });
+
+    // Gamification: award XP to both users
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'friend_accept', io).catch(e => console.error('XP error:', e));
+    awardXP(friendship.requester_id, 'friend_accept', io).catch(e => console.error('XP error:', e));
+
+    // Notify the requester
+    const userName = req.user.display_name || req.user.username;
+    createNotification(io, {
+      userId: friendship.requester_id,
+      type: 'friend_accepted',
+      title: 'Demande acceptee',
+      content: userName + ' a accepte votre demande d\'ami',
+      link: '/profile-timeline.html?id=' + req.user.id
+    }).catch(e => console.error('Notification error:', e));
+
     res.json({ message: 'Demande acceptee', friendship });
   } catch (error) {
     console.error('Accept request error:', error);

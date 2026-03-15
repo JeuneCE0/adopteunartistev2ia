@@ -2,6 +2,8 @@ const express = require('express');
 const { User, Post, Reaction } = require('../models');
 const { authenticate } = require('../middleware/auth');
 const sequelize = require('../config/database');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 const router = express.Router();
 
@@ -34,6 +36,23 @@ router.post('/:id/react', authenticate, async (req, res) => {
     }
 
     const counts = await getReactionCounts(postId);
+
+    // Gamification + notification for new reaction
+    if (created) {
+      const io = req.app.get('io');
+      awardXP(req.user.id, 'reaction_give', io).catch(e => console.error('XP error:', e));
+      if (post.user_id !== req.user.id) {
+        const userName = req.user.display_name || req.user.username;
+        createNotification(io, {
+          userId: post.user_id,
+          type: 'reaction',
+          title: 'Nouvelle reaction',
+          content: userName + ' a reagi a votre publication',
+          link: '/profile-post.html?id=' + postId
+        }).catch(e => console.error('Notification error:', e));
+      }
+    }
+
     res.json({ reaction, counts });
   } catch (error) {
     console.error('React error:', error);
@@ -84,6 +103,20 @@ router.post('/:id/comments', authenticate, async (req, res) => {
     const fullComment = await Comment.findByPk(comment.id, {
       include: [{ model: User, as: 'author', attributes: ['id', 'username', 'display_name', 'avatar_url'] }]
     });
+
+    // Gamification + notification for comment
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'comment_create', io).catch(e => console.error('XP error:', e));
+    if (post.user_id !== req.user.id) {
+      const userName = req.user.display_name || req.user.username;
+      createNotification(io, {
+        userId: post.user_id,
+        type: 'comment',
+        title: 'Nouveau commentaire',
+        content: userName + ' a commente votre publication',
+        link: '/profile-post.html?id=' + postId
+      }).catch(e => console.error('Notification error:', e));
+    }
 
     res.status(201).json({ comment: fullComment });
   } catch (error) {

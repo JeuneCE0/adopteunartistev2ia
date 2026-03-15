@@ -4,6 +4,8 @@ const { authenticate, optionalAuth } = require('../middleware/auth');
 const { Product, User, Review, CartItem } = require('../models');
 const { Op } = require('sequelize');
 const upload = require('../middleware/upload');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 // List products with filters
 router.get('/', async (req, res) => {
@@ -100,6 +102,10 @@ router.post('/', authenticate, upload.single('image'), async (req, res) => {
       image_url: req.file ? `/uploads/${req.file.filename}` : null
     });
 
+    // Gamification
+    const io = req.app.get('io');
+    awardXP(req.user.id, 'product_create', io).catch(e => console.error('XP error:', e));
+
     res.status(201).json({ product });
   } catch (error) {
     console.error('Create product error:', error);
@@ -186,6 +192,19 @@ router.post('/:id/reviews', authenticate, async (req, res) => {
     const fullReview = await Review.findByPk(review.id, {
       include: [{ model: User, as: 'reviewer', attributes: ['id', 'username', 'display_name', 'avatar_url'] }]
     });
+
+    // Notify seller of new review
+    const io = req.app.get('io');
+    if (product.seller_id !== req.user.id) {
+      const userName = req.user.display_name || req.user.username;
+      createNotification(io, {
+        userId: product.seller_id,
+        type: 'review',
+        title: 'Nouvel avis',
+        content: userName + ' a laisse un avis ' + rating + '/5 sur "' + product.title + '"',
+        link: '/marketplace-product.html?id=' + product.id
+      }).catch(e => console.error('Notification error:', e));
+    }
 
     res.status(201).json({ review: fullReview });
   } catch (error) {

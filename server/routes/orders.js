@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
-const { Order, OrderItem, Product, CartItem, User } = require('../models');
+const { Order, OrderItem, Product, CartItem, User, ArtistEarning } = require('../models');
 const sequelize = require('../config/database');
+const { awardXP } = require('../services/gamification');
+const { createNotification } = require('../socket/notifications');
 
 // Create order from cart
 router.post('/', authenticate, async (req, res) => {
@@ -63,6 +65,32 @@ router.post('/', authenticate, async (req, res) => {
 
     // Mark as paid (simplified - no actual Stripe integration yet)
     await order.update({ status: 'paid' });
+
+    // Record earnings for each seller and notify them
+    const io = req.app.get('io');
+    const buyerName = req.user.display_name || req.user.username;
+    const sellerIds = new Set();
+    for (const item of cartItems) {
+      sellerIds.add(item.product.seller_id);
+      await ArtistEarning.create({
+        artist_id: item.product.seller_id,
+        amount: parseFloat(item.product.price) * item.quantity,
+        type: 'sale',
+        source_id: order.id
+      }).catch(() => {});
+    }
+    for (const sellerId of sellerIds) {
+      createNotification(io, {
+        userId: sellerId,
+        type: 'order',
+        title: 'Nouvelle commande !',
+        content: buyerName + ' a passe une commande de ' + total.toFixed(2) + ' EUR',
+        link: '/hub-store-statement.html'
+      }).catch(e => console.error('Notification error:', e));
+    }
+
+    // Gamification
+    awardXP(req.user.id, 'order_complete', io).catch(e => console.error('XP error:', e));
 
     res.status(201).json({ order });
   } catch (error) {
@@ -142,6 +170,20 @@ router.put('/:id/status', authenticate, async (req, res) => {
 
     const { status } = req.body;
     await order.update({ status });
+
+    // Notify buyer of status change
+    const io = req.app.get('io');
+    const statusLabels = { shipped: 'expediee', delivered: 'livree', completed: 'terminee', refunded: 'remboursee' };
+    if (statusLabels[status]) {
+      createNotification(io, {
+        userId: order.buyer_id,
+        type: 'order_update',
+        title: 'Commande ' + statusLabels[status],
+        content: 'Votre commande #' + order.id + ' a ete ' + statusLabels[status],
+        link: '/hub-store-downloads.html'
+      }).catch(e => console.error('Notification error:', e));
+    }
+
     res.json({ order });
   } catch (error) {
     console.error('Update order status error:', error);
