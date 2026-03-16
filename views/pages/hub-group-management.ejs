@@ -1,0 +1,734 @@
+<%- include('../partials/head', { title: "Vikinger | Account Hub", extraCss: [] }) %>
+
+<%- include('../partials/page-loader') %>
+
+<%- include('../partials/layout-shell', { activePage: "overview" }) %>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+    <!-- SECTION BANNER -->
+    <div class="section-banner">
+      <!-- SECTION BANNER ICON -->
+      <img class="section-banner-icon" src="img/banner/accounthub-icon.png" alt="accounthub-icon">
+      <!-- /SECTION BANNER ICON -->
+  
+      <!-- SECTION BANNER TITLE -->
+      <p class="section-banner-title">Account Hub</p>
+      <!-- /SECTION BANNER TITLE -->
+  
+      <!-- SECTION BANNER TEXT -->
+      <p class="section-banner-text">Profile info, messages, settings and much more!</p>
+      <!-- /SECTION BANNER TEXT -->
+    </div>
+    <!-- /SECTION BANNER -->
+
+    <!-- GRID -->
+    <div class="grid grid-3-9 medium-space">
+      <!-- GRID COLUMN -->
+      <div class="account-hub-sidebar">
+        <!-- SIDEBAR BOX -->
+        <div class="sidebar-box no-padding">
+          <!-- SIDEBAR MENU -->
+          <div class="sidebar-menu round-borders">
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-profile">
+                  <use xlink:href="#svg-profile"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">My Profile</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Change your avatar &amp; cover, accept friends, read messages and more!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-info.html">Profile Info</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-social.html">Social &amp; Stream</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-notifications.html">Notifications</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-messages.html">Messages</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-requests.html">Friend Requests</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-settings">
+                  <use xlink:href="#svg-settings"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">Account</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Change settings, configure notifications, and review your privacy</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-info.html">Account Info</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-password.html">Change Password</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-settings.html">General Settings</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-group">
+                  <use xlink:href="#svg-group"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">Groups</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Create new groups, manage the ones you created or accept invites!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked accordion-open">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link active" href="hub-group-management.html">Manage Groups</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-group-invitations.html">Invitations</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-store">
+                  <use xlink:href="#svg-store"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">My Store</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Review your account, manage products check stats and much more!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-account.html">My Account</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-statement.html">Sales Statement</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-items.html">Manage Items</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-downloads.html">Downloads</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+          </div>
+          <!-- /SIDEBAR MENU -->
+        </div>
+        <!-- /SIDEBAR BOX -->
+      </div>
+      <!-- /GRID COLUMN -->
+
+      <!-- GRID COLUMN -->
+      <div class="account-hub-content">
+        <!-- SECTION HEADER -->
+        <div class="section-header">
+          <!-- SECTION HEADER INFO -->
+          <div class="section-header-info">
+            <!-- SECTION PRETITLE -->
+            <p class="section-pretitle">Groups</p>
+            <!-- /SECTION PRETITLE -->
+
+            <!-- SECTION TITLE -->
+            <h2 class="section-title">Manage Groups</h2>
+            <!-- /SECTION TITLE -->
+          </div>
+          <!-- /SECTION HEADER INFO -->
+        </div>
+        <!-- /SECTION HEADER -->
+
+        <!-- GRID -->
+        <div class="grid grid-3-3-3 centered-on-mobile">
+          <!-- CREATE ENTITY BOX -->
+          <div class="create-entity-box">
+            <!-- CREATE ENTITY BOX COVER -->
+            <div class="create-entity-box-cover"></div>
+            <!-- /CREATE ENTITY BOX COVER -->
+        
+            <!-- CREATE ENTITY BOX AVATAR -->
+            <div class="create-entity-box-avatar">
+              <!-- CREATE ENTITY BOX AVATAR ICON -->
+              <svg class="create-entity-box-avatar-icon icon-group">
+                <use xlink:href="#svg-group"></use>
+              </svg>
+              <!-- /CREATE ENTITY BOX AVATAR ICON -->
+            </div>
+            <!-- /CREATE ENTITY BOX AVATAR -->
+        
+            <!-- CREATE ENTITY BOX INFO -->
+            <div class="create-entity-box-info">
+              <!-- CREATE ENTITY BOX TITLE -->
+              <p class="create-entity-box-title">Create New Group</p>
+              <!-- /CREATE ENTITY BOX TITLE -->
+        
+              <!-- CREATE ENTITY BOX TEXT -->
+              <p class="create-entity-box-text">Share your passion with others!</p>
+              <!-- /CREATE ENTITY BOX TEXT -->
+        
+              <!-- BUTTON -->
+              <p class="button secondary full popup-manage-group-trigger">Start Creating!</p>
+              <!-- /BUTTON -->
+            </div>
+            <!-- /CREATE ENTITY BOX INFO -->
+          </div>
+          <!-- /CREATE ENTITY BOX -->
+
+          <!-- USER PREVIEW -->
+          <div class="user-preview small fixed-height-medium">
+            <!-- USER PREVIEW COVER -->
+            <figure class="user-preview-cover liquid">
+              <img src="img/cover/29.jpg" alt="cover-29">
+            </figure>
+            <!-- /USER PREVIEW COVER -->
+
+            <!-- USER PREVIEW INFO -->
+            <div class="user-preview-info">
+              <!-- USER SHORT DESCRIPTION -->
+              <div class="user-short-description small">
+                <!-- USER SHORT DESCRIPTION AVATAR -->
+                <a class="user-short-description-avatar user-avatar no-stats" href="group-timeline.html">
+                  <!-- USER AVATAR BORDER -->
+                  <div class="user-avatar-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-100-108"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR BORDER -->
+              
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-84-92" data-src="img/avatar/24.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+                </a>
+                <!-- /USER SHORT DESCRIPTION AVATAR -->
+          
+                <!-- USER SHORT DESCRIPTION TITLE -->
+                <p class="user-short-description-title small"><a href="group-timeline.html">Cosplayers of the World</a></p>
+                <!-- /USER SHORT DESCRIPTION TITLE -->
+          
+                <!-- USER SHORT DESCRIPTION TEXT -->
+                <p class="user-short-description-text regular">Group Organizer</p>
+                <!-- /USER SHORT DESCRIPTION TEXT -->
+              </div>
+              <!-- /USER SHORT DESCRIPTION -->
+
+              <!-- BUTTON -->
+              <p class="button white full popup-manage-group-trigger">Manage Group</p>
+              <!-- /BUTTON -->
+            </div>
+            <!-- /USER PREVIEW INFO -->
+          </div>
+          <!-- /USER PREVIEW -->
+        </div>
+        <!-- /GRID -->
+      </div>
+      <!-- /GRID COLUMN -->
+    </div>
+    <!-- /GRID -->
+  </div>
+  <!-- /CONTENT GRID -->
+
+  <!-- POPUP BOX -->
+  <div class="popup-box mid popup-manage-group">
+    <!-- POPUP CLOSE BUTTON -->
+    <div class="popup-close-button popup-manage-group-trigger">
+      <!-- POPUP CLOSE BUTTON ICON -->
+      <svg class="popup-close-button-icon icon-cross">
+        <use xlink:href="#svg-cross"></use>
+      </svg>
+      <!-- /POPUP CLOSE BUTTON ICON -->
+    </div>
+    <!-- /POPUP CLOSE BUTTON -->
+
+    <!-- POPUP BOX BODY -->
+    <div class="popup-box-body">
+      <!-- POPUP BOX SIDEBAR -->
+      <div class="popup-box-sidebar">
+        <!-- USER PREVIEW -->
+        <div class="user-preview small">
+          <!-- USER PREVIEW COVER -->
+          <figure class="user-preview-cover liquid">
+            <img src="img/cover/29.jpg" alt="cover-29">
+          </figure>
+          <!-- /USER PREVIEW COVER -->
+
+          <!-- USER PREVIEW INFO -->
+          <div class="user-preview-info">
+            <!-- USER SHORT DESCRIPTION -->
+            <div class="user-short-description small">
+              <!-- USER SHORT DESCRIPTION AVATAR -->
+              <a class="user-short-description-avatar user-avatar no-stats" href="group-timeline.html">
+                <!-- USER AVATAR BORDER -->
+                <div class="user-avatar-border">
+                  <!-- HEXAGON -->
+                  <div class="hexagon-100-108"></div>
+                  <!-- /HEXAGON -->
+                </div>
+                <!-- /USER AVATAR BORDER -->
+            
+                <!-- USER AVATAR CONTENT -->
+                <div class="user-avatar-content">
+                  <!-- HEXAGON -->
+                  <div class="hexagon-image-84-92" data-src="img/avatar/24.jpg"></div>
+                  <!-- /HEXAGON -->
+                </div>
+                <!-- /USER AVATAR CONTENT -->
+              </a>
+              <!-- /USER SHORT DESCRIPTION AVATAR -->
+        
+              <!-- USER SHORT DESCRIPTION TITLE -->
+              <p class="user-short-description-title small"><a href="group-timeline.html">Cosplayers of the World</a></p>
+              <!-- /USER SHORT DESCRIPTION TITLE -->
+        
+              <!-- USER SHORT DESCRIPTION TEXT -->
+              <p class="user-short-description-text regular">Group Organizer</p>
+              <!-- /USER SHORT DESCRIPTION TEXT -->
+            </div>
+            <!-- /USER SHORT DESCRIPTION -->
+          </div>
+          <!-- /USER PREVIEW INFO -->
+        </div>
+        <!-- /USER PREVIEW -->
+
+        <!-- SIDEBAR MENU ITEM -->
+        <div class="sidebar-menu-item">
+          <!-- SIDEBAR MENU BODY -->
+          <div class="sidebar-menu-body secondary">
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link active">Group Info</p>
+            <!-- /SIDEBAR MENU LINK -->
+
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link">Avatar and Cover</p>
+            <!-- /SIDEBAR MENU LINK -->
+
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link">Social Networks</p>
+            <!-- /SIDEBAR MENU LINK -->
+
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link">Settings</p>
+            <!-- /SIDEBAR MENU LINK -->
+
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link">Members</p>
+            <!-- /SIDEBAR MENU LINK -->
+
+            <!-- SIDEBAR MENU LINK -->
+            <p class="sidebar-menu-link">Delete Group</p>
+            <!-- /SIDEBAR MENU LINK -->
+          </div>
+          <!-- /SIDEBAR MENU BODY -->
+        </div>
+        <!-- /SIDEBAR MENU ITEM -->
+
+        <!-- POPUP BOX SIDEBAR FOOTER -->
+        <div class="popup-box-sidebar-footer">
+          <!-- BUTTON -->
+          <p class="button secondary full popup-manage-group-trigger">Save Changes!</p>
+          <!-- /BUTTON -->
+
+          <!-- BUTTON -->
+          <p class="button white full popup-manage-group-trigger">Discard All</p>
+          <!-- /BUTTON -->
+        </div>
+        <!-- /POPUP BOX SIDEBAR FOOTER -->
+      </div>
+      <!-- /POPUP BOX SIDEBAR -->
+  
+      <!-- POPUP BOX CONTENT -->
+      <div class="popup-box-content">
+        <!-- WIDGET BOX -->
+        <div class="widget-box">
+          <!-- WIDGET BOX TITLE -->
+          <p class="widget-box-title">Group Info</p>
+          <!-- /WIDGET BOX TITLE -->
+      
+          <!-- WIDGET BOX CONTENT -->
+          <div class="widget-box-content">
+            <!-- FORM -->
+            <form class="form">
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small active">
+                    <label for="group-name">Group Name</label>
+                    <input type="text" id="group-name" name="group_name" value="Cosplayers of the World">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small active">
+                    <label for="group-tagline">Tagline</label>
+                    <input type="text" id="group-tagline" name="group_tagline" value="All Cosplayers Welcome!">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small mid-textarea">
+                    <textarea id="group-description" name="group_description" placeholder="Write a little description about the group..."></textarea>
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small active">
+                    <label for="group-public-email">Public Email</label>
+                    <input type="text" id="group-public-email" name="group_public_email" value="info@cosworld.com">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="group-public-website">Public Website</label>
+                    <input type="text" id="group-public-website" name="group_public_website">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+            </form>
+            <!-- /FORM -->
+          </div>
+          <!-- WIDGET BOX CONTENT -->
+        </div>
+        <!-- /WIDGET BOX -->
+      </div>
+      <!-- /POPUP BOX CONTENT -->
+    </div>
+    <!-- /POPUP BOX BODY -->
+  </div>
+  <!-- /POPUP BOX -->
+
+<%- include('../partials/scripts') %>
+<!-- global.accordions -->
+<script src="js/global/global.accordions.js"></script>
+<!-- global.popups -->
+<script src="js/global/global.popups.js"></script>
+<!-- API modules -->
+<script src="js/api/auth.js"></script>
+<script src="js/api/groups.js"></script>
+<script src="js/utils/page-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var contentArea = document.querySelector('.account-hub-content .widget-box-content');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (!contentArea) return;
+
+  // Header with create button
+  contentArea.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+    '<h3 style="font-size:16px;font-weight:700;">Mes groupes</h3>' +
+    '<button id="btn-create-group-hub" class="button primary" style="font-size:12px;">+ Creer un groupe</button>' +
+  '</div>' +
+  '<div id="my-groups-list"></div>' +
+  '<div id="modal-group-hub" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;">' +
+    '<div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;width:90%;">' +
+      '<h3 id="modal-group-title" style="margin-bottom:20px;font-size:18px;">Creer un groupe</h3>' +
+      '<input type="hidden" id="edit-group-id">' +
+      '<div style="display:flex;flex-direction:column;gap:16px;">' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Nom *</label>' +
+          '<input type="text" id="hub-group-name" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;" placeholder="Nom du groupe"></div>' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Description</label>' +
+          '<textarea id="hub-group-desc" rows="3" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;resize:vertical;" placeholder="Description..."></textarea></div>' +
+        '<div><label style="font-weight:700;font-size:12px;color:#3e3f5e;display:block;margin-bottom:4px;">Type</label>' +
+          '<select id="hub-group-type" style="width:100%;padding:10px 14px;border:1px solid #dedeea;border-radius:12px;font-size:14px;">' +
+            '<option value="public">Public</option><option value="private">Prive</option><option value="secret">Secret</option>' +
+          '</select></div>' +
+        '<div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;">' +
+          '<button id="btn-cancel-group-hub" class="button secondary">Annuler</button>' +
+          '<button id="btn-submit-group-hub" class="button primary">Creer</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  var modal = document.getElementById('modal-group-hub');
+  var listEl = document.getElementById('my-groups-list');
+
+  document.getElementById('btn-create-group-hub').addEventListener('click', function() {
+    document.getElementById('edit-group-id').value = '';
+    document.getElementById('hub-group-name').value = '';
+    document.getElementById('hub-group-desc').value = '';
+    document.getElementById('hub-group-type').value = 'public';
+    document.getElementById('modal-group-title').textContent = 'Creer un groupe';
+    document.getElementById('btn-submit-group-hub').textContent = 'Creer';
+    modal.style.display = 'flex';
+  });
+  document.getElementById('btn-cancel-group-hub').addEventListener('click', function() { modal.style.display = 'none'; });
+  modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+
+  document.getElementById('btn-submit-group-hub').addEventListener('click', async function() {
+    var name = document.getElementById('hub-group-name').value.trim();
+    var desc = document.getElementById('hub-group-desc').value.trim();
+    var type = document.getElementById('hub-group-type').value;
+    var editId = document.getElementById('edit-group-id').value;
+    if (!name) { PageInit.toast('Le nom est requis', 'error'); return; }
+    try {
+      if (editId) {
+        await GroupsAPI.update(editId, { name: name, description: desc, type: type });
+        PageInit.toast('Groupe mis a jour !', 'success');
+      } else {
+        await GroupsAPI.create(name, desc, type);
+        PageInit.toast('Groupe cree !', 'success');
+      }
+      modal.style.display = 'none';
+      loadMyGroups();
+    } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+  });
+
+  async function loadMyGroups() {
+    try {
+      var data = await apiRequest('/api/groups/user/' + PageInit.user.id);
+      var groups = data.groups || [];
+      if (groups.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center;padding:40px;">' +
+          '<p style="color:#9aa4bf;font-size:14px;">Vous n\'avez rejoint aucun groupe</p>' +
+          '<a href="groups.html" class="button secondary" style="margin-top:12px;">Decouvrir des groupes</a></div>';
+        return;
+      }
+      listEl.innerHTML = '';
+      groups.forEach(function(g) {
+        var isAdmin = g.creator_id === PageInit.user.id;
+        var actions = '<a href="group-timeline.html?id=' + g.id + '" class="button secondary" style="font-size:11px;padding:6px 12px;">Voir</a>';
+        if (isAdmin) {
+          actions += ' <button class="button primary btn-edit-group" data-id="' + g.id + '" data-name="' + (g.name || '').replace(/"/g, '&quot;') + '" data-desc="' + (g.description || '').replace(/"/g, '&quot;') + '" data-type="' + (g.type || 'public') + '" style="font-size:11px;padding:6px 12px;">Modifier</button>';
+          actions += ' <button class="button tertiary btn-delete-group" data-id="' + g.id + '" style="font-size:11px;padding:6px 12px;color:#e74c3c;">Supprimer</button>';
+        } else {
+          actions += ' <button class="button secondary btn-leave-group" data-id="' + g.id + '" style="font-size:11px;padding:6px 12px;">Quitter</button>';
+        }
+        listEl.insertAdjacentHTML('beforeend',
+          '<div class="aua-fade-in" style="padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #eaeaf5;">' +
+            '<img src="' + (g.avatar_url || 'img/avatar/01.jpg') + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">' +
+            '<div style="flex:1;">' +
+              '<a href="group-timeline.html?id=' + g.id + '" style="font-weight:700;font-size:14px;">' + g.name + '</a>' +
+              '<p style="font-size:12px;color:#9aa4bf;">' + (g.memberCount || 0) + ' membres &middot; ' + (g.type || 'public') +
+              (isAdmin ? ' &middot; <span style="color:#615dfa;">Admin</span>' : '') + '</p>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + actions + '</div>' +
+          '</div>'
+        );
+      });
+
+      // Wire edit buttons
+      listEl.querySelectorAll('.btn-edit-group').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.getElementById('edit-group-id').value = this.dataset.id;
+          document.getElementById('hub-group-name').value = this.dataset.name;
+          document.getElementById('hub-group-desc').value = this.dataset.desc;
+          document.getElementById('hub-group-type').value = this.dataset.type;
+          document.getElementById('modal-group-title').textContent = 'Modifier le groupe';
+          document.getElementById('btn-submit-group-hub').textContent = 'Enregistrer';
+          modal.style.display = 'flex';
+        });
+      });
+
+      // Wire delete buttons
+      listEl.querySelectorAll('.btn-delete-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          if (!confirm('Supprimer ce groupe ? Cette action est irreversible.')) return;
+          try {
+            await GroupsAPI.delete(this.dataset.id);
+            PageInit.toast('Groupe supprime', 'success');
+            loadMyGroups();
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+
+      // Wire leave buttons
+      listEl.querySelectorAll('.btn-leave-group').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          try {
+            await GroupsAPI.leave(this.dataset.id);
+            PageInit.toast('Groupe quitte', 'success');
+            loadMyGroups();
+          } catch(e) { PageInit.toast('Erreur: ' + e.message, 'error'); }
+        });
+      });
+    } catch(e) { console.error('Group management error:', e); }
+  }
+
+  loadMyGroups();
+});
+</script>
+<%- include('../partials/footer') %>

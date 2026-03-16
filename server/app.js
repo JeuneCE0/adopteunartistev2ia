@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -9,6 +10,10 @@ const { sequelize } = require('./models');
 const { sanitizeInput, validatePagination } = require('./middleware/validation');
 
 const app = express();
+
+// EJS templating
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views/pages'));
 
 // Security
 app.use(helmet({
@@ -44,7 +49,24 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizeInput);
 app.use(validatePagination);
 
-// Serve static files
+// EJS page routing - render templates for pages that have been extracted
+// Must be BEFORE static middleware so EJS templates take priority over .html files
+const ejsPages = new Set(
+  fs.readdirSync(path.join(__dirname, '../views/pages'))
+    .filter(f => f.endsWith('.ejs'))
+    .map(f => f.replace('.ejs', ''))
+);
+
+app.get('/:page.html', (req, res, next) => {
+  const pageName = req.params.page;
+  if (ejsPages.has(pageName)) {
+    return res.render(pageName);
+  }
+  // Fall through to serve static HTML (index.html, admin.html, 404.html, etc.)
+  next();
+});
+
+// Serve static files (CSS, JS, images, and remaining HTML files)
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
