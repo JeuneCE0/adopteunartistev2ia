@@ -106,6 +106,7 @@ app.use('/api/badges', require('./routes/badges'));
 app.use('/api/quests', require('./routes/quests'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api/streams', require('./routes/streams'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Seed endpoint - creates demo account (protected)
 app.get('/api/seed-demo', async (req, res) => {

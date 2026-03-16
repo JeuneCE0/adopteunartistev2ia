@@ -351,6 +351,178 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== GRID LAYOUTS ===== */
+.grid.grid-3-3-3-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.grid.grid-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== CHAT MESSAGE BUBBLES ===== */
+#chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background: #dedeea;
+  border-radius: 2px;
+}
+
+/* Message input polish */
+#msg-input:focus {
+  border-color: #615dfa;
+  box-shadow: 0 0 0 3px rgba(97, 93, 250, 0.1);
+}
+
+/* ===== DROPDOWN POLISH ===== */
+.dropdown-box {
+  box-shadow: 0 8px 32px rgba(0,0,0,.12) !important;
+  border-radius: 12px !important;
+}
+
+/* ===== NOTIFICATION DROPDOWN ITEMS ===== */
+.dropdown-box-list-item {
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-box-list-item:hover {
+  background-color: #f8f8ff;
+}
+
+/* ===== MARKETPLACE GRID ===== */
+.marketplace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ===== FORUM STYLING ===== */
+.forum-category-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.forum-category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+/* ===== EVENT CARDS ===== */
+.event-preview {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+/* ===== STREAM CARDS ===== */
+.stream-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  transition: transform 0.2s ease;
+}
+
+.stream-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(97, 93, 250, 0.1);
+}
+
+.stream-live-badge {
+  background: #e74c3c;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: aua-pulse 2s ease-in-out infinite;
+}
+
+@keyframes aua-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ===== QUEST PROGRESS ===== */
+.quest-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #eaeaf5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #23d2a6, #40e0d0);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* ===== PROFILE HEADER POLISH ===== */
+.profile-header-cover {
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+/* ===== ONBOARDING OVERLAY ===== */
+#onboarding-overlay .button {
+  min-width: 140px;
+  text-align: center;
+}
+
+/* ===== ACTION LIST NOTIFICATION BADGE ===== */
+.notification-count-badge {
+  animation: aua-badge-pop 0.3s ease;
+}
+
+@keyframes aua-badge-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ===== MOBILE BOTTOM NAV ===== */
+@media (max-width: 960px) {
+  .content-grid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .widget-box {
+    border-radius: 12px;
+  }
+
+  /* Ensure post form is usable on mobile */
+  .quick-post .form-textarea textarea {
+    min-height: 60px;
+  }
+
+  /* Stack profile stats horizontally */
+  .user-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
 /* ===== RESPONSIVE FIXES ===== */
 @media (max-width: 680px) {
   .aua-toast-container {
@@ -364,5 +536,44 @@
 
   .aua-empty-state {
     padding: 40px 16px;
+  }
+
+  .grid.grid-3-3-3-3 {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .grid.grid-half {
+    grid-template-columns: 1fr;
+  }
+
+  /* Chat responsive */
+  #chat-messages {
+    height: 300px !important;
+  }
+
+  /* Admin link visibility */
+  .admin-nav-link {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid.grid-3-3-3-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Compact post actions on small screens */
+  .content-actions {
+    gap: 12px !important;
+  }
+
+  /* Smaller quick-post on mobile */
+  .quick-post-footer-actions {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }

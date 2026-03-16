@@ -106,6 +106,18 @@ const PageInit = {
     this.loadNotificationCount();
     // Load user stats (posts, friends)
     this.loadUserStats();
+
+    // Add admin link for admin users
+    if (this.user.role === 'admin') {
+      var navMenus = document.querySelectorAll('.menu');
+      navMenus.forEach(function(menu) {
+        if (menu.querySelector('.admin-nav-link')) return;
+        var li = document.createElement('li');
+        li.className = 'menu-item';
+        li.innerHTML = '<a class="menu-item-link admin-nav-link" href="admin.html" style="color:#e74c3c;"><svg class="menu-item-link-icon icon-settings" style="fill:#e74c3c;"><use xlink:href="#svg-settings"></use></svg> Admin</a>';
+        menu.appendChild(li);
+      });
+    }
   },
 
   async loadNotificationCount() {
