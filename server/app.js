@@ -162,12 +162,12 @@ app.get('/api/seed-demo', async (req, res) => {
   }
 });
 
-// Catch-all: serve index.html for non-API routes that don't match a static file
-app.get('*', (req, res, next) => {
+// Catch-all: serve 404 or index for non-API routes that don't match a static file
+app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Route API non trouvee' });
   }
-  next();
+  res.status(404).sendFile(path.join(__dirname, '../public/404.html'));
 });
 
 // Error handling
