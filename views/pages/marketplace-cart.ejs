@@ -1,0 +1,578 @@
+<%- include('../partials/head', { title: "Vikinger | Marketplace", extraCss: [] }) %>
+
+<%- include('../partials/page-loader') %>
+
+<%- include('../partials/layout-shell', { activePage: "marketplace" }) %>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+    <!-- SECTION BANNER -->
+    <div class="section-banner">
+      <!-- SECTION BANNER ICON -->
+      <img class="section-banner-icon" src="img/banner/marketplace-icon.png" alt="marketplace-icon">
+      <!-- /SECTION BANNER ICON -->
+  
+      <!-- SECTION BANNER TITLE -->
+      <p class="section-banner-title">Marketplace</p>
+      <!-- /SECTION BANNER TITLE -->
+  
+      <!-- SECTION BANNER TEXT -->
+      <p class="section-banner-text">The best place for the community to buy and sell!</p>
+      <!-- /SECTION BANNER TEXT -->
+    </div>
+    <!-- /SECTION BANNER -->
+
+    <!-- SECTION HEADER -->
+    <div class="section-header">
+      <!-- SECTION HEADER INFO -->
+      <div class="section-header-info">
+        <!-- SECTION PRETITLE -->
+        <p class="section-pretitle">Browse Your</p>
+        <!-- /SECTION PRETITLE -->
+  
+        <!-- SECTION TITLE -->
+        <h2 class="section-title">Shopping Cart <span class="highlighted">3</span></h2>
+        <!-- /SECTION TITLE -->
+      </div>
+      <!-- /SECTION HEADER INFO -->
+    </div>
+    <!-- /SECTION HEADER -->
+
+    <!-- GRID -->
+    <div class="grid grid-9-3 small-space">
+      <!-- GRID COLUMN -->
+      <div class="grid-column">
+        <!-- TABLE WRAP -->
+        <div class="table-wrap" data-simplebar>
+          <!-- TABLE -->
+          <div class="table table-cart split-rows">
+            <!-- TABLE HEADER -->
+            <div class="table-header">
+              <!-- TABLE HEADER COLUMN -->
+              <div class="table-header-column">
+                <!-- TABLE HEADER TITLE -->
+                <p class="table-header-title">Item</p>
+                <!-- /TABLE HEADER TITLE -->
+              </div>
+              <!-- /TABLE HEADER COLUMN -->
+        
+              <!-- TABLE HEADER COLUMN -->
+              <div class="table-header-column padded-left">
+                <!-- TABLE HEADER TITLE -->
+                <p class="table-header-title">License</p>
+                <!-- /TABLE HEADER TITLE -->
+              </div>
+              <!-- /TABLE HEADER COLUMN -->
+        
+              <!-- TABLE HEADER COLUMN -->
+              <div class="table-header-column padded-left">
+                <!-- TABLE HEADER TITLE -->
+                <p class="table-header-title">Quantity</p>
+                <!-- /TABLE HEADER TITLE -->
+              </div>
+              <!-- /TABLE HEADER COLUMN -->
+        
+              <!-- TABLE HEADER COLUMN -->
+              <div class="table-header-column centered padded-left">
+                <!-- TABLE HEADER TITLE -->
+                <p class="table-header-title">Price</p>
+                <!-- /TABLE HEADER TITLE -->
+              </div>
+              <!-- /TABLE HEADER COLUMN -->
+        
+              <!-- TABLE HEADER COLUMN -->
+              <div class="table-header-column padded-big-left"></div>
+              <!-- /TABLE HEADER COLUMN -->
+            </div>
+            <!-- /TABLE HEADER -->
+        
+            <!-- TABLE BODY -->
+            <div class="table-body same-color-rows">
+              <!-- TABLE ROW -->
+              <div class="table-row medium">
+                <!-- TABLE COLUMN -->
+                <div class="table-column">
+                  <!-- PRODUCT PREVIEW -->
+                  <div class="product-preview tiny">
+                    <!-- PRODUCT PREVIEW IMAGE -->
+                    <a href="marketplace-product.html">
+                      <figure class="product-preview-image liquid">
+                        <img src="img/marketplace/items/01.jpg" alt="item-01">
+                      </figure>
+                    </a>
+                    <!-- /PRODUCT PREVIEW IMAGE -->
+        
+                    <!-- PRODUCT PREVIEW INFO -->
+                    <div class="product-preview-info">
+                      <!-- PRODUCT PREVIEW TITLE -->
+                      <p class="product-preview-title"><a href="marketplace-product.html">Twitch Stream UI Pack</a></p>
+                      <!-- /PRODUCT PREVIEW TITLE -->
+        
+                      <!-- PRODUCT PREVIEW CATEGORY -->
+                      <p class="product-preview-category digital"><a href="marketplace-category.html">Stream Packs</a></p>
+                      <!-- /PRODUCT PREVIEW CATEGORY -->
+        
+                      <!-- PRODUCT PREVIEW CREATOR -->
+                      <p class="product-preview-creator"><a href="profile-timeline.html">Chargement...</a></p>
+                      <!-- /PRODUCT PREVIEW CREATOR -->
+                    </div>
+                    <!-- /PRODUCT PREVIEW INFO -->
+                  </div>
+                  <!-- /PRODUCT PREVIEW -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <select id="product-1-license" name="product-1-license">
+                      <option value="0">Regular</option>
+                      <option value="1">Extended</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM COUNTER -->
+                  <div class="form-counter">
+                    <!-- FORM COUNTER VALUE -->
+                    <p class="form-counter-value">1</p>
+                    <!-- /FORM COUNTER VALUE -->
+        
+                    <!-- FORM COUNTER CONTROLS -->
+                    <div class="form-counter-controls">
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-increase">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+        
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-decrease">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+                    </div>
+                    <!-- /FORM COUNTER CONTROLS -->
+                  </div>
+                  <!-- /FORM COUNTER -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column centered padded-left">
+                  <!-- PRICE TITLE -->
+                  <p class="price-title"><span class="currency">$</span> 12.00</p>
+                  <!-- /PRICE TITLE -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-big-left">
+                  <!-- TABLE ACTION -->
+                  <div class="table-action">
+                    <!-- ICON DELETE -->
+                    <svg class="icon-delete">
+                      <use xlink:href="#svg-delete"></use>
+                    </svg>
+                    <!-- /ICON DELETE -->
+                  </div>
+                  <!-- /TABLE ACTION -->
+                </div>
+                <!-- /TABLE COLUMN -->
+              </div>
+              <!-- /TABLE ROW -->
+
+              <!-- TABLE ROW -->
+              <div class="table-row medium">
+                <!-- TABLE COLUMN -->
+                <div class="table-column">
+                  <!-- PRODUCT PREVIEW -->
+                  <div class="product-preview tiny">
+                    <!-- PRODUCT PREVIEW IMAGE -->
+                    <a href="marketplace-product.html">
+                      <figure class="product-preview-image liquid">
+                        <img src="img/marketplace/items/11.jpg" alt="item-11">
+                      </figure>
+                    </a>
+                    <!-- /PRODUCT PREVIEW IMAGE -->
+        
+                    <!-- PRODUCT PREVIEW INFO -->
+                    <div class="product-preview-info">
+                      <!-- PRODUCT PREVIEW TITLE -->
+                      <p class="product-preview-title"><a href="marketplace-product.html">Gaming Coin Badges Pack</a></p>
+                      <!-- /PRODUCT PREVIEW TITLE -->
+        
+                      <!-- PRODUCT PREVIEW CATEGORY -->
+                      <p class="product-preview-category digital"><a href="marketplace-category.html">Illustrations</a></p>
+                      <!-- /PRODUCT PREVIEW CATEGORY -->
+        
+                      <!-- PRODUCT PREVIEW CREATOR -->
+                      <p class="product-preview-creator"><a href="profile-timeline.html">Nick Grissom</a></p>
+                      <!-- /PRODUCT PREVIEW CREATOR -->
+                    </div>
+                    <!-- /PRODUCT PREVIEW INFO -->
+                  </div>
+                  <!-- /PRODUCT PREVIEW -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <select id="product-2-license" name="product-2-license">
+                      <option value="0">Regular</option>
+                      <option value="1">Extended</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM COUNTER -->
+                  <div class="form-counter">
+                    <!-- FORM COUNTER VALUE -->
+                    <p class="form-counter-value">1</p>
+                    <!-- /FORM COUNTER VALUE -->
+        
+                    <!-- FORM COUNTER CONTROLS -->
+                    <div class="form-counter-controls">
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-increase">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+        
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-decrease">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+                    </div>
+                    <!-- /FORM COUNTER CONTROLS -->
+                  </div>
+                  <!-- /FORM COUNTER -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column centered padded-left">
+                  <!-- PRICE TITLE -->
+                  <p class="price-title"><span class="currency">$</span> 6.00</p>
+                  <!-- /PRICE TITLE -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-big-left">
+                  <!-- TABLE ACTION -->
+                  <div class="table-action">
+                    <!-- ICON DELETE -->
+                    <svg class="icon-delete">
+                      <use xlink:href="#svg-delete"></use>
+                    </svg>
+                    <!-- /ICON DELETE -->
+                  </div>
+                  <!-- /TABLE ACTION -->
+                </div>
+                <!-- /TABLE COLUMN -->
+              </div>
+              <!-- /TABLE ROW -->
+
+              <!-- TABLE ROW -->
+              <div class="table-row medium">
+                <!-- TABLE COLUMN -->
+                <div class="table-column">
+                  <!-- PRODUCT PREVIEW -->
+                  <div class="product-preview tiny">
+                    <!-- PRODUCT PREVIEW IMAGE -->
+                    <a href="marketplace-product.html">
+                      <figure class="product-preview-image liquid">
+                        <img src="img/marketplace/items/10.jpg" alt="item-10">
+                      </figure>
+                    </a>
+                    <!-- /PRODUCT PREVIEW IMAGE -->
+        
+                    <!-- PRODUCT PREVIEW INFO -->
+                    <div class="product-preview-info">
+                      <!-- PRODUCT PREVIEW TITLE -->
+                      <p class="product-preview-title"><a href="marketplace-product.html">Pixel Diamond Gaming Magazine</a></p>
+                      <!-- /PRODUCT PREVIEW TITLE -->
+        
+                      <!-- PRODUCT PREVIEW CATEGORY -->
+                      <p class="product-preview-category digital"><a href="marketplace-category.html">HTML Templates</a></p>
+                      <!-- /PRODUCT PREVIEW CATEGORY -->
+        
+                      <!-- PRODUCT PREVIEW CREATOR -->
+                      <p class="product-preview-creator"><a href="profile-timeline.html">Chargement...</a></p>
+                      <!-- /PRODUCT PREVIEW CREATOR -->
+                    </div>
+                    <!-- /PRODUCT PREVIEW INFO -->
+                  </div>
+                  <!-- /PRODUCT PREVIEW -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <select id="product-3-license" name="product-3-license">
+                      <option value="0">Regular</option>
+                      <option value="1">Extended</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-left">
+                  <!-- FORM COUNTER -->
+                  <div class="form-counter">
+                    <!-- FORM COUNTER VALUE -->
+                    <p class="form-counter-value">1</p>
+                    <!-- /FORM COUNTER VALUE -->
+        
+                    <!-- FORM COUNTER CONTROLS -->
+                    <div class="form-counter-controls">
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-increase">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+        
+                      <!-- FORM COUNTER CONTROL -->
+                      <div class="form-counter-control form-counter-control-decrease">
+                        <!-- FORM COUNTER ICON -->
+                        <svg class="form-counter-icon icon-small-arrow">
+                          <use xlink:href="#svg-small-arrow"></use>
+                        </svg>
+                        <!-- /FORM COUNTER ICON -->
+                      </div>
+                      <!-- /FORM COUNTER CONTROL -->
+                    </div>
+                    <!-- /FORM COUNTER CONTROLS -->
+                  </div>
+                  <!-- /FORM COUNTER -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column centered padded-left">
+                  <!-- PRICE TITLE -->
+                  <p class="price-title"><span class="currency">$</span> 26.00</p>
+                  <!-- /PRICE TITLE -->
+                </div>
+                <!-- /TABLE COLUMN -->
+        
+                <!-- TABLE COLUMN -->
+                <div class="table-column padded-big-left">
+                  <!-- TABLE ACTION -->
+                  <div class="table-action">
+                    <!-- ICON DELETE -->
+                    <svg class="icon-delete">
+                      <use xlink:href="#svg-delete"></use>
+                    </svg>
+                    <!-- /ICON DELETE -->
+                  </div>
+                  <!-- /TABLE ACTION -->
+                </div>
+                <!-- /TABLE COLUMN -->
+              </div>
+              <!-- /TABLE ROW -->
+            </div>
+            <!-- /TABLE BODY -->
+          </div>
+          <!-- /TABLE -->
+        </div>
+        <!-- /TABLE WRAP -->
+
+        <!-- PROMO LINE -->
+        <div class="promo-line">
+          <!-- PROMO LINE TEXT -->
+          <p class="promo-line-text">If you have a promotional or a discount code, please enter it right here to redeem it!</p>
+          <!-- /PROMO LINE TEXT -->
+      
+          <!-- PROMO LINE ACTIONS -->
+          <div class="promo-line-actions">
+            <!-- FORM INPUT -->
+            <div class="form-input small">
+              <label for="promo-code">Promo Code</label>
+              <input type="text" id="promo-code" name="promo_code">
+            </div>
+            <!-- /FORM INPUT -->
+      
+            <!-- BUTTON -->
+            <p class="button secondary">Redeem Code</p>
+            <!-- /BUTTON -->
+          </div>
+          <!-- /PROMO LINE ACTIONS -->
+        </div>
+        <!-- /PROMO LINE -->
+      </div>
+      <!-- /GRID COLUMN -->
+
+      <!-- GRID COLUMN -->
+      <div class="grid-column">
+        <!-- SIDEBAR BOX -->
+        <div class="sidebar-box margin-top">
+          <!-- SIDEBAR BOX TITLE -->
+          <p class="sidebar-box-title">Order Totals</p>
+          <!-- /SIDEBAR BOX TITLE -->
+
+          <!-- SIDEBAR BOX ITEMS -->
+          <div class="sidebar-box-items">
+            <!-- PRICE TITLE -->
+            <p class="price-title big"><span class="currency">$</span> 39.00</p>
+            <!-- /PRICE TITLE -->
+
+            <!-- TOTALS LINE LIST -->
+            <div class="totals-line-list">
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Cart (3)</p>
+                <!-- /TOTALS LINE TITLE -->
+
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 44.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Code</p>
+                <!-- /TOTALS LINE TITLE -->
+
+                <!-- PRICE TITLE -->
+                <p class="price-title">-<span class="currency">$</span> 5.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Total</p>
+                <!-- /TOTALS LINE TITLE -->
+
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 39.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+            </div>
+            <!-- /TOTALS LINE LIST -->
+
+            <!-- BUTTON -->
+            <a class="button primary" href="marketplace-checkout.html">Proceed to Checkout</a>
+            <!-- /BUTTON -->
+
+            <!-- BUTTON -->
+            <p class="button white small-space">Update Cart</p>
+            <!-- /BUTTON -->
+          </div>
+          <!-- /SIDEBAR BOX ITEMS -->
+        </div>
+        <!-- /SIDEBAR BOX -->
+      </div>
+      <!-- /GRID COLUMN -->
+    </div>
+    <!-- /GRID -->
+  </div>
+  <!-- /CONTENT GRID -->
+
+<%- include('../partials/scripts') %>
+<script src="js/api/products.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  try {
+    var data = await ProductsAPI.getCart();
+    var items = data.items || data.cart || [];
+    var contentArea = document.querySelector('.cart-item-list, .section-cart, .content-grid .grid');
+    if (!contentArea) contentArea = document.querySelector('.content-grid');
+    if (contentArea) {
+      if (items.length === 0) {
+        contentArea.innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#9aa4bf;font-size:16px;">Votre panier est vide</p><a href="marketplace.html" class="button secondary" style="margin-top:16px;">Parcourir le marketplace</a></div>';
+      } else {
+        var total = 0;
+        var html = '<div style="max-width:800px;margin:0 auto;">';
+        items.forEach(function(item) {
+          var product = item.Product || item.product || item;
+          var price = product.price || 0;
+          var qty = item.quantity || 1;
+          total += price * qty;
+          html += '<div class="cart-item" data-item-id="' + item.id + '" style="display:flex;align-items:center;gap:16px;padding:16px;border-bottom:1px solid #eaeaf5;">' +
+            '<img src="' + (product.image_url || 'img/marketplace/01.jpg') + '" style="width:80px;height:80px;object-fit:cover;border-radius:8px;">' +
+            '<div style="flex:1;"><p style="font-weight:700;">' + (product.title || product.name) + '</p><p style="color:#9aa4bf;font-size:13px;">Qte: ' + qty + '</p></div>' +
+            '<p style="font-weight:700;color:#615dfa;">' + (price * qty) + ' EUR</p>' +
+            '<button class="remove-cart-item" data-item-id="' + item.id + '" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:18px;">x</button>' +
+          '</div>';
+        });
+        html += '<div style="padding:20px;text-align:right;">' +
+          '<p style="font-size:18px;font-weight:700;">Total: ' + total + ' EUR</p>' +
+          '<a href="marketplace-checkout.html" class="button primary" style="margin-top:12px;">Passer la commande</a>' +
+        '</div></div>';
+        contentArea.innerHTML = html;
+        // Wire remove buttons
+        contentArea.querySelectorAll('.remove-cart-item').forEach(function(btn) {
+          btn.addEventListener('click', async function() {
+            try {
+              await ProductsAPI.removeFromCart(this.getAttribute('data-item-id'));
+              this.closest('.cart-item').remove();
+            } catch(e) { console.error('Remove error:', e); }
+          });
+        });
+      }
+    }
+  } catch(e) { console.error('Cart load error:', e); }
+});
+</script>
+<%- include('../partials/footer') %>

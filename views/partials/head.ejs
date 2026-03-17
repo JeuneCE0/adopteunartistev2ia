@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- bootstrap 4.3.1 -->
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <!-- styles -->
+  <link rel="stylesheet" href="css/styles.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <!-- simplebar styles -->
+  <link rel="stylesheet" href="css/vendor/simplebar.css">
+<% if (locals.extraCss && extraCss.length) { extraCss.forEach(function(css) { %>  <link rel="stylesheet" href="<%- css %>">
+<% }); } %>  <!-- favicon -->
+  <link rel="icon" href="img/favicon.ico">
+  <title><%- title %></title>
+</head>
+<body>

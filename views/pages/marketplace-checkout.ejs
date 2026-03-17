@@ -1,0 +1,487 @@
+<%- include('../partials/head', { title: "Vikinger | Marketplace", extraCss: [] }) %>
+
+<%- include('../partials/page-loader') %>
+
+<%- include('../partials/layout-shell', { activePage: "marketplace" }) %>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+    <!-- SECTION BANNER -->
+    <div class="section-banner">
+      <!-- SECTION BANNER ICON -->
+      <img class="section-banner-icon" src="img/banner/marketplace-icon.png" alt="marketplace-icon">
+      <!-- /SECTION BANNER ICON -->
+  
+      <!-- SECTION BANNER TITLE -->
+      <p class="section-banner-title">Marketplace</p>
+      <!-- /SECTION BANNER TITLE -->
+  
+      <!-- SECTION BANNER TEXT -->
+      <p class="section-banner-text">The best place for the community to buy and sell!</p>
+      <!-- /SECTION BANNER TEXT -->
+    </div>
+    <!-- /SECTION BANNER -->
+
+    <!-- SECTION HEADER -->
+    <div class="section-header">
+      <!-- SECTION HEADER INFO -->
+      <div class="section-header-info">
+        <!-- SECTION PRETITLE -->
+        <p class="section-pretitle">Your Order</p>
+        <!-- /SECTION PRETITLE -->
+  
+        <!-- SECTION TITLE -->
+        <h2 class="section-title">Checkout</h2>
+        <!-- /SECTION TITLE -->
+      </div>
+      <!-- /SECTION HEADER INFO -->
+    </div>
+    <!-- /SECTION HEADER -->
+
+    <!-- GRID -->
+    <div class="grid grid-8-4 small-space">
+      <!-- GRID COLUMN -->
+      <div class="grid-column">
+        <!-- WIDGET BOX -->
+        <div class="widget-box">
+          <!-- WIDGET BOX TITLE -->
+          <p class="widget-box-title">Billing Details</p>
+          <!-- /WIDGET BOX TITLE -->
+      
+          <!-- WIDGET BOX CONTENT -->
+          <div class="widget-box-content">
+            <!-- FORM -->
+            <form class="form">
+              <!-- FORM ROW -->
+              <div class="form-row split">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-first-name">First Name</label>
+                    <input type="text" id="billing-first-name" name="billing_first_name">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-last-name">Last Name</label>
+                    <input type="text" id="billing-last-name" name="billing_last_name">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row split">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-email">Email</label>
+                    <input type="text" id="billing-email" name="billing_email">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-phone-number">Phone Number</label>
+                    <input type="text" id="billing-phone-number" name="billing_phone_number">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-address">Full Address</label>
+                    <input type="text" id="billing-address" name="billing_address">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row split">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <label for="billing-country">Country</label>
+                    <select id="billing-country" name="billing_country">
+                      <option value="0">Select your Country</option>
+                      <option value="1">United States</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /FORM ITEM -->
+
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <label for="billing-state">State</label>
+                    <select id="billing-state" name="billing_state">
+                      <option value="0">Select your State</option>
+                      <option value="1">New York</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row split">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM SELECT -->
+                  <div class="form-select">
+                    <label for="billing-city">City</label>
+                    <select id="billing-city" name="billing_city">
+                      <option value="0">Select your City</option>
+                      <option value="1">New York</option>
+                    </select>
+                    <!-- FORM SELECT ICON -->
+                    <svg class="form-select-icon icon-small-arrow">
+                      <use xlink:href="#svg-small-arrow"></use>
+                    </svg>
+                    <!-- /FORM SELECT ICON -->
+                  </div>
+                  <!-- /FORM SELECT -->
+                </div>
+                <!-- /FORM ITEM -->
+
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small">
+                    <label for="billing-zip-code">ZIP Code</label>
+                    <input type="text" id="billing-zip-code" name="billing_zip_code">
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+
+              <!-- FORM ROW -->
+              <div class="form-row">
+                <!-- FORM ITEM -->
+                <div class="form-item">
+                  <!-- FORM INPUT -->
+                  <div class="form-input small medium-textarea">
+                    <textarea id="billing-details" name="billing_details" placeholder="Write any additional details here..."></textarea>
+                  </div>
+                  <!-- /FORM INPUT -->
+                </div>
+                <!-- /FORM ITEM -->
+              </div>
+              <!-- /FORM ROW -->
+            </form>
+            <!-- /FORM -->
+          </div>
+          <!-- WIDGET BOX CONTENT -->
+        </div>
+        <!-- /WIDGET BOX -->
+      </div>
+      <!-- /GRID COLUMN -->
+
+      <!-- GRID COLUMN -->
+      <div class="grid-column">
+        <!-- SIDEBAR BOX -->
+        <div class="sidebar-box">
+          <!-- SIDEBAR BOX TITLE -->
+          <p class="sidebar-box-title">Order Summary</p>
+          <!-- /SIDEBAR BOX TITLE -->
+      
+          <!-- SIDEBAR BOX ITEMS -->
+          <div class="sidebar-box-items">
+            <!-- TOTALS LINE LIST -->
+            <div class="totals-line-list separator-bottom">
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE INFO -->
+                <div class="totals-line-info">
+                  <!-- TOTALS LINE TITLE -->
+                  <p class="totals-line-title"><span class="bold">Twitch Stream UI Pack</span></p>
+                  <!-- /TOTALS LINE TITLE -->
+      
+                  <!-- TOTALS LINE TEXT -->
+                  <p class="totals-line-text">Regular License</p>
+                  <!-- /TOTALS LINE TEXT -->
+                </div>
+                <!-- /TOTALS LINE INFO -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 12.00 x 1</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+      
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE INFO -->
+                <div class="totals-line-info">
+                  <!-- TOTALS LINE TITLE -->
+                  <p class="totals-line-title"><span class="bold">Gaming Coin Badges Pack</span></p>
+                  <!-- /TOTALS LINE TITLE -->
+      
+                  <!-- TOTALS LINE TEXT -->
+                  <p class="totals-line-text">Regular License</p>
+                  <!-- /TOTALS LINE TEXT -->
+                </div>
+                <!-- /TOTALS LINE INFO -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 6.00 x 1</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+      
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE INFO -->
+                <div class="totals-line-info">
+                  <!-- TOTALS LINE TITLE -->
+                  <p class="totals-line-title"><span class="bold">Pixel Diamond Gaming Magazine</span></p>
+                  <!-- /TOTALS LINE TITLE -->
+      
+                  <!-- TOTALS LINE TEXT -->
+                  <p class="totals-line-text">Regular License</p>
+                  <!-- /TOTALS LINE TEXT -->
+                </div>
+                <!-- /TOTALS LINE INFO -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 26.00 x 1</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+            </div>
+            <!-- /TOTALS LINE LIST -->
+      
+            <!-- TOTALS LINE LIST -->
+            <div class="totals-line-list separator-bottom">
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Cart Total (3)</p>
+                <!-- /TOTALS LINE TITLE -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 44.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+      
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Code</p>
+                <!-- /TOTALS LINE TITLE -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title">-<span class="currency">$</span> 5.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+      
+              <!-- TOTALS LINE -->
+              <div class="totals-line">
+                <!-- TOTALS LINE TITLE -->
+                <p class="totals-line-title">Total</p>
+                <!-- /TOTALS LINE TITLE -->
+      
+                <!-- PRICE TITLE -->
+                <p class="price-title"><span class="currency">$</span> 39.00</p>
+                <!-- /PRICE TITLE -->
+              </div>
+              <!-- /TOTALS LINE -->
+            </div>
+            <!-- /TOTALS LINE LIST -->
+      
+            <!-- PRICE TITLE -->
+            <p class="price-title big separator-bottom"><span class="currency">$</span> 39.00</p>
+            <!-- /PRICE TITLE -->
+          </div>
+          <!-- /SIDEBAR BOX ITEMS -->
+      
+          <!-- SIDEBAR BOX TITLE -->
+          <p class="sidebar-box-title">Payment Method</p>
+          <!-- /SIDEBAR BOX TITLE -->
+      
+          <!-- SIDEBAR BOX ITEMS -->
+          <div class="sidebar-box-items">
+            <!-- FORM -->
+            <form class="form">
+              <!-- CHECKBOX WRAP -->
+              <div class="checkbox-wrap">
+                <input type="radio" id="payment-paypal" name="payment_type" value="payment-paypal" checked>
+                <!-- CHECKBOX BOX -->
+                <div class="checkbox-box round"></div>
+                <!-- /CHECKBOX BOX -->
+                <label class="accordion-trigger-linked" for="payment-paypal">Paypal</label>
+      
+                <!-- CHECKBOX INFO -->
+                <div class="checkbox-info accordion-content-linked accordion-open">
+                  <!-- CHECKBOX INFO TEXT -->
+                  <p class="checkbox-info-text">Pay with your Paypal balance or connected bank account! It's quick and really secure.</p>
+                  <!-- /CHECKBOX INFO TEXT -->
+                </div>
+                <!-- /CHECKBOX INFO -->
+              </div>
+              <!-- /CHECKBOX WRAP -->
+      
+              <!-- CHECKBOX WRAP -->
+              <div class="checkbox-wrap">
+                <input type="radio" id="payment-debit-credit" name="payment_type" value="payment-debit-credit">
+                <!-- CHECKBOX BOX -->
+                <div class="checkbox-box round"></div>
+                <!-- /CHECKBOX BOX -->
+                <label class="accordion-trigger-linked" for="payment-debit-credit">Credit or Debit Card</label>
+      
+                <!-- CHECKBOX INFO -->
+                <div class="checkbox-info accordion-content-linked">
+                  <!-- CHECKBOX INFO TEXT -->
+                  <p class="checkbox-info-text">Pay with your credit or debit card!.</p>
+                  <!-- /CHECKBOX INFO TEXT -->
+                </div>
+                <!-- /CHECKBOX INFO -->
+              </div>
+              <!-- /CHECKBOX WRAP -->
+            </form>
+            <!-- /FORM -->
+      
+            <!-- BUTTON -->
+            <p class="button primary">Complete Order!</p>
+            <!-- /BUTTON -->
+          </div>
+          <!-- /SIDEBAR BOX ITEMS -->
+        </div>
+        <!-- /SIDEBAR BOX -->
+      </div>
+      <!-- /GRID COLUMN -->
+    </div>
+    <!-- /GRID -->
+  </div>
+  <!-- /CONTENT GRID -->
+
+<%- include('../partials/scripts') %>
+<!-- global.accordions -->
+<script src="js/global/global.accordions.js"></script>
+<script src="js/api/products.js"></script>
+<script src="js/api/orders.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+
+  var contentArea = document.querySelector('.content-grid');
+  if (!contentArea) return;
+
+  // Load cart items for order summary
+  try {
+    var data = await ProductsAPI.getCart();
+    var items = data.items || data.cart || [];
+
+    if (items.length === 0) {
+      contentArea.innerHTML = '<div style="text-align:center;padding:60px;">' +
+        '<p style="color:#9aa4bf;font-size:16px;">Votre panier est vide</p>' +
+        '<a href="marketplace.html" class="button secondary" style="margin-top:16px;">Parcourir le marketplace</a></div>';
+      return;
+    }
+
+    var total = 0;
+    var summaryHTML = '';
+    items.forEach(function(item) {
+      var product = item.Product || item.product || item;
+      var price = parseFloat(product.price || 0);
+      var qty = item.quantity || 1;
+      total += price * qty;
+      summaryHTML += '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0fa;">' +
+        '<img src="' + (product.image_url || 'img/marketplace/01.jpg') + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">' +
+        '<div style="flex:1;"><p style="font-weight:700;font-size:14px;">' + (product.title || '') + '</p>' +
+        '<p style="color:#9aa4bf;font-size:12px;">Qte: ' + qty + '</p></div>' +
+        '<p style="font-weight:700;color:#615dfa;">' + (price * qty).toFixed(2) + ' EUR</p></div>';
+    });
+
+    contentArea.innerHTML = '<div style="max-width:700px;margin:40px auto;">' +
+      '<h2 style="font-size:20px;font-weight:700;margin-bottom:24px;">Recapitulatif de commande</h2>' +
+      '<div class="widget-box" style="padding:24px;">' +
+        summaryHTML +
+        '<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 0;margin-top:8px;">' +
+          '<p style="font-size:16px;font-weight:700;">Total</p>' +
+          '<p style="font-size:22px;font-weight:700;color:#615dfa;">' + total.toFixed(2) + ' EUR</p>' +
+        '</div>' +
+        '<div style="background:#f5f5fa;border-radius:12px;padding:16px;margin-bottom:20px;">' +
+          '<p style="font-size:13px;color:#6e7194;">&#x1F6E1; Paiement securise - Les artistes seront notifies de votre commande.</p>' +
+        '</div>' +
+        '<div style="display:flex;gap:12px;justify-content:flex-end;">' +
+          '<a href="marketplace-cart.html" class="button secondary">Retour au panier</a>' +
+          '<button id="confirm-order-btn" class="button primary" style="min-width:200px;">Confirmer la commande</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="order-success" style="display:none;text-align:center;padding:40px;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">&#x2705;</div>' +
+        '<h2 style="font-size:20px;font-weight:700;margin-bottom:8px;">Commande confirmee !</h2>' +
+        '<p style="color:#9aa4bf;margin-bottom:20px;">Les vendeurs ont ete notifies. Vous recevrez une notification quand votre commande sera traitee.</p>' +
+        '<div style="display:flex;gap:12px;justify-content:center;">' +
+          '<a href="hub-store-downloads.html" class="button primary">Mes commandes</a>' +
+          '<a href="marketplace.html" class="button secondary">Continuer mes achats</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    document.getElementById('confirm-order-btn').addEventListener('click', async function() {
+      this.disabled = true;
+      this.textContent = 'Traitement en cours...';
+      try {
+        var orderData = await OrdersAPI.checkout();
+        // Show success
+        document.querySelector('.widget-box').style.display = 'none';
+        document.getElementById('order-success').style.display = '';
+        PageInit.toast('Commande passee avec succes !', 'success');
+      } catch(err) {
+        PageInit.toast(err.message || 'Erreur lors de la commande', 'error');
+        this.disabled = false;
+        this.textContent = 'Confirmer la commande';
+      }
+    });
+  } catch(e) {
+    console.error('Checkout error:', e);
+    contentArea.innerHTML = '<div style="text-align:center;padding:60px;"><p style="color:#e74c3c;">Erreur de chargement du panier</p></div>';
+  }
+});
+</script>
+<%- include('../partials/footer') %>

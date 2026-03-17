@@ -1,0 +1,1133 @@
+<%- include('../partials/head', { title: "Vikinger | Account Hub", extraCss: [] }) %>
+
+<%- include('../partials/page-loader') %>
+
+<%- include('../partials/layout-shell', { activePage: "overview" }) %>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+    <!-- SECTION BANNER -->
+    <div class="section-banner">
+      <!-- SECTION BANNER ICON -->
+      <img class="section-banner-icon" src="img/banner/accounthub-icon.png" alt="accounthub-icon">
+      <!-- /SECTION BANNER ICON -->
+  
+      <!-- SECTION BANNER TITLE -->
+      <p class="section-banner-title">Account Hub</p>
+      <!-- /SECTION BANNER TITLE -->
+  
+      <!-- SECTION BANNER TEXT -->
+      <p class="section-banner-text">Profile info, messages, settings and much more!</p>
+      <!-- /SECTION BANNER TEXT -->
+    </div>
+    <!-- /SECTION BANNER -->
+
+    <!-- GRID -->
+    <div class="grid grid-3-9 medium-space">
+      <!-- GRID COLUMN -->
+      <div class="account-hub-sidebar">
+        <!-- SIDEBAR BOX -->
+        <div class="sidebar-box no-padding">
+          <!-- SIDEBAR MENU -->
+          <div class="sidebar-menu round-borders">
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-profile">
+                  <use xlink:href="#svg-profile"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">My Profile</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Change your avatar &amp; cover, accept friends, read messages and more!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked accordion-open">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-info.html">Profile Info</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-social.html">Social &amp; Stream</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link active" href="hub-profile-notifications.html">Notifications</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-messages.html">Messages</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-profile-requests.html">Friend Requests</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-settings">
+                  <use xlink:href="#svg-settings"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">Account</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Change settings, configure notifications, and review your privacy</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-info.html">Account Info</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-password.html">Change Password</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-account-settings.html">General Settings</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-group">
+                  <use xlink:href="#svg-group"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">Groups</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Create new groups, manage the ones you created or accept invites!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-group-management.html">Manage Groups</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-group-invitations.html">Invitations</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+
+            <!-- SIDEBAR MENU ITEM -->
+            <div class="sidebar-menu-item">
+              <!-- SIDEBAR MENU HEADER -->
+              <div class="sidebar-menu-header accordion-trigger-linked">
+                <!-- SIDEBAR MENU HEADER ICON -->
+                <svg class="sidebar-menu-header-icon icon-store">
+                  <use xlink:href="#svg-store"></use>
+                </svg>
+                <!-- /SIDEBAR MENU HEADER ICON -->
+
+                <!-- SIDEBAR MENU HEADER CONTROL ICON -->
+                <div class="sidebar-menu-header-control-icon">
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+                  <svg class="sidebar-menu-header-control-icon-open icon-minus-small">
+                    <use xlink:href="#svg-minus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON OPEN -->
+
+                  <!-- SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                  <svg class="sidebar-menu-header-control-icon-closed icon-plus-small">
+                    <use xlink:href="#svg-plus-small"></use>
+                  </svg>
+                  <!-- /SIDEBAR MENU HEADER CONTROL ICON CLOSED -->
+                </div>
+                <!-- /SIDEBAR MENU HEADER CONTROL ICON -->
+
+                <!-- SIDEBAR MENU HEADER TITLE -->
+                <p class="sidebar-menu-header-title">My Store</p>
+                <!-- /SIDEBAR MENU HEADER TITLE -->
+
+                <!-- SIDEBAR MENU HEADER TEXT -->
+                <p class="sidebar-menu-header-text">Review your account, manage products check stats and much more!</p>
+                <!-- /SIDEBAR MENU HEADER TEXT -->
+              </div>
+              <!-- /SIDEBAR MENU HEADER -->
+
+              <!-- SIDEBAR MENU BODY -->
+              <div class="sidebar-menu-body accordion-content-linked">
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-account.html">My Account</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-statement.html">Sales Statement</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-items.html">Manage Items</a>
+                <!-- /SIDEBAR MENU LINK -->
+
+                <!-- SIDEBAR MENU LINK -->
+                <a class="sidebar-menu-link" href="hub-store-downloads.html">Downloads</a>
+                <!-- /SIDEBAR MENU LINK -->
+              </div>
+              <!-- /SIDEBAR MENU BODY -->
+            </div>
+            <!-- /SIDEBAR MENU ITEM -->
+          </div>
+          <!-- /SIDEBAR MENU -->
+        </div>
+        <!-- /SIDEBAR BOX -->
+      </div>
+      <!-- /GRID COLUMN -->
+
+      <!-- GRID COLUMN -->
+      <div class="account-hub-content">
+        <!-- SECTION HEADER -->
+        <div class="section-header">
+          <!-- SECTION HEADER INFO -->
+          <div class="section-header-info">
+            <!-- SECTION PRETITLE -->
+            <p class="section-pretitle">My Profile</p>
+            <!-- /SECTION PRETITLE -->
+
+            <!-- SECTION TITLE -->
+            <h2 class="section-title">Notifications</h2>
+            <!-- /SECTION TITLE -->
+          </div>
+          <!-- /SECTION HEADER INFO -->
+
+          <!-- SECTION HEADER ACTIONS -->
+          <div class="section-header-actions">
+            <!-- SECTION HEADER ACTION -->
+            <p class="section-header-action">Mark all as Read</p>
+            <!-- /SECTION HEADER ACTION -->
+      
+            <!-- SECTION HEADER ACTION -->
+            <p class="section-header-action">Settings</p>
+            <!-- /SECTION HEADER ACTION -->
+          </div>
+          <!-- /SECTION HEADER ACTIONS -->
+        </div>
+        <!-- /SECTION HEADER -->
+
+        <!-- DYNAMIC NOTIFICATION BOX LIST -->
+        <div class="notification-box-list" id="dynamic-notifications">
+          <p style="text-align:center;padding:20px;color:#adafca;">Chargement des notifications...</p>
+        </div>
+        <div id="notifications-load-more" style="text-align:center;padding:20px;display:none;">
+          <button class="button secondary" id="load-more-notifs">Charger plus</button>
+        </div>
+
+        <!-- STATIC CONTENT HIDDEN -->
+        <div style="display:none;">
+        <div class="notification-box-list">
+          <div class="notification-box">
+            <div class="user-status notification">
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <div class="user-avatar small no-outline">
+                  <div class="user-avatar-content">
+                    <div class="hexagon-image-30-32" data-src="img/avatar/03.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">16</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Nick Grissom</a> posted a comment on your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">2 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON COMMENT -->
+                <svg class="icon-comment">
+                  <use xlink:href="#svg-comment"></use>
+                </svg>
+                <!-- /ICON COMMENT -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box unread">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/07.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">26</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Sarah Diamond</a> left a like <img class="reaction" src="img/reaction/like.png" alt="reaction-like"> reaction on your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">17 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON THUMBS UP -->
+                <svg class="icon-thumbs-up">
+                  <use xlink:href="#svg-thumbs-up"></use>
+                </svg>
+                <!-- /ICON THUMBS UP -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK READ BUTTON -->
+            <div class="mark-read-button"></div>
+            <!-- /MARK READ BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/02.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">13</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Destroy Dex</a> posted a comment on your <a class="highlighted" href="profile-photos.html">photo</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">31 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON COMMENT -->
+                <svg class="icon-comment">
+                  <use xlink:href="#svg-comment"></use>
+                </svg>
+                <!-- /ICON COMMENT -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/03.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">16</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Nick Grissom</a> shared your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">39 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON SHARE -->
+                <svg class="icon-share">
+                  <use xlink:href="#svg-share"></use>
+                </svg>
+                <!-- /ICON SHARE -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/10.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">5</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">The Green Goo</a> left a love <img class="reaction" src="img/reaction/love.png" alt="reaction-love"> reaction on your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">42 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON THUMBS UP -->
+                <svg class="icon-thumbs-up">
+                  <use xlink:href="#svg-thumbs-up"></use>
+                </svg>
+                <!-- /ICON THUMBS UP -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box unread">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/05.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">12</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Neko Bebop</a> replied to a comment you made on your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">54 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON COMMENT -->
+                <svg class="icon-comment">
+                  <use xlink:href="#svg-comment"></use>
+                </svg>
+                <!-- /ICON COMMENT -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK READ BUTTON -->
+            <div class="mark-read-button"></div>
+            <!-- /MARK READ BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/23.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">19</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Rosie Sakura</a> shared your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">1 hour 2 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON SHARE -->
+                <svg class="icon-share">
+                  <use xlink:href="#svg-share"></use>
+                </svg>
+                <!-- /ICON SHARE -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+
+          <!-- NOTIFICATION BOX -->
+          <div class="notification-box">
+            <!-- USER STATUS -->
+            <div class="user-status notification">
+              <!-- USER STATUS AVATAR -->
+              <a class="user-status-avatar" href="profile-timeline.html">
+                <!-- USER AVATAR -->
+                <div class="user-avatar small no-outline">
+                  <!-- USER AVATAR CONTENT -->
+                  <div class="user-avatar-content">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-image-30-32" data-src="img/avatar/04.jpg"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR CONTENT -->
+              
+                  <!-- USER AVATAR PROGRESS -->
+                  <div class="user-avatar-progress">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-progress-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS -->
+              
+                  <!-- USER AVATAR PROGRESS BORDER -->
+                  <div class="user-avatar-progress-border">
+                    <!-- HEXAGON -->
+                    <div class="hexagon-border-40-44"></div>
+                    <!-- /HEXAGON -->
+                  </div>
+                  <!-- /USER AVATAR PROGRESS BORDER -->
+              
+                  <!-- USER AVATAR BADGE -->
+                  <div class="user-avatar-badge">
+                    <!-- USER AVATAR BADGE BORDER -->
+                    <div class="user-avatar-badge-border">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-22-24"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE BORDER -->
+              
+                    <!-- USER AVATAR BADGE CONTENT -->
+                    <div class="user-avatar-badge-content">
+                      <!-- HEXAGON -->
+                      <div class="hexagon-dark-16-18"></div>
+                      <!-- /HEXAGON -->
+                    </div>
+                    <!-- /USER AVATAR BADGE CONTENT -->
+              
+                    <!-- USER AVATAR BADGE TEXT -->
+                    <p class="user-avatar-badge-text">6</p>
+                    <!-- /USER AVATAR BADGE TEXT -->
+                  </div>
+                  <!-- /USER AVATAR BADGE -->
+                </div>
+                <!-- /USER AVATAR -->
+              </a>
+              <!-- /USER STATUS AVATAR -->
+          
+              <!-- USER STATUS TITLE -->
+              <p class="user-status-title"><a class="bold" href="profile-timeline.html">Bearded Wonder</a> left a happy <img class="reaction" src="img/reaction/happy.png" alt="reaction-happy"> reaction on your <a class="highlighted" href="profile-timeline.html">status update</a></p>
+              <!-- /USER STATUS TITLE -->
+          
+              <!-- USER STATUS TIMESTAMP -->
+              <p class="user-status-timestamp small-space">1 hour 47 minutes ago</p>
+              <!-- /USER STATUS TIMESTAMP -->
+          
+              <!-- USER STATUS ICON -->
+              <div class="user-status-icon">
+                <!-- ICON THUMBS UP -->
+                <svg class="icon-thumbs-up">
+                  <use xlink:href="#svg-thumbs-up"></use>
+                </svg>
+                <!-- /ICON THUMBS UP -->
+              </div>
+              <!-- /USER STATUS ICON -->
+            </div>
+            <!-- /USER STATUS -->
+        
+            <!-- NOTIFICATION BOX CLOSE BUTTON -->
+            <div class="notification-box-close-button">
+              <!-- NOTIFICATION BOX CLOSE BUTTON ICON -->
+              <svg class="notification-box-close-button-icon icon-cross">
+                <use xlink:href="#svg-cross"></use>
+              </svg>
+              <!-- /NOTIFICATION BOX CLOSE BUTTON ICON -->
+            </div>
+            <!-- /NOTIFICATION BOX CLOSE BUTTON -->
+        
+            <!-- MARK UNREAD BUTTON -->
+            <div class="mark-unread-button"></div>
+            <!-- /MARK UNREAD BUTTON -->
+          </div>
+          <!-- /NOTIFICATION BOX -->
+        </div>
+        <!-- /NOTIFICATION BOX LIST -->
+
+        <!-- LOADER BARS -->
+        <div class="loader-bars">
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+        </div>
+        <!-- /LOADER BARS -->
+      </div>
+      <!-- /GRID COLUMN -->
+    </div>
+    <!-- /GRID -->
+  </div>
+  <!-- /CONTENT GRID -->
+
+<%- include('../partials/scripts') %>
+<!-- global.accordions -->
+<script src="js/global/global.accordions.js"></script>
+<!-- API -->
+<script src="js/api/notifications.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  var ok = await PageInit.init();
+  if (!ok) return;
+  var contentArea = document.querySelector('.account-hub-content .notification-box-list, .account-hub-content .widget-box-content');
+  if (!contentArea) contentArea = document.querySelector('.account-hub-content');
+  if (!contentArea) return;
+  PageInit.showLoading(contentArea);
+  try {
+    var data = await NotificationsAPI.getAll(1, 50);
+    var notifs = data.notifications || [];
+    if (notifs.length === 0) {
+      PageInit.showEmpty(contentArea, '&#x1F514;', 'Aucune notification', 'Vous n\'avez pas encore de notifications');
+    } else {
+      var html = '<div style="padding:12px 16px;text-align:right;border-bottom:1px solid #eaeaf5;"><button id="mark-all-read" class="button small secondary">Tout marquer comme lu</button></div>';
+      notifs.forEach(function(n) {
+        var isUnread = !n.is_read;
+        var linkStart = n.link ? '<a href="' + n.link + '" style="text-decoration:none;color:inherit;">' : '';
+        var linkEnd = n.link ? '</a>' : '';
+        html += linkStart + '<div class="notification-box aua-fade-in" style="padding:16px;border-bottom:1px solid #eaeaf5;cursor:pointer;' + (isUnread ? 'background:#f8f8ff;' : '') + '">' +
+          '<p style="font-size:14px;font-weight:' + (isUnread ? '700' : '400') + ';">' + (n.content || n.title || 'Notification') + '</p>' +
+          '<p style="font-size:12px;color:#9aa4bf;margin-top:4px;">' + PageInit.timeAgo(n.created_at || n.createdAt) + '</p>' +
+        '</div>' + linkEnd;
+      });
+      contentArea.innerHTML = html;
+      var markAllBtn = document.getElementById('mark-all-read');
+      if (markAllBtn) {
+        markAllBtn.addEventListener('click', async function() {
+          try {
+            await NotificationsAPI.markAllAsRead();
+            PageInit.toast('Notifications marquees comme lues', 'success');
+            contentArea.querySelectorAll('.notification-box').forEach(function(el) { el.style.background = ''; });
+          } catch(e) { console.error(e); }
+        });
+      }
+    }
+  } catch(e) {
+    PageInit.showEmpty(contentArea, '&#x1F514;', 'Aucune notification', 'Erreur de chargement');
+  }
+});
+</script>
+<%- include('../partials/footer') %>
